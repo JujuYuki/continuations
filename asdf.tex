@@ -82,21 +82,37 @@ $P$ is image-finite if, for all derivative $Q$ of $P$ and any action $\alpha, \e
 where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ and $\xRightarrow{\alpha}$ is $\Rightarrow\xrightarrow{\alpha}\Rightarrow$ for some action $\alpha$.
 \end{definition}
 
-\noindent\hrulefill
-
-\noindent{\Large\underline{Rules for base-$\pi$}}\\
+\newpage
+{\Large\underline{Rules for base-$\pi$}}\\
 ~\\
 \indent\textbox{\underline{Value-typing} TV-BASVAL TV-NAME\\
-	\begin{flalign*}\text{\underline{Process typing}}	 & \text{T-PAR T-SUM}&\\
+	\begin{flalign*}\text{\underline{Process typing }}&\\
+		& \text{T-PAR T-SUM}&\\
 		& \text{T-MAT T-NIL}&\\
 		& \text{T-REP T-RES T-TAU}&\\
 		& \text{T-INP T-OUT}&
-	\end{flalign*}}\\
-\begin{flalign*}\text{\indent Types: }S,T::= &V \text{ value type}&\\
-|&L \text{ link type}&\\
-|&\diamond \text{ behaviour type}&
+	\end{flalign*}
+	\begin{flalign*}\text{Types: }S,T::= &V \text{ value type}&\\
+	|&L \text{ link type}&\\
+	|&\diamond \text{ behaviour type}&
+	\end{flalign*}
+	Value types: $V::=B$ basic type\\
+	Link types: $L::=\sharp V$ connexion type\\
+	Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\
+	\begin{flalign*}\text{\underline{Transitions for base-$\pi$}} &\\
+		& \text{OUT INP} &\\
+		& \text{TAU MAT} &\\
+		& \text{SUM-L PAR-L} &\\
+		& \text{COMM-L} &\\
+		& \text{RES REP-ACT} &\\
+		& \text{OPEN} &\\
+		& \text{REP-COMM} &\\
+		& \text{OUTERR INPERR MATERR} &
+	\end{flalign*}}
+
+\noindent\hrulefill
+
+\begin{flalign*}\text{simply-typed $\pi$-calculus: same but with value types } V::= &B\text{ basic type} &\\
+	|&L \text{ link type} &
 \end{flalign*}
-\indent Value types: $V::=B$ basic type\\
-\indent Link types: $L::=\sharp V$ connexion type\\
-\indent Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$
 \end{document}
