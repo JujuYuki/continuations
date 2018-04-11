@@ -60,5 +60,24 @@ We want $M\star\Pi\star\EE\rightarrow M'\star\Pi'\star\EE'$ iff $\llbracket M,\E
 	\item equiv $\simeq$ bisimulation
 	\item the traduction goes well
 \end{itemize}
+\newpage
+\begin{definition}
+A binary relation $S$ is a reduction bisimulation if, forall $(P,Q)\in S$\\
+\begin{itemize}
+	\item[(1)] $P\xrightarrow{\tau}P'$ implies $Q\xrightarrow{\tau}Q'$ for some $Q'$ with $(P',Q')\in S$
+	\item[(2)] $Q\xrightarrow{\tau}Q'$ implies $P\xrightarrow{\tau}P'$ for some $P'$ with $(P',Q')\in S$
+\end{itemize}
+\end{definition}
 
+\noindent\hrulefill
+
+\noindent\underline{Observability:}\\
+$P\downarrow_{x}$ if $P$ can make an input action of subject $x$\\
+$P\downarrow_{\bar{x}}$ if $P$ can make an output action of subject $x$.
+
+\noindent\hrulefill
+
+\noindent\underline{Image-finite process:}\\
+$P$ is image-finite if, for all derivative $Q$ of $P$ and any action $\alpha, \exists n\geq0$ and $Q_1,\cdots Q_n$ such that $Q\xRightarrow{\alpha}Q'$ implies $Q'=Q_i$ for some $i$.\\
+\;\;\;where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ and $\xRightarrow{\alpha}$ is $\Rightarrow\xrightarrow{\alpha}\Rightarrow$ for some action $\alpha$.
 \end{document}
