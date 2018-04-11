@@ -32,17 +32,17 @@
 \usetikzlibrary{positioning}
 \usepackage{pgfplots,wrapfig}
 
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Définition},title=Définition]{definition}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Definition},title=Definition]{definition}
 \declaretheorem[thmbox={style=M,headstyle=\bfseries Proposition},sibling=definition]{proposition}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Corollaire},sibling=definition]{corollaire}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Théorème},sibling=definition,title=Théorème]{theoreme}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Lemme},sibling=definition]{lemme}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Corollary},sibling=definition]{corollary}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Theorem},sibling=definition,title=Theorem]{theorem}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Lemma},sibling=definition]{lemma}
 
-\newenvironment{algo}[1]{
+\newenvironment{prog-algo}[1]{
 \thmbox[M]{\textbf{#1}}
 \hspace*{-1.5em}\slshape\ignorespaces}{\endthmbox\vspace*{.75ex}}
 
-\newenvironment{boucle}[1]{
+\newenvironment{prog-loop}[1]{
 \thmbox[S]{\textbf{#1}}
 \hspace*{-1.5em}\slshape\ignorespaces}{\endthmbox\vspace*{.75ex}}
 
@@ -57,15 +57,14 @@
 \declaretheorem[name={}, style=mystyle, unnumbered]{preuve}
 
 \newcommand\textbox[1]{%
-  \parbox{.333\textwidth}{#1}%
+  \parbox{\textwidth}{#1}%
 }
 \newcommand{\xRightarrow}[2][]{\ext@arrow 0359\Rightarrowfill@{#1}{#2}}
 
 \newcommand{\ie}{\textit{ie.}\ }
 \newcommand{\dd}{\mathrm{d}}
 \newcommand{\abs}[1]{\left\vert #1\right\vert}
-\newcommand{\norme}[1]{\left\Vert #1\right\Vert}
-\newcommand{\nnorme}[1]{\left\Vert #1 \right\Vert}
+\newcommand{\norm}[1]{\left\Vert #1\right\Vert}
 \newcommand{\id}{\text{Id}}
 \newcommand{\Zring}[1]{\ensuremath{\Z / #1\Z}}
 \newcommand{\logpar}{\ensuremath\rotatebox[origin=c]{180}{\&}}
@@ -162,8 +161,8 @@
 \DeclareMathOperator{\Ann}{Ann}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\sign}{sign}
-\DeclareMathOperator{\ppcm}{ppcm}
-\DeclareMathOperator{\pgcd}{pgcd}
+\DeclareMathOperator{\lcm}{lcm}
+%\DeclareMathOperator{\gcd}{gcd}
 \DeclareMathOperator{\Vol}{Vol}
 \DeclareMathOperator{\Covol}{Covol}
 \DeclareMathOperator{\disc}{disc}
@@ -179,13 +178,13 @@
 \DeclareMathOperator{\Com}{Com}
 \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\Det}{det}
-\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\rank}{rank}
 \DeclareMathOperator{\Mat}{Mat}
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\eq}{=}
 \DeclareMathOperator*{\Implies}{\implies}
-\DeclareMathOperator*{\ssi}{\Leftrightarrow}
+%\DeclareMathOperator*{\iff}{\Leftrightarrow}
 \DeclareMathOperator*{\TendsTo}{\longrightarrow}
 \DeclareMathOperator*{\indep}{\perp\!\!\!\!\perp}
 
@@ -203,7 +202,7 @@
 
 
 
-\newcommand{\exemple}{\paragraph{Exemple :}}
-\newcommand{\remarque}{\paragraph{Remarque :}}
-\newcommand{\consequence}{\paragraph{Conséquence :}}
-\newcommand{\rappel}{\paragraph{Rappel :}}
+\newcommand{\example}{\paragraph{Example:}}
+\newcommand{\remark}{\paragraph{Remark:}}
+\newcommand{\consequence}{\paragraph{Consequence:}}
+\newcommand{\reminder}{\paragraph{reminder:}}

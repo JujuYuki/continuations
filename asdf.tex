@@ -38,8 +38,8 @@ MN\star\Pi\star\EE &\rightarrow M\star(N,\EE).\Pi\star\EE\\
 x\star\Pi\star\EE,x\mapsto(M,\FF) &\rightarrow M\star\Pi\star\FF
 \end{align*}
 For exponentials:\\
-$\;\;\;!P\simeq!P|!P$\\
-$(\nu u)!u(x).P\simeq 0$\\
+\indent$!P\simeq!P|!P$\\
+\indent$(\nu u)!u(x).P\simeq 0$\\
 idea: $!P|Q\simeq!P|!P|Q \;\; \forall Q$
 
 \noindent\hrulefill
@@ -61,6 +61,7 @@ We want $M\star\Pi\star\EE\rightarrow M'\star\Pi'\star\EE'$ iff $\llbracket M,\E
 	\item the traduction goes well
 \end{itemize}
 \newpage
+
 \begin{definition}
 A binary relation $S$ is a reduction bisimulation if, forall $(P,Q)\in S$\\
 \begin{itemize}
@@ -69,15 +70,33 @@ A binary relation $S$ is a reduction bisimulation if, forall $(P,Q)\in S$\\
 \end{itemize}
 \end{definition}
 
-\noindent\hrulefill
 
-\noindent\underline{Observability:}\\
+\begin{definition}[Observability:]\\
 $P\downarrow_{x}$ if $P$ can make an input action of subject $x$\\
 $P\downarrow_{\bar{x}}$ if $P$ can make an output action of subject $x$.
+\end{definition}
+
+
+\begin{definition}[Image-finite process:]\\
+$P$ is image-finite if, for all derivative $Q$ of $P$ and any action $\alpha, \exists n\geq0$ and $Q_1,\cdots Q_n$ such that $Q\xRightarrow{\alpha}Q'$ implies $Q'=Q_i$ for some $i$.\\
+where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ and $\xRightarrow{\alpha}$ is $\Rightarrow\xrightarrow{\alpha}\Rightarrow$ for some action $\alpha$.
+\end{definition}
 
 \noindent\hrulefill
 
-\noindent\underline{Image-finite process:}\\
-$P$ is image-finite if, for all derivative $Q$ of $P$ and any action $\alpha, \exists n\geq0$ and $Q_1,\cdots Q_n$ such that $Q\xRightarrow{\alpha}Q'$ implies $Q'=Q_i$ for some $i$.\\
-\;\;\;where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ and $\xRightarrow{\alpha}$ is $\Rightarrow\xrightarrow{\alpha}\Rightarrow$ for some action $\alpha$.
+\noindent{\Large\underline{Rules for base-$\pi$}}\\
+~\\
+\indent\textbox{\underline{Value-typing} TV-BASVAL TV-NAME\\
+	\begin{flalign*}\text{\underline{Process typing}}	 & \text{T-PAR T-SUM}&\\
+		& \text{T-MAT T-NIL}&\\
+		& \text{T-REP T-RES T-TAU}&\\
+		& \text{T-INP T-OUT}&
+	\end{flalign*}}\\
+\begin{flalign*}\text{\indent Types: }S,T::= &V \text{ value type}&\\
+|&L \text{ link type}&\\
+|&\diamond \text{ behaviour type}&
+\end{flalign*}
+\indent Value types: $V::=B$ basic type\\
+\indent Link types: $L::=\sharp V$ connexion type\\
+\indent Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$
 \end{document}
