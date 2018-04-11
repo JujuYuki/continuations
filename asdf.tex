@@ -2,9 +2,9 @@
 
 \usepackage{mystyle}
 
-\title{Continuations, processus mobiles, tout ça...}
+\title{Continuations, mobile processes, all the things...}
 \author{Julien Gabet}
-\date{Mars-Juin 2018}
+\date{Mars-June, 2018}
 
 \begin{document}
 
@@ -12,21 +12,21 @@
 
 \maketitle
 
-\chapter*{Généralités}
+\chapter*{Memo/garbage part}
 
 \noindent$M,N::= x ; \lambda x.M ; MN$\\
-$(\lambda x.M)N \rightarrow_\beta M[N/x]$\hfill les termes grossissent en général\\
+$(\lambda x.M)N \rightarrow_\beta M[N/x]$\hfill terms tend to get bigger\\
 ~\\
-Si $C[\;]$ un contexte et $M\rightarrow_\beta N$\\
-\;\; alors $C[M]\rightarrow_\beta C[N]$
+If $C[\;]$ is a context, and $M\rightarrow_\beta N$\\
+\;\; then $C[M]\rightarrow_\beta C[N]$
 
 \noindent\hrulefill
 
 \noindent$P,Q::= u(xy).P ; \bar{u}xy.P ; P|Q ; (\nu x)P | !P$\\
 $u(xy).P | \bar{u}ab.Q \rightarrow P[a/x,b/y] | Q$\\
 ~\\
-Si $P\rightarrow Q$ alors $C[P]\rightarrow C[Q]$\hfill (avec les bonnes hypothèses sur $C$)\\
-Si $P\equiv P'\rightarrow Q\equiv Q'$ alors $P\rightarrow Q$
+If $P\rightarrow Q$ then $C[P]\rightarrow C[Q]$\hfill (with necessary hypothesis on context $C$)\\
+If $P\equiv P'\rightarrow Q\equiv Q'$ then $P\rightarrow Q$
 
 \noindent\hrulefill
 
@@ -37,10 +37,10 @@ MN\star\Pi\star\EE &\rightarrow M\star(N,\EE).\Pi\star\EE\\
 \lambda x.M\star(N,\EE).\Pi\star\FF &\rightarrow M\star\Pi\star\FF,s\mapsto(N,\EE)\\
 x\star\Pi\star\EE,x\mapsto(M,\FF) &\rightarrow M\star\Pi\star\FF
 \end{align*}
-Pour l'exponentielle:\\
+For exponentials:\\
 $\;\;\;!P\simeq!P|!P$\\
 $(\nu u)!u(x).P\simeq 0$\\
-idée: $!P|Q\simeq!P|!P|Q \;\; \forall Q$
+idea: $!P|Q\simeq!P|!P|Q \;\; \forall Q$
 
 \noindent\hrulefill
 
@@ -51,11 +51,14 @@ idée: $!P|Q\simeq!P|!P|Q \;\; \forall Q$
 \llbracket\lambda x.M\rrbracket_u &= u (xv).\llbracket M\rrbracket_v\\
 \llbracket x\rrbracket_u &= \bar{x}u
 \end{align*}
+~\\
+We want $M\star\Pi\star\EE\rightarrow M'\star\Pi'\star\EE'$ iff $\llbracket M,\EE\rrbracket_u|\llbracket\Pi\rrbracket_u\rightarrow\llbracket M',\EE'\rrbracket_v|\llbracket\Pi'\rrbracket_v$
 
 ~\\
+
 \begin{itemize}
 	\item equiv $\simeq$ bisimulation
-	\item la trad. se passe bien
+	\item the traduction goes well
 \end{itemize}
 
 \end{document}
