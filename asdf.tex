@@ -1,0 +1,61 @@
+\documentclass[a4paper,12pt]{book}
+
+\usepackage{mystyle}
+
+\title{Continuations, processus mobiles, tout ça...}
+\author{Julien Gabet}
+\date{Mars-Juin 2018}
+
+\begin{document}
+
+\everymath{\displaystyle}
+
+\maketitle
+
+\chapter*{Généralités}
+
+\noindent$M,N::= x ; \lambda x.M ; MN$\\
+$(\lambda x.M)N \rightarrow_\beta M[N/x]$\hfill les termes grossissent en général\\
+~\\
+Si $C[\;]$ un contexte et $M\rightarrow_\beta N$\\
+\;\; alors $C[M]\rightarrow_\beta C[N]$
+
+\noindent\hrulefill
+
+\noindent$P,Q::= u(xy).P ; \bar{u}xy.P ; P|Q ; (\nu x)P | !P$\\
+$u(xy).P | \bar{u}ab.Q \rightarrow P[a/x,b/y] | Q$\\
+~\\
+Si $P\rightarrow Q$ alors $C[P]\rightarrow C[Q]$\hfill (avec les bonnes hypothèses sur $C$)\\
+Si $P\equiv P'\rightarrow Q\equiv Q'$ alors $P\rightarrow Q$
+
+\noindent\hrulefill
+
+\noindent Krivine Abstract Machine (KAM)\\
+$M\star\Pi\star\EE$\\
+\begin{align*}
+MN\star\Pi\star\EE &\rightarrow M\star(N,\EE).\Pi\star\EE\\
+\lambda x.M\star(N,\EE).\Pi\star\FF &\rightarrow M\star\Pi\star\FF,s\mapsto(N,\EE)\\
+x\star\Pi\star\EE,x\mapsto(M,\FF) &\rightarrow M\star\Pi\star\FF
+\end{align*}
+Pour l'exponentielle:\\
+$\;\;\;!P\simeq!P|!P$\\
+$(\nu u)!u(x).P\simeq 0$\\
+idée: $!P|Q\simeq!P|!P|Q \;\; \forall Q$
+
+\noindent\hrulefill
+
+\begin{align*}
+\llbracket (M,\EE).\Pi \rrbracket_u &= (\nu m)(\nu v)(\bar{u}mv|!m(x)\llbracket M,\EE\rrbracket_x|\llbracket\Pi\rrbracket_v)\\
+\llbracket M,\left( x_i\mapsto(M_i,\EE_i)\right)_{i=1..k}\rrbracket_u &= (\nu x_1)\cdots(\nu x_k)(\llbracket M\rrbracket_u|!x_1(u).\llbracket M_1,\EE_1\rrbracket_u | \cdots)\\
+\llbracket MN \rrbracket_u &= (\nu v) (\nu n) (\llbracket M \rrbracket_v | \bar{v}nu|!n(x).\llbracket N\rrbracket_x)\\
+\llbracket\lambda x.M\rrbracket_u &= u (xv).\llbracket M\rrbracket_v\\
+\llbracket x\rrbracket_u &= \bar{x}u
+\end{align*}
+
+~\\
+\begin{itemize}
+	\item equiv $\simeq$ bisimulation
+	\item la trad. se passe bien
+\end{itemize}
+
+\end{document}
