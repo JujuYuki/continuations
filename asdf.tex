@@ -94,18 +94,18 @@ where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ 
 		\infer2[T-PAR]{\Gamma \vdash P|Q:\diamondsuit}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{\Gamma \vdash P:\diamondsuit}
 		\hypo{\Gamma \vdash Q:\diamondsuit}
-		\infer2[T-SUM]{\Gamma \vdash P+Q:\diamondsuit}\end{prooftree}\hfill~\\
+		\infer2[T-SUM]{\Gamma \vdash P+Q:\diamondsuit}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{\Gamma \vdash v:\sharp T}
 		\hypo{\Gamma \vdash w:\sharp T}
 		\hypo{\Gamma \vdash P:\diamondsuit}
 		\infer3[T-MAT]{\Gamma \vdash [v=w]P:\diamondsuit}\end{prooftree}\hfill
-	\begin{prooftree}\infer0[T-NIL]{\Gamma \vdash 0:\diamondsuit}\end{prooftree}\hfill~\\
+	\begin{prooftree}\infer0[T-NIL]{\Gamma \vdash 0:\diamondsuit}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{\Gamma \vdash P:\diamondsuit}
 		\infer1[T-REP]{\Gamma \vdash !P:\diamondsuit}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{\Gamma,x:L \vdash P:\diamondsuit}
 		\infer1[T-RES]{\Gamma \vdash (\nu x:L)P:\diamondsuit}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{\Gamma \vdash P:\diamondsuit}
-		\infer1[T-TAU]{\Gamma \vdash \tau.P:\diamondsuit}\end{prooftree}\hfill~\\
+		\infer1[T-TAU]{\Gamma \vdash \tau.P:\diamondsuit}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{\Gamma \vdash v:\sharp T}
 		\hypo{\Gamma,x:T \vdash P:\diamondsuit}
 		\infer2[T-INP]{\Gamma \vdash v(x).P:\diamondsuit}\end{prooftree}\hfill
@@ -125,29 +125,29 @@ Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
 \indent\textbox{
 	\begin{prooftree}\infer0[OUT]{\bar{a}w.P\xrightarrow{\bar{a}w}P}\end{prooftree}\hfill
 	\begin{prooftree}\infer0[INP]{a(x).P\xrightarrow{aw}P\{w/x\}}\end{prooftree}\hfill
-	\begin{prooftree}\infer0[TAU]{\tau P\xrightarrow{\tau}P}\end{prooftree}\hfill~\\
+	\begin{prooftree}\infer0[TAU]{\tau P\xrightarrow{\tau}P}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{P\xrightarrow{\alpha}P'}
 		\infer1[MAT]{[x=x]P\xrightarrow{\alpha}P'}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{P\xrightarrow{\alpha}P'}
 		\infer1[SUM-L]{P+Q\xrightarrow{\alpha}P'}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{P\xrightarrow{\alpha}P'}
-		\infer1[PAR-L $(bn(\alpha)\cap fn(Q)=\emptyset)$]{P|Q\xrightarrow{\alpha}P'|Q}\end{prooftree}\hfill~\\
+		\infer1[PAR-L $(bn(\alpha)\cap fn(Q)=\emptyset)$]{P|Q\xrightarrow{\alpha}P'|Q}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{P\xrightarrow{(\nu\widetilde{z}:\widetilde{T})\bar{a}v}P'}
 		\hypo{Q\xrightarrow{av}Q'}
-		\infer2[COMM-L $(\widetilde{z}\cap fn(Q)=\emptyset)$]{P|Q\xrightarrow{\tau}(\nu\widetilde{z}:\widetilde{T})(P'|Q')}\end{prooftree}\\
+		\infer2[COMM-L $(\widetilde{z}\cap fn(Q)=\emptyset)$]{P|Q\xrightarrow{\tau}(\nu\widetilde{z}:\widetilde{T})(P'|Q')}\end{prooftree}\\~\\
 	\begin{prooftree}\hypo{P\xrightarrow{\alpha}P'}
 		\infer1[RES $(x\not\in n(\alpha))$]{(\nu x:T)P\xrightarrow{\alpha}(\nu x:T)P'}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{P\xrightarrow{\alpha}P'}
-		\infer1[REP-ACT]{!P\xrightarrow{\alpha}P'|!P}\end{prooftree}\hfill~\\
+		\infer1[REP-ACT]{!P\xrightarrow{\alpha}P'|!P}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{P\xrightarrow{(\nu\widetilde{z}:\widetilde{T})\bar{a}v}P'}
-		\infer1[OPEN $(x\in fn(v), x\not\in\{\widetilde{z},a\})$]{(\nu x:T)P\xrightarrow{(\nu\widetilde{z}:\widetilde{T},x:T)}P'}\end{prooftree}\\
+		\infer1[OPEN $(x\in fn(v), x\not\in\{\widetilde{z},a\})$]{(\nu x:T)P\xrightarrow{(\nu\widetilde{z}:\widetilde{T},x:T)}P'}\end{prooftree}\\~\\
 	\begin{prooftree}\hypo{P\xrightarrow{(\nu\widetilde{z}:\widetilde{T})\bar{a}v}P'}
 		\hypo{P\xrightarrow{av}P''}
-		\infer2[REP-COMM $(\widetilde{z}\cap fn(P)=\emptyset)$]{!P\xrightarrow{\tau}(\nu\widetilde{z}:\widetilde{T})(P'| P'')|!P}\end{prooftree}\\
+		\infer2[REP-COMM $(\widetilde{z}\cap fn(P)=\emptyset)$]{!P\xrightarrow{\tau}(\nu\widetilde{z}:\widetilde{T})(P'| P'')|!P}\end{prooftree}\\~\\
 	\begin{prooftree}\hypo{\text{Si $v$ n'est pas un nom}}
 		\infer1[OUTERR]{\bar{v}w.P\xrightarrow{\tau}wrong}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{\text{Si $v$ n'est pas un nom}}
-		\infer1[INPERR]{v(x).P\xrightarrow{\tau}wrong}\end{prooftree}\hfill~\\
+		\infer1[INPERR]{v(x).P\xrightarrow{\tau}wrong}\end{prooftree}\hfill~\\~\\
 	\begin{prooftree}\hypo{\text{Si $v$ ou $w$ n'est pas un nom}}
 		\infer1[MATERR]{[v=w]P\xrightarrow{\tau}wrong}\end{prooftree}
 }
@@ -164,22 +164,29 @@ Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
 	\begin{prooftree}\infer0[SUB-REFL]{T\leq T}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{S\leq S'}
 		\hypo{S'\leq T}
-		\infer2[SUB-TRANS]{S\leq T}\end{prooftree}\hfill~\hfill~\\~\\
+		\infer2[SUB-TRANS]{S\leq T}\end{prooftree}\hfill~\hfill~\\~\\~\\
 	\begin{prooftree}\infer0[SUB-$\sharp$I]{\sharp T\leq iT}\end{prooftree}\hfill
-	\begin{prooftree}\infer0[SUB-$\sharp$O]{\sharp T\leq oT}\end{prooftree}\hfill~\hfill~\\
+	\begin{prooftree}\infer0[SUB-$\sharp$O]{\sharp T\leq oT}\end{prooftree}\hfill~\hfill~\\~\\
 	\begin{prooftree}\hypo{S\leq T}
 		\infer1[SUB-II]{iS\leq iT}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{S\leq T}
-		\infer1[SUB-OO]{oT\leq oS}\end{prooftree}\hfill~\hfill~\\
+		\infer1[SUB-OO]{oT\leq oS}\end{prooftree}\hfill~\hfill~\\~\\
 	\begin{prooftree}\hypo{S\leq T}
 		\hypo{T\leq S}
 		\infer2[SUB-BS]{\sharp T\leq\sharp S}\end{prooftree}
 }\\~\\
 \underline{Typing rules}\\~\\
 \indent\textbox{
-	T-INPS\hfill replaces T-INP\\
-	T-OUTS\hfill replaces T-OUT\\
-	SUBSUMPTION
+	\begin{prooftree}\hypo{\Gamma \vdash a:iS}
+		\hypo{\Gamma,x:S \vdash P:\diamondsuit}
+		\infer2[T-INPS]{\Gamma \vdash a(x).P:\diamondsuit}\end{prooftree}\hfill replaces T-INP\\~\\
+	\begin{prooftree}\hypo{\Gamma \vdash a:oT}
+		\hypo{\Gamma \vdash w:T}
+		\hypo{\Gamma \vdash P:\diamondsuit}
+		\infer3[T-OUTS]{\Gamma \vdash \bar{a}w.P:\diamondsuit}\end{prooftree}\hfill replaces T-OUT\\~\\
+	\begin{prooftree}\hypo{\Gamma \vdash v:S}
+		\hypo{S\leq T}
+		\infer2[SUBSUMPTION]{\Gamma \vdash v:T}\end{prooftree}
 }\\~\\
 
 \noindent\hrulefill
