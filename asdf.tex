@@ -153,27 +153,41 @@ Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
 }
 
 \begin{flalign*}\text{simply-typed $\pi$-calculus: same but with value types } V::= &B\text{ basic type} &\\
-	|&L \text{ link type} &
+	|&L \text{ link type, allowing to pass links} &
 \end{flalign*}
 
 \newpage
 \noindent{\Large\underline{i/o types}}\\
-~\\
-\indent\underline{Grammar:} same + $L::= iV | oV$\hfill (input and output capabilities)\\
-\indent\textbox{\underline{Subtyping rules}\\
-	\begin{flalign*}& \text{SUB-REFL SUB-TRANS} &\\
-		& \text{SUB-$\sharp$I SUB-$\sharp$O} &\\
-		& \text{SUB-II SUB-OO} &\\
-		& \text{SUB-BS} &
-	\end{flalign*}
-	\underline{Typing rules}\\
+\underline{Grammar:} same + $L::= iV | oV$\hfill (input and output capabilities)\\
+\underline{Subtyping rules}\\~\\
+\indent\textbox{
+	\begin{prooftree}\infer0[SUB-REFL]{T\leq T}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{S\leq S'}
+		\hypo{S'\leq T}
+		\infer2[SUB-TRANS]{S\leq T}\end{prooftree}\hfill~\hfill~\\~\\
+	\begin{prooftree}\infer0[SUB-$\sharp$I]{\sharp T\leq iT}\end{prooftree}\hfill
+	\begin{prooftree}\infer0[SUB-$\sharp$O]{\sharp T\leq oT}\end{prooftree}\hfill~\hfill~\\
+	\begin{prooftree}\hypo{S\leq T}
+		\infer1[SUB-II]{iS\leq iT}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{S\leq T}
+		\infer1[SUB-OO]{oT\leq oS}\end{prooftree}\hfill~\hfill~\\
+	\begin{prooftree}\hypo{S\leq T}
+		\hypo{T\leq S}
+		\infer2[SUB-BS]{\sharp T\leq\sharp S}\end{prooftree}
+}\\~\\
+\underline{Typing rules}\\~\\
+\indent\textbox{
 	T-INPS\hfill replaces T-INP\\
 	T-OUTS\hfill replaces T-OUT\\
-	SUBSUMPTION}\\
+	SUBSUMPTION
+}\\~\\
 
 \noindent\hrulefill
 
 \noindent{\Large\underline{Linear types}}\\
 ~\\
 \indent fill this in later
+~\\
+~\\
+TODO: results on i/o and i/o-lin
 \end{document}
