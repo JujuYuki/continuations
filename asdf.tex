@@ -83,7 +83,7 @@ where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ 
 \end{definition}
 
 \newpage
-{\Large\underline{Rules for base-$\pi$}}\\
+\noindent{\Large\underline{Rules for base-$\pi$}}\\
 ~\\
 \indent\textbox{\underline{Value-typing} TV-BASVAL TV-NAME\\
 	\begin{flalign*}\text{\underline{Process typing }}&\\
@@ -115,4 +115,25 @@ where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ 
 \begin{flalign*}\text{simply-typed $\pi$-calculus: same but with value types } V::= &B\text{ basic type} &\\
 	|&L \text{ link type} &
 \end{flalign*}
+
+\newpage
+\noindent{\Large\underline{i/o types}}\\
+~\\
+\indent\underline{Grammar:} same + $L::= iV | oV$\hfill (input and output capabilities)\\
+\indent\textbox{\underline{Subtyping rules}\\
+	\begin{flalign*}& \text{SUB-REFL SUB-TRANS} &\\
+		& \text{SUB-$\sharp$I SUB-$\sharp$O} &\\
+		& \text{SUB-II SUB-OO} &\\
+		& \text{SUB-BS} &
+	\end{flalign*}
+	\underline{Typing rules}\\
+	T-INPS\hfill replaces T-INP\\
+	T-OUTS\hfill replaces T-OUT\\
+	SUBSUMPTION}\\
+
+\noindent\hrulefill
+
+\noindent{\Large\underline{Linear types}}\\
+~\\
+\indent fill this in later
 \end{document}
