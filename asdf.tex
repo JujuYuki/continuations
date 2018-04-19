@@ -83,7 +83,7 @@ where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ 
 \end{definition}
 
 \newpage
-\noindent{\Large\underline{Rules for base-$\pi$}}\\
+\noindent{\Large\underline{Rules for base-$\pi$}}\\~\\
 \underline{Value-typing}\\~\\
 	\indent\textbox{\begin{prooftree}\infer0[TV-BASVAL]{\Gamma \vdash basval:B}\end{prooftree}\hfill
 	\begin{prooftree}\infer0[TV-NAME]{\Gamma,x:T \vdash x:T}\end{prooftree}\hfill~}\\~\\
@@ -113,14 +113,14 @@ where $\Rightarrow$ is the reflexive transitive closure of $\xrightarrow{\tau}$ 
 		\hypo{\Gamma \vdash w:T}
 		\hypo{\Gamma \vdash P:\diamondsuit}
 		\infer3[T-OUT]{\Gamma \vdash \bar{v}w.P:\diamondsuit}\end{prooftree}\hfill~
-}\\
+}
 \begin{flalign*}\text{Types: }S,T::= &V \text{ value type}&\\
 	|&L \text{ link type}&\\
 	|&\diamond \text{ behaviour type}&
 \end{flalign*}
 Value types: $V::=B$ basic type\\
 Link types: $L::=\sharp V$ connexion type\\
-Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
+Environments: $\Gamma::=\Gamma,x:L \; | \; \Gamma,x:V \; | \; \emptyset$\\~\\
 \underline{Transitions for base-$\pi$}\\~\\
 \indent\textbox{
 	\begin{prooftree}\infer0[OUT]{\bar{a}w.P\xrightarrow{\bar{a}w}P}\end{prooftree}\hfill
@@ -157,8 +157,8 @@ Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
 \end{flalign*}
 
 \newpage
-\noindent{\Large\underline{i/o types}}\\
-\underline{Grammar:} same + $L::= iV | oV$\hfill (input and output capabilities)\\
+\noindent{\Large\underline{i/o types}}\\~\\
+\underline{Grammar:} same + $L::= iV \; | \; oV$\hfill (input and output capabilities)\\~\\
 \underline{Subtyping rules}\\~\\
 \indent\textbox{
 	\begin{prooftree}\infer0[SUB-REFL]{T\leq T}\end{prooftree}\hfill
@@ -174,7 +174,7 @@ Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
 	\begin{prooftree}\hypo{S\leq T}
 		\hypo{T\leq S}
 		\infer2[SUB-BS]{\sharp T\leq\sharp S}\end{prooftree}
-}\\~\\
+}\\~\\~\\
 \underline{Typing rules}\\~\\
 \indent\textbox{
 	\begin{prooftree}\hypo{\Gamma \vdash a:iS}
@@ -187,14 +187,57 @@ Environments: $\Gamma::=\Gamma,x:L|\Gamma,x:V|\emptyset$\\~\\
 	\begin{prooftree}\hypo{\Gamma \vdash v:S}
 		\hypo{S\leq T}
 		\infer2[SUBSUMPTION]{\Gamma \vdash v:T}\end{prooftree}
-}\\~\\
+}
 
-\noindent\hrulefill
+\newpage
 
-\noindent{\Large\underline{Linear types}}\\
-~\\
-\indent fill this in later
-~\\
-~\\
+\noindent{\Large\underline{Linear types}}\\~\\
+\underline{Grammar:} $L::=l_\sharp V \; | \; l_iV \; | \; l_oV$\\~\\
+\underline{Combination of types}\\
+\indent\textbox{$l_iT\uplus l_oT=l_\sharp T$\\$T\uplus T = T$ if $T$ is non-linear\\$T\uplus U = error$ otherwise}\\~\\~\\
+\underline{Combination of environments}\\
+\indent\textbox{If for some $x, \Gamma_1(x)$ and $\Gamma_2(x)$ are defined and $\Gamma	_1(x)\uplus\Gamma_2(x)=error$ then $\Gamma_1\uplus\Gamma_2$ is undefined.\\
+	Otherwise, $(\Gamma_1\uplus\Gamma_2)(x)=\begin{cases}\Gamma_1(x)\uplus\Gamma_2(x)\text{ if both are defined}\\
+	\Gamma_i(x)\text{ if defined but }\Gamma_{3-i}(x)\text{ is not defined}\\
+	\text{undefined otherwise}\end{cases}$}\\~\\~\\
+\underline{Extraction}\\
+\indent\textbox{$Lin(\Gamma) = \{ x | \Gamma(x) = l_IT$ for $I\in\{i,o,\sharp\}$ and some type $T \}$\\
+	$Lin_i(\Gamma) = \{ x | \Gamma(x)=l_iS$ or $\Gamma(x)=l_\sharp S$ for some $S \}$}\\~\\~\\
+\underline{Value-typing}\\~\\
+\indent\begin{prooftree}\infer0[LIN-NAME $(Lin(\Gamma)=\emptyset)$]{\Gamma,x:T \vdash x:T}\end{prooftree}\hfill
+	\begin{prooftree}\infer0[LIN-UNIT $(Lin(\Gamma)=\emptyset)$]{\Gamma \vdash \star:unit}\end{prooftree}\hfill~\\~\\
+\indent\indent + SUBSUMPTION and subtyping rules\\~\\
+\underline{Process typing}\\~\\
+\indent\textbox{
+	\begin{prooftree}\hypo{\Gamma_1 \vdash v:mS \;\; (m\in\{i,l_i\})}
+		\hypo{\Gamma_2,x:S \vdash P}
+		\infer2[LIN-INP]{\Gamma_1\uplus\Gamma_2 \vdash v(x).P:\diamondsuit}\end{prooftree}\\~\\
+	\begin{prooftree}\hypo{\Gamma_1 \vdash v:mS \;\; (m\in\{o,l_o\})}
+		\hypo{\Gamma_2 \vdash w:S}
+		\hypo{\Gamma_3 \vdash P:\diamondsuit}
+		\infer3[LIN-OUT]{\Gamma_1 \uplus \Gamma_2 \uplus \Gamma_3 \vdash \bar{v}w.P:\diamondsuit}\end{prooftree}\\~\\
+	\begin{prooftree}\hypo{\Gamma_1 \vdash P_1:\diamondsuit}
+		\hypo{\Gamma_2 \vdash P_2:\diamondsuit}
+		\infer2[LIN-PAR]{\Gamma_1 \uplus \Gamma_2 \vdash P_1 | P_2:\diamondsuit}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{\Gamma \vdash P_1:\diamondsuit}
+		\hypo{\Gamma \vdash P_2 : \diamondsuit}
+		\infer2[LIN-SUM]{\Gamma \vdash P_1 + P_2:\diamondsuit}\end{prooftree}\hfill~\\~\\
+	\begin{prooftree}\hypo{\Gamma \vdash P:\diamondsuit}
+		\infer1[LIN-TAU]{\Gamma \vdash \tau.P:\diamondsuit}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{\Gamma \vdash P:\diamondsuit}
+		\infer1[LIN-REP $(Lin(\Gamma)=\emptyset)$]{\Gamma \vdash !P:\diamondsuit}\end{prooftree}\hfill~\\~\\
+	\begin{prooftree}\infer0[LIN-NIL $(Lin(\Gamma)=\emptyset)$]{\Gamma \vdash 0:\diamondsuit}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{\Gamma_1 \vdash v:\sharp T}
+		\hypo{\Gamma_1 \vdash w:\sharp T}
+		\hypo{\Gamma_2 \vdash P:\diamondsuit}
+		\infer3[LIN-MAT]{\Gamma_1\uplus\Gamma_2 \vdash [v=w]P:\diamondsuit}\end{prooftree}\hfill~\\~\\
+	\begin{prooftree}\hypo{\Gamma,x:L \vdash P:\diamondsuit}
+		\infer1[LIN-RES]{\Gamma \vdash (\nu x:L)P:\diamondsuit}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{\Gamma \vdash P:\diamondsuit}
+		\infer1[LIN-RES2]{\Gamma \vdash (\nu x:L)P:\diamondsuit}\end{prooftree}\hfill~
+}
+
+\newpage
+
 TODO: results on i/o and i/o-lin
 \end{document}
