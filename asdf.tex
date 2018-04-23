@@ -241,9 +241,8 @@ Environments: $\Gamma::=\Gamma,x:L \; | \; \Gamma,x:V \; | \; \emptyset$\\~\\
 
 TODO: results on i/o and i/o-lin
 
-\bigskip
+\newpage
 
-\underline{Work :}\\
 We take the following rules over simplified $\pi$-calculus with only parallelization:\\~\\~\\
 \indent\hfill\begin{prooftree}\infer0{\bot \vdash 0}\end{prooftree}\hfill
 \begin{prooftree}\hypo{E \vdash P}\hypo{F \vdash Q}\infer2{E \logpar F \vdash P|Q}\end{prooftree}\hfill
@@ -251,7 +250,7 @@ We take the following rules over simplified $\pi$-calculus with only paralleliza
 along with subsumption written as such
 \begin{prooftree}\hypo{E \leq F}\hypo{F \vdash P}\infer2{E \vdash P}\end{prooftree}\\~\\
 where $E \leq F \iff \vdash E^\bot,F$ in MLL.\\
-The goal is to completely write the elimination of subsumption in this system (in order to generalize to more expressive ones later).\\
+The goal is to completely write the elimination of subsumption in this system (in order to generalize to more expressive ones later).
 \remark the definition of $\leq$ implies one can dualize the connectors (\ie turn $\logpar$s in $\logtensor$s), given the addition of enough neutrals in the formula. This is not bad per se, but can lead to unfriendly types that don't reflect the way things behave.\\
 For example, under the assumption that $\vdash P_i^\bot$ for each $i\in\{1,\ldots,n\}$, one can prove:\\
 $(P_1 \logpar 1 \logpar \ldots \logpar P_n \logpar 1) \logtensor \alpha_1 \logtensor \ldots \logtensor \alpha_n \leq \alpha_1 \logpar \ldots \logpar \alpha_n$\\
@@ -266,5 +265,11 @@ Let's transform this by using a context system:\\
 $P_1 \logpar 1 \logpar \ldots \logpar P_n \logpar 1, \alpha_1 \logtensor \ldots \logtensor \alpha_n \vdash A_1|\ldots|A_n$\\
 This is much more appealing. We can now annotate on the $P_i \logpar 1$ types and use them for parallelizing, and add a tensor rule that does "nothing" on the $\pi$-terms to deal with the $\alpha_1\logtensor\ldots\logtensor\alpha_n$ part:\\
 \[\begin{prooftree}\hypo{\Gamma,E,F \vdash P}\infer1{\Gamma,E \logtensor F \vdash P}\end{prooftree}\]
-This rule might need some more syntax though (such as annotations), as it mostly reflects the non-deterministic part of the behaviour of the $\pi$-term that is given a type.
+This rule might need some more syntax though (such as annotations), as it mostly reflects the non-deterministic part of the behaviour of the $\pi$-term that is given a type.\\
+~\\
+What we get here by pushing the sub rules upwards is atoms of the form \begin{prooftree}\infer0{\alpha_i,P_i\logpar1 \vdash A_i}\end{prooftree} and we use the parallelization rule and the tensor rule to put them together like so:\\
+\[\begin{prooftree}\hypo{\alpha_i,x:(P_i\logpar1) \vdash A_i}
+	\hypo{\alpha_j,x:(P_j\logpar1) \vdash A_j}
+	\infer2{\alpha_i,\alpha_j,(P_i\logpar1)\logpar_x(P_j\logpar1) \vdash A_i |_x A_j}
+	\infer1{\alpha_i\logtensor\alpha_j,(P_i\logpar1)\logpar_x(P_j\logpar1) \vdash A_i |_x A_j}\end{prooftree}\]
 \end{document}
