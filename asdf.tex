@@ -273,4 +273,51 @@ What we get here by pushing the sub rules upwards is atoms of the form \begin{pr
 	\hypo{\alpha_j,x:(P_j\logpar1) \vdash A_j}
 	\infer2{\alpha_i,\alpha_j,(P_i\logpar1)\logpar_x(P_j\logpar1) \vdash A_i |_x A_j}
 	\infer1{\alpha_i\logtensor\alpha_j,(P_i\logpar1)\logpar_x(P_j\logpar1) \vdash A_i |_x A_j}\end{prooftree}\]
+
+\newpage
+
+An other approach would be to start from a system without subsumption, and prove it admissible in our system (as one could do for the cut rule in a deduction system). To do that, let's reverse everything to be more akin to MLL, and add according rules and annotations (TODO: add color to annotations):\\~\\
+\textbox{
+	\hfill\begin{prooftree}\infer0{0_x \vdash x:1}\end{prooftree}\hfill
+	\begin{prooftree}\infer0{A_x \vdash x:a}\end{prooftree}\hfill
+	\begin{prooftree}\infer0{x \rightarrow y \vdash x:E^\bot,y:E}\end{prooftree}\hfill~\\~\\
+	\indent\hfill\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
+		\hypo{Q \vdash \Delta,x:F}
+		\infer2{P |_x Q \vdash \Gamma,\Delta,x:E \logtensor F}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{P \vdash \Gamma,x:E,y:F}
+		\infer1{\lambda_xy.P \vdash \Gamma,x:E \logpar F}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{P \vdash \Gamma}
+		\infer1{\epsilon_x.P \vdash \Gamma,x:\bot}\end{prooftree}\hfill~
+}\\~\\
+Then we would like to prove something along the lines of:\\
+If $P \vdash \Gamma,x:E$ and $Q \vdash \Delta,x:E^\bot$ then there exists $R$ such that $R \vdash \Gamma,\Delta$\\
+(with $R=P||_xQ$)\\
+~\\
+The simple case would look like\\
+\[\begin{prooftree}\hypo{P\vdash \Gamma,x:E}
+			\hypo{Q \vdash \Delta,x:F}
+		\infer2{P |_x Q \vdash \Gamma,\Delta,x:E \logtensor F}
+			\hypo{R \vdash \Theta,x:E^\bot,y:F^\bot}
+		\infer1{\lambda_xy.R \vdash \Theta,x:E^\bot \logpar F^\bot}
+	\infer2{(P |_x Q) ||_x \lambda_xy.R \vdash \Gamma,\Delta,\Theta}\end{prooftree}\]
+which would switch the cut rule upwards like so:\\
+\[\begin{prooftree}\hypo{Q[y/x] \vdash \Delta, y:F}
+			\hypo{P \vdash \Gamma,x:E}
+			\hypo{R \vdash \Theta,x:E^\bot,y:F^\bot}
+		\infer2{P ||_x R \vdash \Gamma,\Theta,y:F^\bot}
+	\infer2{Q[y/x] ||_y (P ||_x R) \vdash \Gamma,\Delta,\Theta}\end{prooftree}\]
+Let's see what happens when commuting the tensor:\\
+\[\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
+			\hypo{Q \vdash \Delta,x:F}
+		\infer2{P |_x Q \vdash \Gamma,\Delta,x:E \logtensor F}
+				\hypo{z\rightarrow y \vdash z:F^\bot,y:F}
+				\hypo{x\rightarrow y \vdash x:E^\bot,y:E}
+			\infer2{z \rightarrow y |_y x \rightarrow y \vdash x:E^\bot,z:F^\bot,y:F \logtensor E}
+		\infer1{\lambda_xz.(z \rightarrow y |_y x \rightarrow y) \vdash x:E^\bot \logpar F^\bot, y:F \logtensor E}
+	\infer2{\underbrace{(P |_x Q) ||_x \lambda_xz.(z \rightarrow y |_y x \rightarrow y)}_{\equiv Q[y/x] |_y P[y/x]} \vdash \Gamma,\Delta,y:F \logtensor E}\end{prooftree}\]
+becomes\\
+\[\begin{prooftree}\hypo{Q \vdash \Delta,x:F}
+	\hypo{P \vdash \Gamma,x:E}
+	\infer2{Q |_x P \vdash \Gamma,\Delta,x:F \logtensor E}
+	\end{prooftree}\]
 \end{document}
