@@ -261,11 +261,12 @@ One way to mitigate this kind of behaviour would be to annotate the parallel rul
 Contextualization allows for parts we don't deal with when typing parallel behaviours, but it needs to be carefully handled with the subsumption and subtyping in general. Giving contexts to the axiom rules (both null behaviour and atoms) allows the "trash" parts of subtyping to be moved up to the top of the tree (and thus eliminate subsumptions under axioms), but dealing with parallel is an other story...\\
 Specifically, we need to be able to type the following:\\
 $(P_1 \logpar 1 \logpar \ldots \logpar P_n \logpar 1) \logtensor \alpha_1 \logtensor \ldots \logtensor \alpha_n \vdash A_1|\ldots|A_n$\\
-Let's transform this by using a context system:\\
-$P_1 \logpar 1 \logpar \ldots \logpar P_n \logpar 1, \alpha_1 \logtensor \ldots \logtensor \alpha_n \vdash A_1|\ldots|A_n$\\
-This is much more appealing. We can now annotate on the $P_i \logpar 1$ types and use them for parallelizing, and add a tensor rule that does "nothing" on the $\pi$-terms to deal with the $\alpha_1\logtensor\ldots\logtensor\alpha_n$ part:\\
+Let's add a tensor rule that does "nothing" on the $\pi$-terms to deal with the $\alpha_1\logtensor\ldots\logtensor\alpha_n$ part:\\
 \[\begin{prooftree}\hypo{\Gamma,E,F \vdash P}\infer1{\Gamma,E \logtensor F \vdash P}\end{prooftree}\]
 This rule might need some more syntax though (such as annotations), as it mostly reflects the non-deterministic part of the behaviour of the $\pi$-term that is given a type.\\
+Let's then transform our example by this rule and the context usage:\\
+$P_1 \logpar 1 \logpar \ldots \logpar P_n \logpar 1, \alpha_1 \logtensor \ldots \logtensor \alpha_n \vdash A_1|\ldots|A_n$\\
+This is much more appealing. We can now annotate on the $P_i \logpar 1$ types and use them for parallelizing, and get the $\alpha_i$ together with the tensor rule.\\
 ~\\
 What we get here by pushing the sub rules upwards is atoms of the form \begin{prooftree}\infer0{\alpha_i,P_i\logpar1 \vdash A_i}\end{prooftree} and we use the parallelization rule and the tensor rule to put them together like so:\\
 \[\begin{prooftree}\hypo{\alpha_i,x:(P_i\logpar1) \vdash A_i}
