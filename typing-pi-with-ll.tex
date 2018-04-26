@@ -51,93 +51,178 @@ if $P \vdash \Gamma,x:E$ and $Q \vdash \Delta,x:E^\bot$ then there exists $R$ su
 with $\lfloor R \rfloor = \lfloor P||_xQ \rfloor$, and the proof of $R$ does not use the CUT rule.
 \end{proposition}
 \begin{myproof}
-By induction on the rule we cut against in proof tree:\\
-\underline{If one the last rules is not the one that introduced the variable against which we use the CUT rule}, without loss of generality, we can assume this rule was the left rule of the cut (the other case is a perfect symmetry):\\
-\underline{Case 1:} the last rule is a tensor rule:
+	By induction on the couple $(n_1,n_2)$ of the sizes of the proof trees against which the cut is applied:\\
+	\underline{If one the last rules is not the one that introduced the variable against which we use the CUT rule},
+	without loss of generality, we can assume this rule was the left rule of the cut
+	(the other case is a perfect symmetry):\\
+	\underline{Case 1:} the last rule is a tensor rule:
 	\begin{itemize}
 		\item[i:] the variable was introduced in the left subtree of the last rule
 		\[
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E}
-					\hypo{Q \vdash \Delta,x:F,y:G}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,x:F,y:G}
 				\infer2{P|_xQ \vdash \Gamma,\Delta,x:E\logtensor F,y:G}
-				\hypo{R \vdash \Theta,y:G^\bot}
+					\hypo{(\pi_3)}
+				\infer1{R \vdash \Theta,y:G^\bot}
 			\infer2[cut]{(P|_xQ)||_yR \vdash \Gamma,\Delta,\Theta,x:E\logtensor F}
 			\end{prooftree}
 		\]\[
 			\leadsto\;\;\;
 			\begin{prooftree}
-				\hypo{P \vdash \Gamma,x:E}
-					\hypo{Q \vdash \Delta,x:F,y:G}
-					\hypo{R \vdash \Theta,y:G^\bot}
+					\hypo{(\pi_1)}
+				\infer1{P \vdash \Gamma,x:E}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,x:F,y:G}
+						\hypo{(\pi_3)}
+					\infer1{R \vdash \Theta,y:G^\bot}
 				\infer2[cut]{Q||_yR \vdash \Delta,\Theta,x:F}
 			\infer2{P|_x(Q||_yR) \vdash \Gamma,\Delta,\Theta,x:E\logtensor F}
 			\end{prooftree}
 		\]
-		And we have the structural congruence\\
-		$\lfloor (P|_xQ)||_yR \rfloor = (P|Q)|R \equiv P|(Q|R) = \lfloor P|_x(Q||_yR) \rfloor$.
+		and we have the structural congruence\\
+		$\lfloor (P|_xQ)||_yR \rfloor = (\lfloor P\rfloor|\lfloor Q \rfloor)|\lfloor R \rfloor \equiv \lfloor P \rfloor|(\lfloor Q \rfloor|\lfloor R \rfloor) = \lfloor P|_x(Q||_yR) \rfloor$.
 		\item[ii:] the variable was introduced in the right subtree of the last rule
 		\[
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E,y:G}
-					\hypo{Q \vdash \Delta,x:F}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E,y:G}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,x:F}
 				\infer2{P|_xQ \vdash \Gamma,\Delta,x:E\logtensor F,y:G}
-				\hypo{R \vdash \Theta,y:G^\bot}
+					\hypo{(\pi_3)}
+				\infer1{R \vdash \Theta,y:G^\bot}
 			\infer2[cut]{(P|_xQ)||_yR \vdash \Gamma,\Delta,\Theta,x:E\logtensor F}
 			\end{prooftree}
 		\]\[
 			\leadsto\;\;\;
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E,y:G}
-					\hypo{R \vdash \Theta,y:G^\bot}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E,y:G}
+						\hypo{(\pi_3)}
+					\infer1{R \vdash \Theta,y:G^\bot}
 				\infer2[cut]{P||_yR \vdash \Gamma,\Theta,x:E}
-				\hypo{Q \vdash \Delta,x:F}
+					\hypo{(\pi_2)}
+				\infer1{Q \vdash \Delta,x:F}
 			\infer2{(P||_yR)|_xQ \vdash \Gamma,\Delta,\Theta,x:E\logtensor F}
 			\end{prooftree}
 		\]
-		And we have\\
-		$\lfloor (P|_xQ)||_yR \rfloor = (P|Q)|R \equiv P|(Q|R) \equiv P|(R|Q) \equiv (P|R)|Q = \lfloor (P||_yR)|_xQ \rfloor$.
+		and we have\\
+		$\lfloor (P|_xQ)||_yR \rfloor = (\lfloor P \rfloor|\lfloor Q \rfloor)|\lfloor R \rfloor \equiv \lfloor P \rfloor|(\lfloor Q \rfloor|\lfloor R \rfloor) \equiv \lfloor P \rfloor|(\lfloor R \rfloor|\lfloor Q \rfloor) \equiv (\lfloor P \rfloor|\lfloor R \rfloor)|\lfloor Q \rfloor = \lfloor (P||_yR)|_xQ \rfloor$.
 	\end{itemize}
-\underline{Case 2:} the last rule is not a tensor rule:
+	\underline{Case 2:} the last rule is not a tensor rule:
 	\begin{itemize}
 		\item[i:] the last rule is an epsilon rule
 		\[
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E}
 				\infer1{\epsilon_y.P \vdash \Gamma,x:E,y:\bot}
-				\hypo{Q \vdash \Delta,x:E^\bot}
+					\hypo{(\pi_2)}
+				\infer1{Q \vdash \Delta,x:E^\bot}
 			\infer2[cut]{(\epsilon_y.P)||_xQ \vdash \Gamma,\Delta,y:\bot}
 			\end{prooftree}
 		\]\[
 			\leadsto\;\;\;
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E}
-					\hypo{Q:\Delta,x:E^\bot}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E}
+						\hypo{(\pi_2)}
+					\infer1{Q:\Delta,x:E^\bot}
 				\infer2[cut]{P||_xQ \vdash \Gamma,\Delta}
 			\infer1{\epsilon_y.(P||_xQ) \vdash \Gamma,\Delta,y:\bot}
 			\end{prooftree}
 		\]
-		And we have\\
-		$\lfloor (\epsilon_y.P)||_xQ \rfloor = P|Q = \lfloor \epsilon_y.(P||_xQ) \rfloor$
+		and we have\\
+		$\lfloor (\epsilon_y.P)||_xQ \rfloor = \lfloor P \rfloor | \lfloor Q \rfloor = \lfloor \epsilon_y.(P||_xQ) \rfloor$.
 		\item[ii:] the last rule is a lambda rule
 		\[
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E,y:F,z:G}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E,y:F,z:G}
 				\infer1{\lambda_xy.P \vdash \Gamma,x:E\logpar F,z:G}
-				\hypo{Q \vdash \Delta,z:G^\bot}
+					\hypo{(\pi_2)}
+				\infer1{Q \vdash \Delta,z:G^\bot}
 			\infer2[cut]{(\lambda_xy.P)||_zQ \vdash \Gamma,\Delta,x:E\logpar F}
 			\end{prooftree}
 		\]\[
 			\leadsto\;\;\;
 			\begin{prooftree}
-					\hypo{P \vdash \Gamma,x:E,y:F,z:G}
-					\hypo{Q \vdash \Delta,z:G^\bot}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E,y:F,z:G}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,z:G^\bot}
 				\infer2[cut]{P||_zQ \vdash \Gamma,\Delta,x:E,y:F}
 			\infer1{\lambda_xy.(P||_zQ) \vdash \Gamma,\Delta,x:E\logpar F}
 			\end{prooftree}
 		\]
-		And we have\\
-		$\lfloor (\lambda_xy.P)||_zQ \rfloor = P|Q = \lfloor \lambda_xy.(P||_zQ) \rfloor$
+		and we have\\
+		$\lfloor (\lambda_xy.P)||_zQ \rfloor = \lfloor P \rfloor | \lfloor Q \rfloor = \lfloor \lambda_xy.(P||_zQ) \rfloor$.
 	\end{itemize}
+	\underline{If both last rules introduces the variable we cut against}:
+	\begin{itemize}
+		\item[i:] cutting rules for neutrals:
+			\[
+				\begin{prooftree}
+					\infer0{0_x \vdash x:1}
+							\hypo{(\pi_1)}
+						\infer1{P \vdash \Gamma}
+					\infer1{\epsilon_x.P \vdash \Gamma,x:1}
+				\infer2[cut]{0_x||_x\epsilon_x.P \vdash \Gamma}
+				\end{prooftree}
+			\]\[
+				\leadsto\;\;\;
+				\begin{prooftree}
+					\hypo{(\pi_1)}
+				\infer1{P \vdash \Gamma}
+				\end{prooftree}
+			\]
+			and we have $\lfloor 0_x||_x\epsilon_x.P \rfloor = 0|\lfloor P \rfloor \equiv \lfloor P \rfloor$.
+		\item[ii:] cutting rules for atoms:
+			\[
+				\begin{prooftree}
+					\hypo{A_x \vdash x:a}
+					\hypo{x\to y \vdash x:a^\bot,y:a}
+				\infer2[cut]{A_x||_xx\to y \vdash y:A}
+				\end{prooftree}
+			\]\[
+				\leadsto\;\;\;
+				\begin{prooftree}
+				\infer0{(A_y \equiv) A_x[y/x] \vdash y:A}
+				\end{prooftree}
+			\]
+			and we have $\lfloor A_x||_xx\to y \rfloor = A|0 \equiv A = \lfloor A_x[y/x] \rfloor$.
+		\item[iii:] cutting constructive rules:
+			\[
+				\begin{prooftree}
+							\hypo{(\pi_1)}
+						\infer1{P \vdash \Gamma,x:E}
+							\hypo{(\pi_2)}
+						\infer1{Q \vdash \Delta,x:F}
+					\infer2{P|_xQ \vdash \Gamma,\Delta,x:E\logtensor F}
+							\hypo{(\pi_3)}
+						\infer1{R \vdash \Theta,x:E^\bot,y:F^\bot}
+					\infer1{\lambda_xy.R \vdash \Theta,x:E^\bot\logpar F^\bot}
+				\infer2[cut]{(P|_xQ)||_x\lambda_xy.R \vdash \Gamma,\Delta,\Theta}
+				\end{prooftree}
+			\]\[
+				\leadsto\;\;\;
+				\begin{prooftree}
+							\hypo{(\pi_1)}
+						\infer1{P \vdash \Gamma,x:E}
+							\hypo{(\pi_3)}
+						\infer1{R \vdash \Theta,x:E^\bot,y:F^\bot}
+					\infer2[cut]{P||_xR \vdash \Gamma,\Theta,y:F^\bot}
+						\hypo{(\pi_2)}
+					\infer1{Q[y/x] \vdash \Delta,y:F}
+				\infer2[cut]{(P||_xR)||_yQ[y/x] \vdash \Gamma,\Delta,\Theta}
+				\end{prooftree}
+			\]
+			and we have $\lfloor (P|_xQ)||_x\lambda_xy.R \rfloor = (\lfloor P \rfloor|\lfloor Q \rfloor)|\lfloor R \rfloor \equiv (\lfloor P \rfloor|\lfloor R \rfloor)|\lfloor Q \rfloor = \lfloor (P||_xR)||_yQ[y/x] \rfloor$
+	\end{itemize}
+With all cases treated (and with the trees marked one can easily verify that the couples of the sizes of the trees decrease each time), this concludes the proof that the cut rule is admissible under our system.
 \end{myproof}
+\remark The next step is to introduce recieving and sending rules with adequate markings and translations to have them work with the system (and potentially replace the rules for atoms).
 \end{document}
