@@ -180,22 +180,22 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 				\end{prooftree}
 			\]
 			and we have $\lfloor 0_x||_x\epsilon_x.P \rfloor = 0|\lfloor P \rfloor \equiv \lfloor P \rfloor$.
-		\item[ii:] cut rule for atoms:
-			\[
-				\begin{prooftree}
-					\infer0{A_x \vdash x:a}
-					\infer0{x\to y \vdash x:a^\bot,y:a}
-				\infer2[cut]{A_x||_xx\to y \vdash y:a}
-				\end{prooftree}
-			\]\[
-				\leadsto\;\;\;
-				\begin{prooftree}
-				\infer0{(A_y \equiv) A_x[y/x] \vdash y:a}
-				\end{prooftree}
-			\]
-			and we have $\lfloor A_x||_xx\to y \rfloor = A|0 \equiv A = \lfloor A_x[y/x] \rfloor$.
-		\item[iii:] cut rule for axiom:
-			we have a general form for this case (which, in fact, would also work for the above case):
+		%\item[ii:] cut rule for atoms:
+		%	\[
+		%		\begin{prooftree}
+		%			\infer0{A_x \vdash x:a}
+		%			\infer0{x\to y \vdash x:a^\bot,y:a}
+		%		\infer2[cut]{A_x||_xx\to y \vdash y:a}
+		%		\end{prooftree}
+		%	\]\[
+		%		\leadsto\;\;\;
+		%		\begin{prooftree}
+		%		\infer0{(A_y \equiv) A_x[y/x] \vdash y:a}
+		%		\end{prooftree}
+		%	\]
+		%	and we have $\lfloor A_x||_xx\to y \rfloor = A|0 \equiv A = \lfloor A_x[y/x] \rfloor$.
+		%%%% THIS CASE IS TREATED BY THE FOLLOWING ONE %%%%
+		\item[ii:] cut rule for axiom:
 			\[
 				\begin{prooftree}
 						\hypo{(\pi)}
@@ -210,8 +210,9 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 				\infer1{P[y/x] \vdash \Gamma,y:E}
 				\end{prooftree}
 			\]
-			and we have $\lfloor P||_xx\to y \rfloor = \lfloor P \rfloor|0 \equiv \lfloor P \rfloor = \lfloor P[y/x] \rfloor$.
-		\item[iv:] cutting constructive rules:
+			and we have $\lfloor P||_xx\to y \rfloor = \lfloor P \rfloor|0 \equiv \lfloor P \rfloor = \lfloor P[y/x] \rfloor$.\\
+			This general form treats all rules that can be cut against an axiom rule.
+		\item[iii:] cutting constructive rules:
 			\[
 				\begin{prooftree}
 							\hypo{(\pi_1)}
