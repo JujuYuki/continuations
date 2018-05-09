@@ -163,7 +163,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 	\end{itemize}
 	\underline{If both last rules introduces the variable we cut against}:
 	\begin{itemize}
-		\item[i:] cutting rules for neutrals:
+		\item[i:] cut rule for neutrals:
 			\[
 				\begin{prooftree}
 					\infer0{0_x \vdash x:1}
@@ -180,7 +180,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 				\end{prooftree}
 			\]
 			and we have $\lfloor 0_x||_x\epsilon_x.P \rfloor = 0|\lfloor P \rfloor \equiv \lfloor P \rfloor$.
-		\item[ii:] cutting rules for atoms:
+		\item[ii:] cut rule for atoms:
 			\[
 				\begin{prooftree}
 					\hypo{A_x \vdash x:a}
@@ -224,5 +224,5 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 	\end{itemize}
 With all cases treated (and with the trees marked one can easily verify that the couples of the sizes of the trees decrease each time), this concludes the proof that the cut rule is admissible under our system.
 \end{myproof}
-\remark The next step is to introduce recieving and sending rules with adequate markings and translations to have them work with the system (and potentially replace the rules for atoms).
+\remark The next step is to introduce receiving and sending rules with adequate markings and translations to have them work with the system (and potentially replace the rules for atoms).
 \end{document}
