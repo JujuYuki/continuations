@@ -169,7 +169,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 					\infer0{0_x \vdash x:1}
 							\hypo{(\pi_1)}
 						\infer1{P \vdash \Gamma}
-					\infer1{\epsilon_x.P \vdash \Gamma,x:1}
+					\infer1{\epsilon_x.P \vdash \Gamma,x:\bot}
 				\infer2[cut]{0_x||_x\epsilon_x.P \vdash \Gamma}
 				\end{prooftree}
 			\]\[
@@ -183,18 +183,35 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 		\item[ii:] cut rule for atoms:
 			\[
 				\begin{prooftree}
-					\hypo{A_x \vdash x:a}
-					\hypo{x\to y \vdash x:a^\bot,y:a}
-				\infer2[cut]{A_x||_xx\to y \vdash y:A}
+					\infer0{A_x \vdash x:a}
+					\infer0{x\to y \vdash x:a^\bot,y:a}
+				\infer2[cut]{A_x||_xx\to y \vdash y:a}
 				\end{prooftree}
 			\]\[
 				\leadsto\;\;\;
 				\begin{prooftree}
-				\infer0{(A_y \equiv) A_x[y/x] \vdash y:A}
+				\infer0{(A_y \equiv) A_x[y/x] \vdash y:a}
 				\end{prooftree}
 			\]
 			and we have $\lfloor A_x||_xx\to y \rfloor = A|0 \equiv A = \lfloor A_x[y/x] \rfloor$.
-		\item[iii:] cutting constructive rules:
+		\item[iii:] cut rule for axiom:
+			we have a general form for this case (which, in fact, would also work for the above case):
+			\[
+				\begin{prooftree}
+						\hypo{(\pi)}
+					\infer1{P \vdash \Gamma,x:E}
+					\infer0{x\to y \vdash x:E^\bot,y:E}
+				\infer2[cut]{P||_xx\to y \vdash \Gamma,y:E}
+				\end{prooftree}
+			\]\[
+				\leadsto\;\;\;
+				\begin{prooftree}
+					\hypo{(\pi[y/x])}
+				\infer1{P[y/x] \vdash \Gamma,y:E}
+				\end{prooftree}
+			\]
+			and we have $\lfloor P||_xx\to y \rfloor = \lfloor P \rfloor|0 \equiv \lfloor P \rfloor = \lfloor P[y/x] \rfloor$.
+		\item[iv:] cutting constructive rules:
 			\[
 				\begin{prooftree}
 							\hypo{(\pi_1)}
@@ -215,7 +232,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 							\hypo{(\pi_3)}
 						\infer1{R \vdash \Theta,x:E^\bot,y:F^\bot}
 					\infer2[cut]{P||_xR \vdash \Gamma,\Theta,y:F^\bot}
-						\hypo{(\pi_2)}
+						\hypo{(\pi_2[y/x])}
 					\infer1{Q[y/x] \vdash \Delta,y:F}
 				\infer2[cut]{(P||_xR)||_yQ[y/x] \vdash \Gamma,\Delta,\Theta}
 				\end{prooftree}
