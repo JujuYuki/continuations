@@ -22,7 +22,7 @@ We study the following annotated rules for typing simplified $\pi$-calculus with
 	Rules for atoms:\\~\\
 	\begin{prooftree}\infer0{A_x \vdash x:a}\end{prooftree}\hfill
 	\begin{prooftree}\infer0{x \to y \vdash x:E^\bot,y:E}\end{prooftree}\hfill~\\~\\
-	Constructive rules:\\~\\
+	Construction rules:\\~\\
 	\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
 		\hypo{Q \vdash \Delta,x:F}
 		\infer2{P |_x Q \vdash \Gamma,\Delta,x:E \logtensor F}\end{prooftree}\hfill
@@ -212,7 +212,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 			\]
 			and we have $\lfloor P||_xx\to y \rfloor = \lfloor P \rfloor|0 \equiv \lfloor P \rfloor = \lfloor P[y/x] \rfloor$.\\
 			This general form treats all rules that can be cut against an axiom rule.
-		\item[iii:] cutting constructive rules:
+		\item[iii:] cutting construction rules:
 			\[
 				\begin{prooftree}
 							\hypo{(\pi_1)}
