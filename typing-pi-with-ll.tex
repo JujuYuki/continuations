@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{book}
+\documentclass[a4paper,12pt]{article}
 
 \usepackage{mystyle}
 
@@ -12,7 +12,7 @@
 
 \maketitle
 
-\chapter{Elimination of the CUT rule in a simplified system}
+\section{Elimination of the CUT rule in a simplified system}
 We study the following annotated rules for typing simplified $\pi$-calculus with MLL:\\~\\
 \indent\textbox{
 	Rules for neutral elements:\\~\\
@@ -34,8 +34,8 @@ And give a translation for the left terms:
 	\lfloor 0_x \rfloor &= 0 \\
 	\lfloor x \to y \rfloor &= 0 \\
 	\lfloor A_x \rfloor &= A \\
-	\lfloor \epsilon_x.P \rfloor &= P \\
-	\lfloor \lambda_xy.P \rfloor &= P \\
+	\lfloor \epsilon_x.P \rfloor &= \lfloor P \rfloor \\
+	\lfloor \lambda_xy.P \rfloor &= \lfloor P \rfloor \\
 	\lfloor P|_xQ \rfloor &= \lfloor P \rfloor | \lfloor Q \rfloor
 \end{align*}
 Let's introduce a new CUT rule to cut against terms on the right side:
@@ -243,4 +243,40 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 With all cases treated (and with the trees marked one can easily verify that the couples of the sizes of the trees decrease each time), this concludes the proof that the cut rule is admissible under our system.
 \end{myproof}
 \remark The next step is to introduce receiving and sending rules with adequate markings and translations to have them work with the system (and potentially replace the rules for atoms).
+
+\newpage
+\section{Sending and receiving names: Roadmap}
+Interaction rules:\\~\\
+\indent\hfill\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
+	\infer1{\bar{u}_x\langle v\rangle.P \vdash \Gamma,x:\uparrow_u\exists t.A^\bot}
+\end{prooftree}\hfill
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A\;\;\;t\not\in\Gamma}
+	\infer1{u_x(t).P \vdash \Gamma,x\downarrow_u\forall t.A}
+\end{prooftree}\hfill
+%\begin{prooftree}
+%		\hypo{P \vdash \Gamma,x:\uparrow_u E^\bot \logtensor \downarrow_u E}
+%	\infer1{(\nu_xu)P \vdash \Gamma}
+%\end{prooftree}\hfill
+%% NOT FOR NOW -> \nu might not have anything to do on the logic side, which is treated by \mu below.
+~\\~\\~\\
+Keep arrow rule in atom rules (now a substitution rule).\\
+Change cut rule and add a new rule as follow:\\~\\
+\indent\hfill\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:E}
+		\hypo{Q \vdash \Delta,y:E^\bot}
+	\infer2{P ||_{(x\leftarrow y)} Q \vdash \Gamma,\Delta}
+\end{prooftree}\hfill
+\begin{prooftree}
+		\hypo{P \vdash \Gamma, x:E \logtensor E^\bot}
+	\infer1{\mu_x.P \vdash \Gamma}
+\end{prooftree}\hfill~\\~\\
+With $\lfloor \mu_x.P \rfloor = \lfloor P \rfloor$.
+Eliminate the cut rule throwing it upwards (and introducing an arrow rule, which interpretation is 0).
+\ie show that the cut rule holds as before.\\~\\
+Prove that: These rules, along with neutral, construction and cut rules, and with usual $\pi$-calculus reduction, keep the typing for reduction.\\
+%We might need to annotate the cut rule in cases where it interacts with channels. Also eliminate the $\nu$ rule with this form of cut (transform is immediate when parallel and $\nu$ follow each other).\\~\\~\\
+%% NOT NECESSARY WITH THE NEW CUT RULE
+Adapt and prove the "confluence"/"congruence" up to permutation on independent names.
 \end{document}
