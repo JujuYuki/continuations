@@ -57,7 +57,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 	(the other case is a perfect symmetry):\\
 	\underline{Case 1:} the last rule is a tensor rule:
 	\begin{itemize}
-		\item[i:] the variable was introduced in the left subtree of the last rule
+		\item[i:] the variable was introduced in the right subtree of the last rule
 		\[
 			\begin{prooftree}
 						\hypo{(\pi_1)}
@@ -84,7 +84,7 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 		\]
 		and we have the structural congruence\\
 		$\lfloor (P|_xQ)||_yR \rfloor = (\lfloor P\rfloor|\lfloor Q \rfloor)|\lfloor R \rfloor \equiv \lfloor P \rfloor|(\lfloor Q \rfloor|\lfloor R \rfloor) = \lfloor P|_x(Q||_yR) \rfloor$.
-		\item[ii:] the variable was introduced in the right subtree of the last rule
+		\item[ii:] the variable was introduced in the left subtree of the last rule
 		\[
 			\begin{prooftree}
 						\hypo{(\pi_1)}
@@ -228,55 +228,124 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 			\]\[
 				\leadsto\;\;\;
 				\begin{prooftree}
-							\hypo{(\pi_1)}
-						\infer1{P \vdash \Gamma,x:E}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E}
+							\hypo{(\pi_2[y/x])}
+						\infer1{Q[y/x] \vdash \Delta,y:F}
 							\hypo{(\pi_3)}
 						\infer1{R \vdash \Theta,x:E^\bot,y:F^\bot}
-					\infer2[cut]{P||_xR \vdash \Gamma,\Theta,y:F^\bot}
-						\hypo{(\pi_2[y/x])}
-					\infer1{Q[y/x] \vdash \Delta,y:F}
-				\infer2[cut]{(P||_xR)||_yQ[y/x] \vdash \Gamma,\Delta,\Theta}
+					\infer2[cut]{Q[y/x]||_yR \vdash \Delta,\Theta,x:E^\bot}
+				\infer2[cut]{P||_x(Q[y/x]||_yR) \vdash \Gamma,\Delta,\Theta}
 				\end{prooftree}
 			\]
-			and we have $\lfloor (P|_xQ)||_x\lambda_xy.R \rfloor = (\lfloor P \rfloor|\lfloor Q \rfloor)|\lfloor R \rfloor \equiv (\lfloor P \rfloor|\lfloor R \rfloor)|\lfloor Q \rfloor = \lfloor (P||_xR)||_yQ[y/x] \rfloor$
+			and we have\\
+			$\lfloor (P|_xQ)||_x\lambda_xy.R \rfloor = (\lfloor P \rfloor|\lfloor Q \rfloor)|\lfloor R \rfloor \equiv \lfloor P \rfloor|(\lfloor Q \rfloor|\lfloor R \rfloor) = \lfloor P||_x(Q[y/x]||_yR) \rfloor$.
 	\end{itemize}
 With all cases treated (and with the trees marked one can easily verify that the couples of the sizes of the trees decrease each time), this concludes the proof that the cut rule is admissible under our system.
 \end{myproof}
 \remark The next step is to introduce receiving and sending rules with adequate markings and translations to have them work with the system (and potentially replace the rules for atoms).
 
 \newpage
-\section{Sending and receiving names: Roadmap}
-Interaction rules:\\~\\
+\section{Sending and receiving names}
+We add two interaction rules, to replace the atom rule from before:\\~\\
 \indent\hfill\begin{prooftree}
 		\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
 	\infer1{\bar{u}_x\langle v\rangle.P \vdash \Gamma,x:\uparrow_u\exists t.A^\bot}
 \end{prooftree}\hfill
 \begin{prooftree}
 		\hypo{P \vdash \Gamma,x:A\;\;\;t\not\in\Gamma}
-	\infer1{u_x(t).P \vdash \Gamma,x\downarrow_u\forall t.A}
-\end{prooftree}\hfill
+	\infer1{u_x(t).P \vdash \Gamma,x:\downarrow_u\forall t.A}
+\end{prooftree}\hfill~\\~\\~\\
+with $\lfloor \bar{u}_x\langle v\rangle.P \rfloor = \bar{u}\langle v\rangle.\lfloor P\rfloor$ and $\lfloor u_x(t).P \rfloor = u(t).\lfloor P \rfloor$.\\~\\
 %\begin{prooftree}
 %		\hypo{P \vdash \Gamma,x:\uparrow_u E^\bot \logtensor \downarrow_u E}
 %	\infer1{(\nu_xu)P \vdash \Gamma}
 %\end{prooftree}\hfill
 %% NOT FOR NOW -> \nu might not have anything to do on the logic side, which is treated by \mu below.
-~\\~\\~\\
-Keep arrow rule in atom rules (now a substitution rule).\\
-Change cut rule and add a new rule as follow:\\~\\
+We need to keep the arrow rule (which acts as a substitution rule), and add a new rule as follows:\\~\\
 \indent\hfill\begin{prooftree}
-		\hypo{P \vdash \Gamma,x:E}
-		\hypo{Q \vdash \Delta,y:E^\bot}
-	\infer2{P ||_{(x\leftarrow y)} Q \vdash \Gamma,\Delta}
-\end{prooftree}\hfill
-\begin{prooftree}
 		\hypo{P \vdash \Gamma, x:E \logtensor E^\bot}
 	\infer1{\mu_x.P \vdash \Gamma}
-\end{prooftree}\hfill~\\~\\
-With $\lfloor \mu_x.P \rfloor = \lfloor P \rfloor$.
-Eliminate the cut rule throwing it upwards (and introducing an arrow rule, which interpretation is 0).
-\ie show that the cut rule holds as before.\\~\\
+\end{prooftree}\hfill with $\lfloor \mu_x.P \rfloor = \lfloor P \rfloor$.\hfill~\\
+\begin{proposition}
+This CUT rule behaves as a reduction rule, and holds up to observation in our annotated system.
+\end{proposition}
+\begin{myproof}
+Most is already treated in the first system above, here is what's new:\\
+If one of the last rules did not introduce the cut variable:
+\begin{itemize}
+	\item[i:] the last rule is a $\mu$ rule:
+		\[
+			\begin{prooftree}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E\logtensor E^\bot,y:F}
+				\infer1{\mu_x.P \vdash \Gamma,y:F}
+					\hypo{(\pi_2)}
+				\infer1{Q \vdash \Delta,y:F^\bot}
+			\infer2[cut]{\mu_x.P ||_y Q \vdash \Gamma,\Delta}
+			\end{prooftree}
+		\]\[
+			\leadsto\;\;\;
+			\begin{prooftree}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:E\logtensor E^\bot,y:F}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,y:F^\bot}
+				\infer2[cut]{P ||_y Q \vdash \Gamma,\Delta,x:E\logtensor E^\bot}
+			\infer1{\mu_x.(P ||_y Q) \vdash \Gamma,\Delta}
+			\end{prooftree}
+		\]
+		Here, $x$ does not appear free in $Q$ in the transformed tree because of the cut rule operating on $y$. This can be achieved by applying a substitution of $x$ for a fresh name on $Q$, and has no importance as substitutions only impact free occurrences of the substituted names in the scope of the term they apply to.\\
+		Because of how we project the $\mu$ rule, the congruence holds here.
+	\item[ii:] the last rule is a sending rule:
+		\[
+			\begin{prooftree}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:A[v/t]^\bot,y:E}
+				\infer1{\bar{u}_x\langle v\rangle.P \vdash \Gamma,x:\uparrow_u\exists t.A^\bot,y:E}
+					\hypo{(\pi_2)}
+				\infer1{Q \vdash \Delta,y:E^\bot}
+			\infer2[cut]{\bar{u}_x\langle v\rangle.P ||_y Q \vdash \Gamma,\Delta,x:\uparrow_u\exists t.A^\bot}
+			\end{prooftree}
+		\]\[
+			\leadsto\;\;\;
+			\begin{prooftree}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:A[v/t]^\bot,y:E}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,y:E^\bot}
+				\infer2[cut]{P||_yQ \vdash \Gamma,\Delta,x:A[v/t]^\bot}
+			\infer1{\bar{u}_x\langle v\rangle.(P||_yQ) \vdash \Gamma,\Delta,x:\uparrow_u\exists t.A^\bot}
+			\end{prooftree}
+		\]
+		Here we note that the congruence does not hold for the projection. In the decorated calculus, this transformation is valid because $x$ cannot be free in $Q$, and thus $Q$ cannot interact with the occurrence of $\bar{u}_x$ we observe, meaning the order between the parallel and the sending does not matter to the behavior of the term (this needs some semantics work to clarify). %%TODO: semantics work on why it goes well.
+\end{itemize}
+If the last rules did both introduce the cut variable (only the interaction case remain):
+\[
+	\begin{prooftree}
+				\hypo{(\pi_1)}
+			\infer1{P \vdash \Gamma,x:A\;\;\; t\not\in\Gamma}
+		\infer1{u_x(t).P \vdash \Gamma,x:\downarrow_u\forall t.A}
+				\hypo{(\pi_2)}
+			\infer1{Q \vdash \Delta,x:A[v/t]^\bot}
+		\infer1{\bar{u}_x\langle v\rangle.Q \vdash \Delta,x:\uparrow_u\exists t.A^\bot}
+	\infer2[cut]{u_x(t).P ||_x \bar{u}_x\langle v\rangle.Q \vdash \Gamma,\Delta}
+	\end{prooftree}
+\]\[
+	\leadsto\;\;\;
+	\begin{prooftree}
+			\hypo{(\pi_1[v/t])}
+		\infer1{P[v/t] \vdash \Gamma,x:A[v/t]}
+			\hypo{(\pi_2)}
+		\infer1{Q \vdash \Delta,x:A[v/t]^\bot}
+	\infer2[cut]{P[v/t] ||_x Q \vdash \Gamma,\Delta}
+	\end{prooftree}
+\]
+Here we observe a reduction behavior. This holds because, as an exterior observer, we cannot tell if an internal action on the term has happened, and this is a basic case of internal action.
+\end{myproof}
+\newpage
 Prove that: These rules, along with neutral, construction and cut rules, and with usual $\pi$-calculus reduction, keep the typing for reduction.\\
 %We might need to annotate the cut rule in cases where it interacts with channels. Also eliminate the $\nu$ rule with this form of cut (transform is immediate when parallel and $\nu$ follow each other).\\~\\~\\
-%% NOT NECESSARY WITH THE NEW CUT RULE
+%% NOT NECESSARY WITH THE NEW CUT RULE -> nu does nothing (or at worst introduces \bot, which is neutral and can be simplified in MELL)
 Adapt and prove the "confluence"/"congruence" up to permutation on independent names.
 \end{document}
