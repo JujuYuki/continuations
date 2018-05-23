@@ -38,6 +38,7 @@ And give a translation for the left terms:
 	\lfloor \lambda_xy.P \rfloor &= \lfloor P \rfloor \\
 	\lfloor P|_xQ \rfloor &= \lfloor P \rfloor | \lfloor Q \rfloor
 \end{align*}
+\remark the terms we use in our annotated context are terms decorated with fresh names that are completely separate from the names communicated by the corresponding $\pi$-terms, and do not interact with them. As such, we effectively have $\lfloor P\sigma \rfloor = \lfloor P \rfloor$ for all permutation $\sigma$ on the decoration names. That is important as our deduction rules interact over at most one such name, and the remainder of both contexts must be disjoint. This allows for a form of $\alpha$-equivalence: two decorated terms are equivalent if only the names of the free variables differ.\\~\\
 Let's introduce a new CUT rule to cut against terms on the right side:
 \[\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
 	\hypo{Q \vdash \Delta,x:E^\bot}
