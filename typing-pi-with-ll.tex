@@ -181,21 +181,6 @@ with $\lfloor R \rfloor \equiv \lfloor P||_xQ \rfloor$, and the proof of $R$ doe
 				\end{prooftree}
 			\]
 			and we have $\lfloor 0_x||_x\epsilon_x.P \rfloor = 0|\lfloor P \rfloor \equiv \lfloor P \rfloor$.
-		%\item[ii:] cut rule for atoms:
-		%	\[
-		%		\begin{prooftree}
-		%			\infer0{A_x \vdash x:a}
-		%			\infer0{x\to y \vdash x:a^\bot,y:a}
-		%		\infer2[cut]{A_x||_xx\to y \vdash y:a}
-		%		\end{prooftree}
-		%	\]\[
-		%		\leadsto\;\;\;
-		%		\begin{prooftree}
-		%		\infer0{(A_y \equiv) A_x[y/x] \vdash y:a}
-		%		\end{prooftree}
-		%	\]
-		%	and we have $\lfloor A_x||_xx\to y \rfloor = A|0 \equiv A = \lfloor A_x[y/x] \rfloor$.
-		%%%% THIS CASE IS TREATED BY THE FOLLOWING ONE %%%%
 		\item[ii:] cut rule for axiom:
 			\[
 				\begin{prooftree}
@@ -258,11 +243,6 @@ We add two interaction rules, to replace the atom rule from before:\\~\\
 	\infer1{u_x(t).P \vdash \Gamma,x:\downarrow_u\forall t.A}
 \end{prooftree}\hfill~\\~\\~\\
 with $\lfloor \bar{u}_x\langle v\rangle.P \rfloor = \bar{u}\langle v\rangle.\lfloor P\rfloor$ and $\lfloor u_x(t).P \rfloor = u(t).\lfloor P \rfloor$.\\~\\
-%\begin{prooftree}
-%		\hypo{P \vdash \Gamma,x:\uparrow_u E^\bot \logtensor \downarrow_u E}
-%	\infer1{(\nu_xu)P \vdash \Gamma}
-%\end{prooftree}\hfill
-%% NOT FOR NOW -> \nu might not have anything to do on the logic side, which is treated by \mu below.
 We need to keep the arrow rule (which acts as a substitution rule), and add a new rule as follows:\\~\\
 \indent\hfill\begin{prooftree}
 		\hypo{P \vdash \Gamma, x:E \logtensor E^\bot}
@@ -344,8 +324,12 @@ If the last rules did both introduce the cut variable (only the interaction case
 \]
 Here we observe a reduction behavior. This holds because, as an exterior observer, we cannot tell if an internal action on the term has happened, and this is a basic case of internal action.
 \end{myproof}
-%%TODO: Prove that these rules, along with neutral, construction and cut rules, and with usual $\pi$-calculus reduction, keep the typing for reduction.\\
-%We might need to annotate the cut rule in cases where it interacts with channels. Also eliminate the $\nu$ rule with this form of cut (transform is immediate when parallel and $\nu$ follow each other).\\~\\~\\
-%% NOT NECESSARY WITH THE NEW CUT RULE -> nu does nothing (or at worst introduces \bot, which is neutral and can be simplified in MELL)
-%%TODO: Adapt and prove the "confluence"/"congruence" up to permutation on independent names.
+%%TODO: rules (\nu u):
+%%		(\nu u)P | Q \equiv (\nu u)(P | Q), when u \not\in Q
+%%		(\nu v)\bar{u}<v>.P or (\nu v)(\bar{u}<v>|P), eg.
+%%				(\nu v)(\bar{u}<v>|v.P) that waits for an answer on its private name v
+%%					(something that can interact with that is u(t).(\bar{t}|Q), acts as a reception proof)
+%%
+%%TODO: observationnal equivalence
+%%TODO: exponentials, additives.
 \end{document}
