@@ -332,4 +332,28 @@ Here we observe a reduction behavior. This holds because, as an exterior observe
 %%
 %%TODO: observationnal equivalence
 %%TODO: exponentials, additives.
+\[\begin{prooftree}
+				\hypo{x\to y \vdash x:\downarrow_v\forall t'.A, y:\uparrow_v\exists t'.A^\bot}
+			\infer1{\bar{u}_x\langle v\rangle.(x\to y) \vdash x:\uparrow_u\exists t.\downarrow_t\forall t'.A, y:\uparrow_v\exists t'.A^\bot}
+					\hypo{(\pi_1)}
+				\infer1{P \vdash \Gamma, y:A\;\;\; t' \not\in \Gamma}
+			\infer1{v_y(t').P \vdash \Gamma, y:\downarrow_v\forall t'.A}
+		\infer2[cut]{\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
+	\infer1{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
+\end{prooftree}\]
+~\\~\\
+\[\begin{prooftree}
+				\hypo{x\to z \vdash x:A[t/t']^\bot, z:A[t/t']}
+			\infer1{\bar{t}_x\langle a\rangle.(x\to z) \vdash x:\uparrow_t\exists t'.A^\bot, z:A[t/t']}
+				\hypo{(\pi_2)}
+			\infer1{Q \vdash \Delta, z:A[t/t']^\bot}
+		\infer2[cut]{\bar{t}_x\langle a\rangle.(x\to z) ||_z Q \vdash \Delta, x:\uparrow_t\exists t'.A^\bot\;\;\; t\not\in \Delta}
+	\infer1{u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Delta, x:\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}
+\end{prooftree}\]
+~\\~\\
+\[\begin{prooftree}
+		\hypo{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
+		\hypo{u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Delta, x:\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}
+	\infer2[cut]{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Gamma, \Delta}
+\end{prooftree}\]
 \end{document}
