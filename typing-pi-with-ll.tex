@@ -394,4 +394,9 @@ Then we put them together, and then eliminate the cut with the above depicted tr
 \[\leadsto (\nu v)((y\to z ||_y P[a/t']) ||_z Q) \vdash \Gamma,\Delta\]
 \[\leadsto (\nu v)(P[a/t'][z/y] ||_z Q) \vdash \Gamma,\Delta\]~\\
 And the elimination of cut (especially over $z$) continues on in $P$ and $Q$.
+
+\begin{align*}
+(\nu v)( & \left(\bar{u}_{x^{\uparrow_u\exists t.\downarrow_t\forall t'.A}}\langle v\rangle.(x^{\downarrow_v\forall t'.A}\to y^{\uparrow_v\exists t'.A^\bot}) ||_y v_{y^{\downarrow_v\forall t'.A}}(t').P^{\Gamma, y:A}\right)\\
+& ||_x u_{x^{\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}}(t).\left(\bar{t}_{x^{\uparrow_t\exists t'.A^\bot}}\langle a\rangle.(x^{A[a/t']^\bot}\to z^{A[a/t']}) ||_z Q^{\Delta,z:A[a/t']^\bot}\right)) \vdash \Gamma,\Delta
+\end{align*}
 \end{document}
