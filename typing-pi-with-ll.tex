@@ -384,19 +384,22 @@ Then we put them together, and then eliminate the cut with the above depicted tr
 		\hypo{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
 		\hypo{u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Delta, x:\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}
 	\infer2[cut]{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Gamma, \Delta}
-\end{prooftree}\]~\\~\\
-\[\leadsto (\nu v)((\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q)) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)((\bar{u}_x\langle v\rangle.(x\to y) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q)) ||_y v_y(t').P) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)(((x\to y) ||_x (\bar{v}_x\langle a\rangle.(x\to z) ||_z Q)) ||_y v_y(t').P) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)((((x\to y) ||_x \bar{v}_x\langle a\rangle.(x\to z)) ||_z Q) ||_y v_y(t').P) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)((\bar{v}_y\langle a\rangle.(y\to z) ||_z Q) ||_y v_y(t').P) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)((\bar{v}_y\langle a\rangle.(y\to z) ||_y v_y(t').P) ||_z Q) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)((y\to z ||_y P[a/t']) ||_z Q) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)(P[a/t'][z/y] ||_z Q) \vdash \Gamma,\Delta\]~\\
-And the elimination of cut (especially over $z$) continues on in $P$ and $Q$.
-
+\end{prooftree}\]
+~\\~\\
+Term with annotations of types, full with redundancy:
 \begin{align*}
-(\nu v)( & \left(\bar{u}_{x^{\uparrow_u\exists t.\downarrow_t\forall t'.A}}\langle v\rangle.(x^{\downarrow_v\forall t'.A}\to y^{\uparrow_v\exists t'.A^\bot}) ||_y v_{y^{\downarrow_v\forall t'.A}}(t').P^{\Gamma, y:A}\right)\\
-& ||_x u_{x^{\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}}(t).\left(\bar{t}_{x^{\uparrow_t\exists t'.A^\bot}}\langle a\rangle.(x^{A[a/t']^\bot}\to z^{A[a/t']}) ||_z Q^{\Delta,z:A[a/t']^\bot}\right)) \vdash \Gamma,\Delta
+(\nu v)( & \left(\bar{u}_{x:\uparrow_u\exists t.\downarrow_t\forall t'.A}\langle v\rangle.(x^{\downarrow_v\forall t'.A}\to y^{\uparrow_v\exists t'.A^\bot}) ||_y v_{y:\downarrow_v\forall t'.A}(t').P^{\Gamma, y:A}\right)\\
+& ||_x u_{x:\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}(t).\left(\bar{t}_{x:\uparrow_t\exists t'.A^\bot}\langle a\rangle.(x^{A[a/t']^\bot}\to z^{A[a/t']}) ||_z Q^{\Delta,z:A[a/t']^\bot}\right)) \vdash \Gamma,\Delta
 \end{align*}
+~\\~\\
+We only annotate the arrows for the rest of the proof (to reduce weight of annotations, they can be deduced by redrawing the tree from the leaves):\\
+\[\leadsto (\nu v)((\bar{u}_x\langle v\rangle.(x^{\downarrow_v\forall t'.A}\to y) ||_y v_y(t').P^\Gamma) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x^{A[a/t']^\bot}\to z) ||_z Q^\Delta)) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)((\bar{u}_x\langle v\rangle.(x^{\downarrow_v\forall t'.A}\to y) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x^{A[a/t']^\bot}\to z) ||_z Q^\Delta)) ||_y v_y(t').P^\Gamma) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)(((x^{\downarrow_v\forall t'.A}\to y) ||_x (\bar{v}_x\langle a\rangle.(x^{A[a/t']^\bot}\to z) ||_z Q^\Delta)) ||_y v_y(t').P^\Gamma) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)((((x^{\downarrow_v\forall t'.A}\to y) ||_x \bar{v}_x\langle a\rangle.(x^{A[a/t']^\bot}\to z)) ||_z Q^\Delta) ||_y v_y(t').P^\Gamma) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)((\bar{v}_y\langle a\rangle.(y^{A[a/t']^\bot}\to z) ||_z Q^\Delta) ||_y v_y(t').P^\Gamma) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)((\bar{v}_y\langle a\rangle.(y^{A[a/t']^\bot}\to z) ||_y v_y(t').P^\Gamma) ||_z Q^\Delta) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)((y^{A[a/t']^\bot}\to z ||_y P[a/t']^\Gamma) ||_z Q^\Delta) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)(P[a/t'][z/y]^{\Gamma,z:A[a/t']} ||_z Q^\Delta) \vdash \Gamma,\Delta\]~\\
+And the elimination of cut (especially over $z$) continues on in $P$ and $Q$.
 \end{document}
