@@ -247,9 +247,19 @@ We need to keep the arrow rule (which acts as a substitution rule), and add a ne
 \indent\hfill\begin{prooftree}
 		\hypo{P \vdash \Gamma, x:E \logtensor E^\bot}
 	\infer1{\mu_x.P \vdash \Gamma}
-\end{prooftree}\hfill with $\lfloor \mu_x.P \rfloor = \lfloor P \rfloor$.\hfill~\\
+\end{prooftree}\hfill with $\lfloor \mu_x.P \rfloor = \lfloor P \rfloor$.\hfill~\\~\\~\\
+Let us define a semi-order relation $\geq$ on our fragment of $\pi$-calculus as such:\\
+\[\text{if }P \equiv Q\text{ then }P \geq Q\]
+\[u(x).P | Q \geq u(x).(P|Q)\;\;\;\;\;\;\text{where }u\not\in Q\]
+\[\bar{u}\langle x\rangle.P | Q \geq \bar{u}\langle x\rangle.(P|Q)\;\;\;\;\;\;\text{where }u\not\in Q\]
+Let us as well define an equivalence relation on the decorated calculus:
+\[P \cong P\]
+\[u_x(t).P |_y Q \cong u_x(t).(P |_y Q)\;\;\;\;\;\;\text{where }u\not\in Q\]
+\[\bar{u}_x\langle t\rangle.P |_y Q \cong \bar{u}_x\langle t\rangle.(P |_y Q)\;\;\;\;\;\;\text{where }u\not\in Q\]
 \begin{proposition}
-This CUT rule behaves as a reduction rule, and holds up to observation in our annotated system.
+For $P,Q$ two terms in the decorated calculus:\\
+If $P \leadsto Q$, then $P \cong Q$ or $P \to Q$.\\
+If $P \leadsto Q$, then $\lfloor P \rfloor \geq \lfloor Q \rfloor$ or $\lfloor P \rfloor \to \lfloor Q \rfloor$.
 \end{proposition}
 \begin{myproof}
 Most is already treated in the first system above, here is what's new:\\
@@ -277,8 +287,10 @@ If one of the last rules did not introduce the cut variable:
 			\end{prooftree}
 		\]
 		Here, $x$ does not appear free in $Q$ in the transformed tree because of the cut rule operating on $y$. This can be achieved by applying a substitution of $x$ for a fresh name on $Q$, and has no importance as substitutions only impact free occurrences of the substituted names in the scope of the term they apply to.\\
-		Because of how we project the $\mu$ rule, the congruence holds here.
-	\item[ii:] the last rule is a sending rule:
+		Because of how we project the $\mu$ rule, the congruence holds here, and so does $\geq$.
+	\item[ii:] the last rule is a sending or receiving rule:\\
+	\begin{itemize}
+		\item sending:
 		\[
 			\begin{prooftree}
 						\hypo{(\pi_1)}
@@ -299,7 +311,29 @@ If one of the last rules did not introduce the cut variable:
 			\infer1{\bar{u}_x\langle v\rangle.(P||_yQ) \vdash \Gamma,\Delta,x:\uparrow_u\exists t.A^\bot}
 			\end{prooftree}
 		\]
-		Here we note that the congruence does not hold for the projection. In the decorated calculus, this transformation is valid because $x$ cannot be free in $Q$, and thus $Q$ cannot interact with the occurrence of $\bar{u}_x$ we observe, meaning the order between the parallel and the sending does not matter to the behavior of the term (this needs some semantics work to clarify). %%TODO: semantics work on why it goes well.
+		\item receiving:
+		\[
+			\begin{prooftree}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:A,y:E\;\;\;\;t\not\in\Gamma, t\not\in E}
+				\infer1{u_x(t).P \vdash \Gamma,x:\downarrow_u\forall t.A,y:E}
+					\hypo{(\pi_2)}
+				\infer1{Q \vdash \Delta,y:E^\bot}
+			\infer2[cut]{u_x(t).P ||_y Q \vdash \Gamma,\Delta,x:\downarrow_u\forall t.A}
+			\end{prooftree}
+		\]\[
+			\leadsto\;\;\;
+			\begin{prooftree}
+						\hypo{(\pi_1)}
+					\infer1{P \vdash \Gamma,x:A,y:E}
+						\hypo{(\pi_2)}
+					\infer1{Q \vdash \Delta,y:E^\bot}
+				\infer2[cut]{P||_yQ \vdash \Gamma,\Delta,x:A}
+			\infer1{u_x(t).(P||_yQ) \vdash \Gamma,\Delta,x:\downarrow_u\forall t.A}
+			\end{prooftree}
+		\]
+		\end{itemize}
+		Here we note that the congruence does not h We have old for the projection. In the decorated calculus, this transformation is valid because $x$ cannot be free in $Q$, and thus $Q$ cannot interact with the occurrence of $\bar{u}_x$ we observe, meaning the order between the parallel and the sending does not matter to the behavior of the term. We have $u_x(t).P ||_y Q \cong u_x(t).(P ||_y Q)$ and $\bar{u}_x\langle v\rangle.P ||_y Q \cong \bar{u}_x\langle v\rangle.(P ||_y Q)$ (and the same for projections and $\geq$).
 \end{itemize}
 If the last rules did both introduce the cut variable (only the interaction case remain):
 \[
@@ -322,7 +356,7 @@ If the last rules did both introduce the cut variable (only the interaction case
 	\infer2[cut]{P[v/t] ||_x Q \vdash \Gamma,\Delta}
 	\end{prooftree}
 \]
-Here we observe a reduction behavior. This holds because, as an exterior observer, we cannot tell if an internal action on the term has happened, and this is a basic case of internal action.
+Here we observe a reduction behavior (on both projections and decorated terms). This holds because, as an exterior observer, we cannot tell if an internal action on the term has happened, and this is a basic case of internal action.
 \end{myproof}
 %%TODO: rules (\nu u):
 %%		(\nu u)P | Q \equiv (\nu u)(P | Q), when u \not\in Q
@@ -381,8 +415,8 @@ and the second term of the form:
 ~\\~\\
 Then we put them together, and then eliminate the cut with the above depicted transformations:
 \[\begin{prooftree}
-		\hypo{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
-		\hypo{u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Delta, x:\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}
+		\hypo{(\nu v)(\bar{u}_x\langle v\rangle.(x\!\to\! y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\!\exists t.\!\downarrow_t\!\forall t'.A}
+		\hypo{u_x(t).(\bar{t}_x\langle a\rangle.(x\!\to\! z) ||_z Q) \vdash \Delta, x:\downarrow_u\!\forall t.\!\uparrow_t\!\exists t'.A^\bot}
 	\infer2[cut]{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle a\rangle.(x\to z) ||_z Q) \vdash \Gamma, \Delta}
 \end{prooftree}\]
 ~\\~\\
@@ -399,7 +433,7 @@ We only annotate the arrows for the rest of the proof (to reduce weight of annot
 \[\leadsto (\nu v)((((x^{\downarrow_v\forall t'.A}\to y) ||_x \bar{v}_x\langle a\rangle.(x^{A[a/t']^\bot}\to z)) ||_z Q^\Delta) ||_y v_y(t').P^\Gamma) \vdash \Gamma,\Delta\]
 \[\leadsto (\nu v)((\bar{v}_y\langle a\rangle.(y^{A[a/t']^\bot}\to z) ||_z Q^\Delta) ||_y v_y(t').P^\Gamma) \vdash \Gamma,\Delta\]
 \[\leadsto (\nu v)((\bar{v}_y\langle a\rangle.(y^{A[a/t']^\bot}\to z) ||_y v_y(t').P^\Gamma) ||_z Q^\Delta) \vdash \Gamma,\Delta\]
-\[\leadsto (\nu v)((y^{A[a/t']^\bot}\to z ||_y P[a/t']^\Gamma) ||_z Q^\Delta) \vdash \Gamma,\Delta\]
+\[\leadsto (\nu v)(((y^{A[a/t']^\bot}\to z) ||_y P[a/t']^\Gamma) ||_z Q^\Delta) \vdash \Gamma,\Delta\]
 \[\leadsto (\nu v)(P[a/t'][z/y]^{\Gamma,z:A[a/t']} ||_z Q^\Delta) \vdash \Gamma,\Delta\]~\\
 And the elimination of cut (especially over $z$) continues on in $P$ and $Q$.
 \end{document}
