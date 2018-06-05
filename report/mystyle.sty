@@ -1,0 +1,210 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{xspace}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[top=2cm,bottom=2cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage{multirow}
+\usepackage{stmaryrd}
+\usepackage{soul}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage{wrapfig}
+\usepackage{pifont}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{ifmtarg}
+\usepackage{thmtools}
+\usepackage{fourier-orns}
+\usepackage{pst-node}
+\usepackage{pst-tree}
+\usepackage{pstricks-add}
+\usepackage[colorlinks=true,linkcolor=black]{hyperref}
+\usepackage{tikz-cd}
+\usepackage{pgf,tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots,wrapfig}
+\usepackage{ebproof}
+
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Definition},title=Definition]{definition}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Proposition},sibling=definition]{proposition}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Corollary},sibling=definition]{corollary}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Theorem},sibling=definition,title=Theorem]{theorem}
+\declaretheorem[thmbox={style=M,headstyle=\bfseries Lemma},sibling=definition]{lemma}
+
+\newenvironment{prog-algo}[1]{
+\thmbox[M]{\textbf{#1}}
+\hspace*{-1.5em}\slshape\ignorespaces}{\endthmbox\vspace*{.75ex}}
+
+\newenvironment{prog-loop}[1]{
+\thmbox[S]{\textbf{#1}}
+\hspace*{-1.5em}\slshape\ignorespaces}{\endthmbox\vspace*{.75ex}}
+
+\declaretheoremstyle[
+    spaceabove=-6pt, 
+    spacebelow=6pt, 
+    headfont=\normalfont\bfseries, 
+    bodyfont = \normalfont,
+    postheadspace=1em, 
+    qed=$\Box$, 
+    headpunct={$\rhd$}]{mystyle} 
+\declaretheorem[name={}, style=mystyle, unnumbered]{myproof}
+
+\newcommand\textbox[1]{%
+  \parbox{\textwidth}{#1}%
+}
+\newcommand{\xRightarrow}[2][]{\ext@arrow 0359\Rightarrowfill@{#1}{#2}}
+
+\newcommand{\ie}{\textit{ie.}\ }
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\abs}[1]{\left\vert #1\right\vert}
+\newcommand{\norm}[1]{\left\Vert #1\right\Vert}
+\newcommand{\id}{\text{Id}}
+\newcommand{\Zring}[1]{\ensuremath{\Z / #1\Z}}
+\newcommand{\logpar}{\ensuremath\rotatebox[origin=c]{180}{\&}}
+\newcommand{\logwith}{\ensuremath\&}
+\newcommand{\logplus}{\ensuremath\oplus}
+\newcommand{\logtensor}{\ensuremath\otimes}
+
+\newcommand{\A}{\ensuremath{\mathbb{A}}\xspace}
+\newcommand{\B}{\ensuremath{\mathbb{B}}\xspace}
+\newcommand{\C}{\ensuremath{\mathbb{C}}\xspace}
+\newcommand{\D}{\ensuremath{\mathbb{D}}\xspace}
+\newcommand{\E}{\ensuremath{\mathbb{E}}\xspace}
+\newcommand{\F}{\ensuremath{\mathbb{F}}\xspace}
+\newcommand{\G}{\ensuremath{\mathbb{G}}\xspace}
+\renewcommand{\H}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\I}{\ensuremath{\mathbb{I}}\xspace}
+\newcommand{\J}{\ensuremath{\mathbb{J}}\xspace}
+\newcommand{\K}{\ensuremath{\mathbb{K}}\xspace}
+\renewcommand{\L}{\ensuremath{\mathbb{L}}\xspace}
+\newcommand{\M}{\ensuremath{\mathbb{M}}\xspace}
+\newcommand{\N}{\ensuremath{\mathbb{N}}\xspace}
+\renewcommand{\O}{\ensuremath{\mathbb{O}}\xspace}
+\renewcommand{\P}{\ensuremath{\mathbb{P}}\xspace}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}\xspace}
+\newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}
+\renewcommand{\S}{\ensuremath{\mathbb{S}}\xspace}
+\newcommand{\T}{\ensuremath{\mathbb{T}}\xspace}
+\newcommand{\U}{\ensuremath{\mathbb{U}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbb{V}}\xspace}
+\newcommand{\W}{\ensuremath{\mathbb{W}}\xspace}
+\newcommand{\X}{\ensuremath{\mathbb{X}}\xspace}
+\newcommand{\Y}{\ensuremath{\mathbb{Y}}\xspace}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}\xspace}
+
+\renewcommand{\AA}{\ensuremath{\mathcal{A}}\xspace}
+\newcommand{\BB}{\ensuremath{\mathcal{B}}\xspace}
+\newcommand{\CC}{\ensuremath{\mathcal{C}}\xspace}
+\newcommand{\DD}{\ensuremath{\mathcal{D}}\xspace}
+\newcommand{\EE}{\ensuremath{\mathcal{E}}\xspace}
+\newcommand{\FF}{\ensuremath{\mathcal{F}}\xspace}
+\newcommand{\GG}{\ensuremath{\mathcal{G}}\xspace}
+\newcommand{\HH}{\ensuremath{\mathcal{H}}\xspace}
+\newcommand{\II}{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\JJ}{\ensuremath{\mathcal{J}}\xspace}
+\newcommand{\KK}{\ensuremath{\mathcal{K}}\xspace}
+\newcommand{\LL}{\ensuremath{\mathcal{L}}\xspace}
+\newcommand{\MM}{\ensuremath{\mathcal{M}}\xspace}
+\newcommand{\NN}{\ensuremath{\mathcal{N}}\xspace}
+\newcommand{\OO}{\ensuremath{\mathcal{O}}\xspace}
+\newcommand{\PP}{\ensuremath{\mathcal{P}}\xspace}
+\newcommand{\QQ}{\ensuremath{\mathcal{Q}}\xspace}
+\newcommand{\RR}{\ensuremath{\mathcal{R}}\xspace}
+\renewcommand{\SS}{\ensuremath{\mathcal{S}}\xspace}
+\newcommand{\TT}{\ensuremath{\mathcal{T}}\xspace}
+\newcommand{\UU}{\ensuremath{\mathcal{U}}\xspace}
+\newcommand{\VV}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\WW}{\ensuremath{\mathcal{W}}\xspace}
+\newcommand{\XX}{\ensuremath{\mathcal{X}}\xspace}
+\newcommand{\YY}{\ensuremath{\mathcal{Y}}\xspace}
+\newcommand{\ZZ}{\ensuremath{\mathcal{Z}}\xspace}
+
+\newcommand{\aaa}{\ensuremath{\mathfrak{a}}\xspace}
+\newcommand{\bbb}{\ensuremath{\mathfrak{b}}\xspace}
+\newcommand{\ccc}{\ensuremath{\mathfrak{c}}\xspace}
+\newcommand{\ddd}{\ensuremath{\mathfrak{d}}\xspace}
+\newcommand{\eee}{\ensuremath{\mathfrak{e}}\xspace}
+\newcommand{\fff}{\ensuremath{\mathfrak{f}}\xspace}
+%\newcommand{\ggg}{\ensuremath{\mathfrak{g}}\xspace}
+\newcommand{\hhh}{\ensuremath{\mathfrak{h}}\xspace}
+\newcommand{\iii}{\ensuremath{\mathfrak{i}}\xspace}
+\newcommand{\jjj}{\ensuremath{\mathfrak{j}}\xspace}
+\newcommand{\kkk}{\ensuremath{\mathfrak{k}}\xspace}
+%\newcommand{\lll}{\ensuremath{\mathfrak{l}}\xspace}
+\newcommand{\mmm}{\ensuremath{\mathfrak{m}}\xspace}
+\newcommand{\nnn}{\ensuremath{\mathfrak{n}}\xspace}
+\newcommand{\ooo}{\ensuremath{\mathfrak{o}}\xspace}
+\newcommand{\ppp}{\ensuremath{\mathfrak{p}}\xspace}
+\newcommand{\qqq}{\ensuremath{\mathfrak{q}}\xspace}
+\newcommand{\rrr}{\ensuremath{\mathfrak{r}}\xspace}
+\newcommand{\sss}{\ensuremath{\mathfrak{s}}\xspace}
+\newcommand{\ttt}{\ensuremath{\mathfrak{t}}\xspace}
+\newcommand{\uuu}{\ensuremath{\mathfrak{u}}\xspace}
+\newcommand{\vvv}{\ensuremath{\mathfrak{v}}\xspace}
+\newcommand{\www}{\ensuremath{\mathfrak{w}}\xspace}
+\newcommand{\xxx}{\ensuremath{\mathfrak{x}}\xspace}
+\newcommand{\yyy}{\ensuremath{\mathfrak{y}}\xspace}
+\newcommand{\zzz}{\ensuremath{\mathfrak{z}}\xspace}
+
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\Trace}{Tr}
+\DeclareMathOperator{\Dim}{dim}
+\DeclareMathOperator{\Fix}{Fix}
+\DeclareMathOperator{\Ann}{Ann}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\lcm}{lcm}
+%\DeclareMathOperator{\gcd}{gcd}
+\DeclareMathOperator{\Vol}{Vol}
+\DeclareMathOperator{\Covol}{Covol}
+\DeclareMathOperator{\disc}{disc}
+\DeclareMathOperator{\Div}{div}
+\DeclareMathOperator{\Nil}{Nil}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Vect}{Vect}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\Frac}{Frac}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Com}{Com}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Det}{det}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\eq}{=}
+\DeclareMathOperator*{\Implies}{\implies}
+%\DeclareMathOperator*{\iff}{\Leftrightarrow}
+\DeclareMathOperator*{\TendsTo}{\longrightarrow}
+\DeclareMathOperator*{\indep}{\perp\!\!\!\!\perp}
+
+\def\restriction#1#2{\mathchoice
+              {\setbox1\hbox{${\displaystyle #1}_{\scriptstyle #2}$}
+              \restrictionaux{#1}{#2}}
+              {\setbox1\hbox{${\textstyle #1}_{\scriptstyle #2}$}
+              \restrictionaux{#1}{#2}}
+              {\setbox1\hbox{${\scriptstyle #1}_{\scriptscriptstyle #2}$}
+              \restrictionaux{#1}{#2}}
+              {\setbox1\hbox{${\scriptscriptstyle #1}_{\scriptscriptstyle #2}$}
+              \restrictionaux{#1}{#2}}}
+\def\restrictionaux#1#2{{#1\,\smash{\vrule height .47\ht1 depth .85\dp1}}_{\,#2}} 
+
+
+
+
+\newcommand{\example}{\paragraph{Example:}}
+\newcommand{\remark}{\paragraph{Remark:}}
+\newcommand{\consequence}{\paragraph{Consequence:}}
+\newcommand{\reminder}{\paragraph{reminder:}}
