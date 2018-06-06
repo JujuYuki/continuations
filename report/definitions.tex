@@ -12,34 +12,61 @@
 
 \section{Definitions}
 
+We first need to define the language of terms of our annotated $\pi$-calculus.
 \begin{definition}
 The annotated terms are defined by the following grammar:
-\begin{flalign*}P,Q::= & x\to y\;\; ; \;\; 0_x\;\; ; &\\
-& \epsilon_x.P\;\; ; \;\; \lambda_xy.P\;\; ; &\\
-& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &\\
-& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &\\
-& (\nu u) P. &
+\begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &\text{base terms}&\\
+& \epsilon_x.P\;\; ; \;\; \lambda_xy.P\;\; ; &\text{inactive prefixes}&\\
+& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &\text{action prefixes}&\\
+& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &\text{parallel and cut}&\\
+& (\nu u) P &\text{name binding prefix}&
+\end{flalign*}
+\end{definition}
+
+Note the existence of a cut rule, that we would want eliminated. Thus, we define reduction relations and corresponding equivalences to help with that.
+\begin{definition}
+We define a cut-eliminating reduction rule (that does not hold under action prefixes) as follows:
+\begin{flalign*}
+\epsilon_x.P||_x 0_x &\to P &\text{symmetric in }||\;\;\;1\\
+P||_x x\tto y &\to P[y/x] &\text{symmetric in }||\;\;\;2\\
+(P|_xQ)||_x \lambda_xy.R &\to P||_x (Q[y/x] ||_y R) &3a\\
+\lambda_xy.R ||_x (P|_xQ) &\to (R||_xP)||_y Q[y/x] &3b\\
+\bar{u}_x\langle v \rangle.P||_x u_x(t).Q &\to P ||_x Q[v/t] &\text{symmetric in }||\;\;\;4\\~\\
+\hline\\
+(P|_xQ)||_yR &\to (P||_yR)|_xQ &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;5a\\
+(P|_xQ)||_yR &\to P|_x(Q||_yR) &\text{symmetric in $||$, }y\not\in fv(P)\;\;\;5b\\
+\epsilon_x.P||_yQ &\to \epsilon_x.(P||_yQ) &\text{symmetric in $||$}\;\;\;6a\\
+\lambda_xy.P||_zQ &\to \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
+(\nu u)P ||_x Q &\to (\nu u)(P||_xQ) &\text{symmetric in $||$, }u\not\in fn(Q)\;\;\;6c
+\end{flalign*}
+And we extend it into $\leadsto$ as follows, allowing for it to act under action prefixes as well:
+\begin{flalign*}
+u_x(t).P||_yQ &\leadsto u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
+\bar{u}_x\langle v \rangle.P||_yQ &\leadsto \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
 \end{flalign*}
 \end{definition}
 
 \begin{definition}
-We define a cut-eliminating reduction rule as follows:\\
-\indent\hfill$\epsilon_x.P||_x 0_x \leadsto P$\hfill $P||_x x\to y \leadsto P[y/x]$\hfill those two rules are symmetrical\\
-\indent\hfill$(P|_xQ)||_x \lambda_xy.R \leadsto P||_x (Q[y/x] ||_y R)$\hfill~\hfill~\\
-\indent\hfill$\lambda_xy.R ||_x (P|_xQ) \leadsto (R||_xP)||_y Q[y/x]$\hfill~\hfill~\\
-\indent\hfill$\bar{u}_x\langle v \rangle.P||_x u_x(t).Q \leadsto P ||_x Q[v/t]$\hfill this rule is symmetrical\\
-\indent\hfill$\epsilon_x.P||_yQ \leadsto \epsilon_x.(P||_yQ)$\hfill$\lambda_xy.P||_zQ \leadsto \lambda_xy.(P||_zQ)$\hfill those two are as well\\
-\indent\hfill$u_x(t).P||_yQ \leadsto u_x(t).(P||_yQ)$\hfill$\bar{u}_x\langle v \rangle.P||_yQ \leadsto \bar{u}_x\langle v \rangle.(P||_yQ)$\hfill those two are as well\\
-\indent\hfill$(P|_xQ)||_yR \leadsto (P||_yR)|_xQ$\hfill if $y$ only appeard in $P$\\
-\indent\hfill$(P|_xQ)||_yR \leadsto P|_x(Q||_yR)$\hfill if $y$ only appeard in $Q$\\
+We also define a congruence rule:
+\begin{flalign*}
+P|_xQ &\equiv Q|_xP & a\\
+(P|_xQ)|_yR &\equiv P|_x(Q|_yR) &y\not\in fv(P), x\not\in fv(R)\;\;\;b\\
+P|_x \alpha_y.Q &\equiv \alpha_y.(P|_xQ) &\text{symmetric in }|, \alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} t\}, y,t\not\in fv(P)\;\;\;c\\
+\alpha_x.\beta_y.P &\equiv \beta_y.\alpha_x.P &\alpha_{\cdot},\beta_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} t\},x\neq y\;\;\;d\\
+(\nu u) P |_x Q &\equiv (\nu u)(P |_x Q)&\text{symmetric in }|, u\not\in fn(Q)\;\;\;e\\
+x\tto y &\equiv y\tto x & e
+\end{flalign*}
+And we also extend it into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $b$ and $c$:\\
+$\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot t,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\}$
 \end{definition}
 
+The first property we would like to have is the congruence of our arrows, that act as reduction rules in our annotated system. That is done for each one up to the corresponding equivalence defined above.
 \begin{proposition}
-confluence of $\leadsto$ up to $\cong$
+Relation $\to$ is confluent up to $\equiv$, and relation $\leadsto$ is confluent up to $\cong$
 \end{proposition}
 
-\remark that commuting prefixes is not nice looking
-
-\begin{definition}
-Define the $\to$ and $\equiv$ restrictions of the two preceding relations here
-\end{definition}
+\begin{myproof}
+Most cases are treated in the $\to$ rule with $\equiv$, and we can note that rules 1 through 4 interacting with any rule means that one of the rules is a sub-term of the other. That means that, should we choose to reduce the inner rule first, we only replace the subterm in question with the result of the innermost rule, and should we choose to reduce the outer rule first, the innermost rule can still be applied in the subterm that has not been touched (worst case scenario would be a substitution in this term, but that does not affect the application of the rule). Cases where both choices lead to non-strictly equal terms are rules 5 and 6 interacting with themselves or each other. We detail them below:\\
+FILL THIS IN WITH REDUCTION TREES\\~\\
+The specific cases added by $\leadsto$ are treated the exact same way, and are confluent with $\cong$.
+\end{myproof}
