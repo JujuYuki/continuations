@@ -13,11 +13,25 @@
 \section{Definitions}
 
 \begin{definition}
-Define the calculus model here
+The annotated terms are defined by the following grammar:
+\begin{flalign*}P,Q::= & x\to y\;\; ; \;\; 0_x\;\; ; &\\
+& \epsilon_x.P\;\; ; \;\; \lambda_xy.P\;\; ; &\\
+& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &\\
+& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &\\
+& (\nu u) P. &
+\end{flalign*}
 \end{definition}
 
 \begin{definition}
-Define the $\leadsto$ and $\cong$ relations here
+We define a cut-eliminating reduction rule as follows:\\
+\indent\hfill$\epsilon_x.P||_x 0_x \leadsto P$\hfill $P||_x x\to y \leadsto P[y/x]$\hfill those two rules are symmetrical\\
+\indent\hfill$(P|_xQ)||_x \lambda_xy.R \leadsto P||_x (Q[y/x] ||_y R)$\hfill~\hfill~\\
+\indent\hfill$\lambda_xy.R ||_x (P|_xQ) \leadsto (R||_xP)||_y Q[y/x]$\hfill~\hfill~\\
+\indent\hfill$\bar{u}_x\langle v \rangle.P||_x u_x(t).Q \leadsto P ||_x Q[v/t]$\hfill this rule is symmetrical\\
+\indent\hfill$\epsilon_x.P||_yQ \leadsto \epsilon_x.(P||_yQ)$\hfill$\lambda_xy.P||_zQ \leadsto \lambda_xy.(P||_zQ)$\hfill those two are as well\\
+\indent\hfill$u_x(t).P||_yQ \leadsto u_x(t).(P||_yQ)$\hfill$\bar{u}_x\langle v \rangle.P||_yQ \leadsto \bar{u}_x\langle v \rangle.(P||_yQ)$\hfill those two are as well\\
+\indent\hfill$(P|_xQ)||_yR \leadsto (P||_yR)|_xQ$\hfill if $y$ only appeard in $P$\\
+\indent\hfill$(P|_xQ)||_yR \leadsto P|_x(Q||_yR)$\hfill if $y$ only appeard in $Q$\\
 \end{definition}
 
 \begin{proposition}
