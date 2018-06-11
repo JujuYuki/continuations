@@ -34,11 +34,11 @@
 \usepackage{pgfplots,wrapfig}
 \usepackage{ebproof}
 
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Definition},title=Definition]{definition}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Proposition},sibling=definition]{proposition}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Corollary},sibling=definition]{corollary}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Theorem},sibling=definition,title=Theorem]{theorem}
-\declaretheorem[thmbox={style=M,headstyle=\bfseries Lemma},sibling=definition]{lemma}
+\declaretheorem[thmbox={style=M},title=Definition]{definition}
+\declaretheorem[thmbox={style=M},sibling=definition]{proposition}
+\declaretheorem[thmbox={style=M},sibling=definition]{corollary}
+\declaretheorem[thmbox={style=M},sibling=definition,title=Theorem]{theorem}
+\declaretheorem[thmbox={style=M},sibling=definition]{lemma}
 
 \newenvironment{prog-algo}[1]{
 \thmbox[M]{\textbf{#1}}
