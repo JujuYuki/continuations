@@ -1,51 +1,45 @@
-%% calculus model
-%% normalisation \leadsto and \cong
-%% proof confluence
-%%%% find two names for annotation variables and actions (channels)
-%%%% idea : conclusions VS actions
-%%
-%% define \equiv as \cong without commuting prefixes
-%% define \to as \leadsto without commuting prefixes and acting under prefixes
-%%%% Those actually mean remove the non \pi-friendly part
-%% See if cut elimination is an emerging property of \to and \equiv in the
-%% typed world (it is likely to be the case as it is)
-
-
 \section{Definitions}
 
 We first need to define the language of terms of our annotated $\pi$-calculus.
 \begin{definition}
+Take two countable sets, $N:=\{t,u,v,\ldots\}$ the set of names and $V:=\{x,y,z,\ldots\}$ the set of variables.\\
 The annotated terms are defined by the following grammar:
-\begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &\text{base terms}&\\
-& \epsilon_x.P\;\; ; \;\; \lambda_xy.P\;\; ; &\text{variable introduction and modality prefixes}&\\
-& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &\text{action prefixes}&\\
-& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &\text{parallel and synchronization}&\\
-& (\nu u) P &\text{name binding prefix}&
+\begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &x,y\in V\;\;\;\text{base terms}&\\
+& \epsilon_x.P\;\; ; \;\; \lambda_xy.P\;\; ; &x,y\in V\;\;\;\text{variable introduction and modality prefixes}&\\
+& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &t,u,v\in N,x\in V\;\;\;\text{action prefixes}&\\
+& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &x\in V\;\;\;\text{parallel and synchronization}&\\
+& (\nu u) P &u\in N\;\;\;\text{name binding prefix}&
 \end{flalign*}
 \end{definition}
 
 The synchronization rule will be used to guide the behavior of terms, thus we define a reduction system over this construction specifically, as follows:
 \begin{definition}
+\label{reduction}
 We define a reduction rule for synchronization (that does not hold under action prefixes) as follows:
 \begin{flalign*}
 \epsilon_x.P||_x 0_x &\to P &\text{symmetric in }||\;\;\;1\\
 P||_x x\tto y &\to P[y/x] &\text{symmetric in }||\;\;\;2\\
 (P|_xQ)||_x \lambda_xy.R &\to P||_x (Q[y/x] ||_y R) &3a\\
 \lambda_xy.R ||_x (P|_xQ) &\to (R||_xP)||_y Q[y/x] &3b\\
-\bar{u}_x\langle v \rangle.P||_x u_x(t).Q &\to P ||_x Q[v/t] &\text{symmetric in }||\;\;\;4\\~\\
-\hline\\
-(P|_xQ)||_yR &\to (P||_yR)|_xQ &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;5a\\
-(P|_xQ)||_yR &\to P|_x(Q||_yR) &\text{symmetric in $||$, }y\not\in fv(P)\;\;\;5b\\
-\epsilon_x.P||_yQ &\to \epsilon_x.(P||_yQ) &\text{symmetric in $||$}\;\;\;6a\\
-\lambda_xy.P||_zQ &\to \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
-(\nu u)P ||_x Q &\to (\nu u)(P||_xQ) &\text{symmetric in $||$, }u\not\in fn(Q)\;\;\;6c
+\bar{u}_x\langle v \rangle.P||_x u_x(t).Q &\to P ||_x Q[v/t] &\text{symmetric in }||\;\;\;4
 \end{flalign*}
-And we extend it into $\leadsto$ as follows, allowing for it to act under action prefixes as well:
+We also define rules for commuting the synchronization with other rules, at first not holding under action prefixes:
 \begin{flalign*}
-u_x(t).P||_yQ &\leadsto u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
-\bar{u}_x\langle v \rangle.P||_yQ &\leadsto \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
+(P|_xQ)||_yR &\geq (P||_yR)|_xQ &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;5a\\
+(P|_xQ)||_yR &\geq P|_x(Q||_yR) &\text{symmetric in $||$, }y\not\in fv(P)\;\;\;5b\\
+\epsilon_x.P||_yQ &\geq \epsilon_x.(P||_yQ) &\text{symmetric in $||$}\;\;\;6a\\
+\lambda_xy.P||_zQ &\geq \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
+(\nu u)P ||_x Q &\geq (\nu u)(P||_xQ) &\text{symmetric in $||$, }u\not\in fn(Q)\;\;\;6c
+\end{flalign*}
+And we extend it into $\gtrsim$ as follows, allowing for it to act under action prefixes:
+\begin{flalign*}
+u_x(t).P||_yQ &\gtrsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
+\bar{u}_x\langle v \rangle.P||_yQ &\gtrsim \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
 \end{flalign*}
 \end{definition}
+
+%TODO - Remark about rule 5 (and some rules in 6) : if cut var. in too many terms, commutation is blocked.
+%TODO - Examples to this remark: take main example for later parts 2 and 3, once with good constraints, and once without them (change some variables to be the same)\sim
 
 We would like these arrows to have a confluent behavior. For that, we need equivalences, that we will define below.
 \newpage
@@ -62,10 +56,10 @@ P|_x \alpha_y.Q &\equiv \alpha_y.(P|_xQ) &\text{symmetric in }|, \alpha_{\cdot}\
 (\nu u)\alpha_x.P &\equiv \alpha_x.(\nu u)P &\alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}\;\;\;f\\
 x\tto y &\equiv y\tto x & g
 \end{flalign*}
-And we also extend it into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $c,d$:\\
-$\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\}$;\\
-as well as in rule $f$:\\
-$\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}$.
+And we also extend it into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $c,d$:
+\[\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\};\]
+as well as in rule $f$:
+\[\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}.\]
 \end{definition}
 
 As said before, the first property we would like to have is the confluence of our arrows, that act as reduction rules in our annotated system. That is done for each one up to the corresponding equivalence defined above.
@@ -76,6 +70,7 @@ Relation $\to$ is confluent up to $\equiv$, and relation $\leadsto$ is confluent
 \begin{myproof}
 Most cases are treated in the $\to$ rule with $\equiv$, and we can note that rules 1 through 4 interacting with any rule means that one of the rules is a sub-term of the other. That means that, should we choose to reduce the inner rule first, we only replace the subterm in question with the result of the innermost rule, and should we choose to reduce the outer rule first, the innermost rule can still be applied in the subterm that has not been touched (worst case scenario would be a substitution in this term, but that does not affect the application of the rule). Cases where both choices lead to non-strictly equal terms are rules 5 and 6 interacting with themselves or each other. We detail them below:\\
 Rule 5 against rule 5: there are 4 cases, depending on where the variable cut against is situated. The variable is noted as an exponent in the terms where it appears:\\
+%TODO - Change the arrows, as these rules are now denoted as \geq
 \begin{tikzcd}
 & (P^y|_xQ)||_y(R^y|_zS)\arrow{dl}{5a,\;left}\arrow{dr}{5a,\;right} &\\
 (P^y||_y(R^y|_zS))|_xQ\arrow{d}{5a} & & ((P^y|_xQ)||_yR^y)|_zS\arrow{d}{5a}\\

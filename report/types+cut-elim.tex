@@ -5,9 +5,38 @@
 
 \section{Typing decorated terms with MLL}
 
+Section intro here, stating MLL seems a good system to type terms of the decorated calculus %TODO
+
 \begin{definition}
-Define the typing system here, synchronization gives a cut rule, we use the reduction rules from before for cut elimination.
+The typing system over MLL is given by the following rules:\\~\\
+\indent\textbox{
+	Rules for neutral elements:\\~\\
+	\begin{prooftree}\infer0[NOP]{0_x \vdash x:1}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{P \vdash \Gamma}
+		\infer1[BOT]{\epsilon_x.P \vdash \Gamma,x:\bot}\end{prooftree}\hfill
+	\begin{prooftree}\infer0[SUB]{x \to y \vdash x:E^\bot,y:E}\end{prooftree}\hfill~\\~\\
+	Construction rules:\\~\\
+	\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
+		\hypo{Q \vdash \Delta,x:F}
+		\infer2[PARA]{P |_x Q \vdash \Gamma,\Delta,x:E \logtensor F}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{P \vdash \Gamma,x:E,y:F}
+		\infer1[LAM]{\lambda_xy.P \vdash \Gamma,x:E \logpar F}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
+			\hypo{Q \vdash \Delta,x:E^\bot}
+		\infer2[CUT]{P||_xQ \vdash \Gamma,\Delta}\end{prooftree}\hfill~\\~\\
+	Action rules:\\~\\
+	\begin{prooftree}\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
+		\infer1[IN]{\bar{u}_x\langle v\rangle.P \vdash \Gamma,x:\exists_u t.A^\bot}\end{prooftree}\hfill
+	\begin{prooftree}\hypo{P \vdash \Gamma,x:A\;\;\;t\not\in\Gamma}
+		\infer1[OUT]{u_x(t).P \vdash \Gamma,x:\forall_u t.A}\end{prooftree}\hfill~\\~\\
+	Nu rule:\\~\\
+	\begin{prooftree}\hypo{P \vdash \Gamma\;\;\;\; u \not\in \Gamma}
+		\infer1[NU]{(\nu u)P \vdash \Gamma}\end{prooftree}
+	
+}
 \end{definition}
+
+One important thing to note here, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the arrows $\to$ and $\leadsto$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates.
 
 \begin{proposition}
 Cut elimination holds and terminates, for both $\to$ under $\equiv$ and $\leadsto$ under $\cong$.
