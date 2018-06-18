@@ -5,12 +5,16 @@ We first need to define the language of terms of our annotated $\pi$-calculus.
 Take two countable sets, $N:=\{t,u,v,\ldots\}$ the set of names and $V:=\{x,y,z,\ldots\}$ the set of variables.\\
 The annotated terms are defined by the following grammar:
 \begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &x,y\in V\;\;\;\text{base terms}&\\
-& \epsilon_x.P\;\; ; \;\; \lambda_xy.P\;\; ; &x,y\in V\;\;\;\text{variable introduction and modality prefixes}&\\
-& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &t,u,v\in N,x\in V\;\;\;\text{action prefixes}&\\
-& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &x\in V\;\;\;\text{parallel and synchronization}&\\
+& \epsilon_x.P\;\;x\not\in fv(P) ; \;\; \lambda_xy.P\;\; x,y\in fv(P); &\text{variable introduction and modality prefixes}&\\
+& u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &t,u,v\in N,x\in fv(P)\;\;\;\text{action prefixes}&\\
+& P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &x\in fv(P)\cap fv(Q)\;\;\;\text{parallel and synchronization}&\\
 & (\nu u) P &u\in N\;\;\;\text{name binding prefix}&
 \end{flalign*}
 \end{definition}
+
+\remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
+
+\remark the lambda is also binding for its second variable ($y$ here), keeping availability for its first variable only. The $\epsilon$, on the opposite, creates its variable, that does not exist in the base term.\\
 
 The synchronization rule will be used to guide the behavior of terms, thus we define a reduction system over this construction specifically, as follows:
 \begin{definition}
@@ -39,12 +43,38 @@ u_x(t).P||_yQ &\gtrsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
 Relation $\to$ is also extended into $\leadsto$ by allowing it to act under action prefixes (no specific rule added).
 \end{definition}
 
-\remark In rules 5 and 6, some parts have strong requirements, such as a variable not being present in one or more subterms. Failure to meet those requirements can lead to terms that do not reduce past a certain point. See an example below of a term annotated to be able to reduce, and the same term with annotations changed that fails to do so.\\
+\remark In rules 5 and 6, some parts have strong requirements, such as a variable not being present in one or more subterms. Failure to meet those requirements can lead to terms that do not reduce past a certain point, when no other rule can apply. See an example below of a term annotated to be able to reduce, and the same term with annotations changed that fails to do so.\\
 \textcolor{red}{INCLUDE EXAMPLE HERE}\\~\\
-%TODO - Remark about rule 5 (and some rules in 6) : if cut var. in too many terms, commutation is blocked.
 %TODO - Examples to this remark: take main example for later parts 2 and 3, once with good constraints, and once without them (change some variables to be the same)\sim
-\newpage
-We would like these arrows to have a confluent behavior. For that, we need equivalences, that we will define below.
+We would like these arrows to have a confluent behavior. First, we remark that $\to$ is strongly confluent. Then, we will need an equivalence relation to be defined for the confluence of $\geq$.
+
+\begin{proposition}
+Relation $\to$ is strongly confluent.
+\end{proposition}
+
+\begin{myproof}
+Since a synchronization makes the observed variable unavailable to the term, and because $\to$ does not allow for an arbitrary term on any side but only explicitly fixed constructions, and not allowing for these constructions to be a synchronization, we can remark that two reductions using $\to$ in the same term cannot interfere with each other. Thus, a term capable of two reductions using $\to$ has one of them be either a strict subterm of the other, or distinct parts of a more general term. The reductions then do not interfere with each other, and can be followed in any order.
+\end{myproof}
+
+\remark the $\leadsto$ relation works the same (but with reductions under action prefixes), and so has the same property and proof.
+
+\remark interaction of $\to$ and $\geq$ are commutative as well, because the specificity of the constructions in the $\to$ rule makes it so it does not interact with $\geq$ rules. As such, the following property is immediate:\\
+
+\begin{proposition}
+Relation $\geq$ is a simulation for $\to$.
+\end{proposition}
+
+We remind the definitions of a simulation ans a bisimulation, as those tools are uncommon enough to justify being introduced here:
+
+\begin{definition}
+\begin{itemize}
+	\item A simulation $\RR$ is a binary relation on terms such that, for all terms $P,Q$,\\
+		if $P \RR Q$ then forall $P \to P'$ there exists a term $Q'$ such that $Q \to Q'$ and $P' \RR Q'$.
+	\item A bisimulation $\RR$ is a binary relation on terms such that $\RR$ and $\RR^{-1}$ are simulations.
+\end{itemize}
+\end{definition}
+
+The $\geq$ relation in itself has a bit more complexity, as two instances can interact with each other. A congruence is needed to make this relation confluent.
 
 \begin{definition}
 We define a congruence rule, that does not act on action prefixes:
@@ -64,15 +94,14 @@ as well as in rule $f$:
 \[\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}.\]
 \end{definition}
 
-As said before, the first property we would like to have is the confluence of our arrows, that act as reduction rules in our annotated system. That is done for each one up to the corresponding equivalence defined above.
+This equivalence allows for the confluence of $\geq$:
+
 \begin{proposition}
-%TODO Change things here
-\textcolor{red}{Changes to go here: $\to$ is strictly confluent, $\geq$ is confluent up to $\equiv$ and is a simulation for $\to$. Maybe 2 different propositions? Also rewrite the proof to go with the new propositions.}\\
-Relation $\to$ is confluent up to $\equiv$, and relation $\leadsto$ is confluent up to $\cong$
+Relation $\geq$ is confluent up to $\equiv$.
 \end{proposition}
 
 \begin{myproof}
-Most cases are treated in the $\to$ rule with $\equiv$, and we can note that rules 1 through 4 interacting with any rule means that one of the rules is a sub-term of the other. That means that, should we choose to reduce the inner rule first, we only replace the subterm in question with the result of the innermost rule, and should we choose to reduce the outer rule first, the innermost rule can still be applied in the subterm that has not been touched (worst case scenario would be a substitution in this term, but that does not affect the application of the rule). Cases where both choices lead to non-strictly equal terms are rules 5 and 6 interacting with themselves or each other. We detail them below:\\
+There are 3 possible cases here, for two groups of rules in the $\geq$ relation.\\
 Rule 5 against rule 5: there are 4 cases, depending on where the variable cut against is situated. The variable is noted as an exponent in the terms where it appears, and only 2 cases are treated (as the other two are their complements, and are treated the same):\\
 \begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
 & (P^y|_xQ)||_y(R^y|_zS)\arrow{dl}{\geq_{5a},\;left}\arrow{dr}{\geq_{5a},\;right} &\\
@@ -101,13 +130,18 @@ Other cases in the possible 6 against 6 rules are treated in the exact same mann
 P |_x (Q^y ||_y (\nu u) R)\arrow{d}{\geq_{6c}} & & (\nu u)((P |_x Q^y) ||_y R)\arrow{d}{\geq_{5b}}\\
 P |_x (\nu u)(Q^y ||_y R) & \equiv_{e} & (\nu u)(P|_x (Q^y ||_y R))
 \end{tikzcd}\\~\\
-The specific cases added by $\leadsto$ and $\gtrsim$ are treated the exact same way, and are confluent with $\cong$.
+That ends the proof of confluence for $\geq$ up to $\equiv$.
 \end{myproof}
 
-\textcolor{red}{Below maybe not needed after above rewrite}\\~\\
-We also need to be sure the equivalence does not change the reduction, \ie that two equivalent terms have the same reductions. That is assured by showing the equivalence is a bisimulation relation.\\
-\textcolor{red}{DO WE NEED TO REMIND THE DEFINITION OF A (BI)SIMULATION HERE?}\\
-%TODO bisimulation definition?
-\begin{proposition}
-Relation $\equiv$ is a bisimulation for reduction $\geq^?\to\geq^*$.
-\end{proposition}
+\remark the specific cases added by $\gtrsim$ are treated the exact same way, and are confluent with $\cong$.\\
+
+We need to make sure that $\equiv$ does not change the behavior of $\to$, meaning we would want $\equiv$ to be a bisimulation for $\to$. That is not the case though, but we can observe an interesting behavior if $\geq$ is allowed to go in there, as reductions can be closed in several steps if $\geq$ is allowed to be used where applicable on the variable the reduction happened in the other branch, for example:
+
+\begin{tikzcd}[column sep=tiny]
+\lambda_xy.\epsilon_z.P ||_x (Q |_xR) \arrow[r,phantom,"\equiv"] \arrow[d] & \epsilon_z.\lambda_xy.P ||_x (Q |_x R) \arrow[d,dashrightarrow,"\geq"]\\
+(\epsilon_z.P ||_x Q) ||_y R[y/x] \arrow[d,dashrightarrow,"\geq"] & \epsilon_z.(\lambda_xy.P ||_x (Q |_x R)) \arrow[d]\\
+(\epsilon_z.(P ||_x Q)) ||_y R[y/x] \arrow[r,phantom,"\geq"] & \epsilon_z.((P ||_x Q) ||_y R[y/x])
+\end{tikzcd}\\
+
+\textcolor{red}{Do we need an other example here? (to pick in the example pool I did on the blackboard maybe)\\
+Also this last paragraph might need a rewrite, the formulation feels a bit sloppy}
