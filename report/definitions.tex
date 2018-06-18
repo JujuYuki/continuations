@@ -31,11 +31,12 @@ We also define rules for commuting the synchronization with other rules, at firs
 \lambda_xy.P||_zQ &\geq \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
 (\nu u)P ||_x Q &\geq (\nu u)(P||_xQ) &\text{symmetric in $||$, }u\not\in fn(Q)\;\;\;6c
 \end{flalign*}
-And we extend it into $\gtrsim$ as follows, allowing for it to act under action prefixes:
+And we extend it into $\gtrsim$ as follows, allowing for it to act on (and under) action prefixes:
 \begin{flalign*}
 u_x(t).P||_yQ &\gtrsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
 \bar{u}_x\langle v \rangle.P||_yQ &\gtrsim \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
 \end{flalign*}
+Relation $\to$ is also extended into $\leadsto$ by allowing it to act under action prefixes (no specific rule added).
 \end{definition}
 
 %TODO - Remark about rule 5 (and some rules in 6) : if cut var. in too many terms, commutation is blocked.
@@ -64,49 +65,48 @@ as well as in rule $f$:
 
 As said before, the first property we would like to have is the confluence of our arrows, that act as reduction rules in our annotated system. That is done for each one up to the corresponding equivalence defined above.
 \begin{proposition}
+%TODO Change things here
+\textcolor{red}{Changes to go here: $\to$ is strictly confluent, $\geq$ is confluent up to $\equiv$ and is a simulation for $\to$. Maybe 2 different propositions? Also rewrite the proof to go with the new propositions.}\\
 Relation $\to$ is confluent up to $\equiv$, and relation $\leadsto$ is confluent up to $\cong$
 \end{proposition}
 
 \begin{myproof}
 Most cases are treated in the $\to$ rule with $\equiv$, and we can note that rules 1 through 4 interacting with any rule means that one of the rules is a sub-term of the other. That means that, should we choose to reduce the inner rule first, we only replace the subterm in question with the result of the innermost rule, and should we choose to reduce the outer rule first, the innermost rule can still be applied in the subterm that has not been touched (worst case scenario would be a substitution in this term, but that does not affect the application of the rule). Cases where both choices lead to non-strictly equal terms are rules 5 and 6 interacting with themselves or each other. We detail them below:\\
-Rule 5 against rule 5: there are 4 cases, depending on where the variable cut against is situated. The variable is noted as an exponent in the terms where it appears:\\
-%TODO - Change the arrows, as these rules are now denoted as \geq
-\begin{tikzcd}
-& (P^y|_xQ)||_y(R^y|_zS)\arrow{dl}{5a,\;left}\arrow{dr}{5a,\;right} &\\
-(P^y||_y(R^y|_zS))|_xQ\arrow{d}{5a} & & ((P^y|_xQ)||_yR^y)|_zS\arrow{d}{5a}\\
+Rule 5 against rule 5: there are 4 cases, depending on where the variable cut against is situated. The variable is noted as an exponent in the terms where it appears, and only 2 cases are treated (as the other two are their complements, and are treated the same):\\
+\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
+& (P^y|_xQ)||_y(R^y|_zS)\arrow{dl}{\geq_{5a},\;left}\arrow{dr}{\geq_{5a},\;right} &\\
+(P^y||_y(R^y|_zS))|_xQ\arrow{d}{\geq_{5a}} & & ((P^y|_xQ)||_yR^y)|_zS\arrow{d}{\geq_{5a}}\\
 ((P^y||_yR^y)|_zS)|_xQ & \equiv_{a_1} & ((P^y||_yR^y)|_xQ)|_zS
 \end{tikzcd}\\
-\begin{tikzcd}
-& (P^y|_xQ)||_y(R|_zS^y)\arrow{dl}{5a,\;left}\arrow{dr}{5b,\;right} &\\
-(P^y||_y(R|_zS^S))|_xQ\arrow{d}{5b} & & R|_z((P^y|_xQ)||_yS^y)\arrow{d}{5a}\\
+\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
+& (P^y|_xQ)||_y(R|_zS^y)\arrow{dl}{\geq_{5a},\;left}\arrow{dr}{\geq_{5b},\;right} &\\
+(P^y||_y(R|_zS^S))|_xQ\arrow{d}{\geq_{5b}} & & R|_z((P^y|_xQ)||_yS^y)\arrow{d}{\geq_{5a}}\\
 (R|_z(P^y||_yS^y))|_xQ & \equiv_{b} & R|_z((P^y||_yS^y)|_xQ)
 \end{tikzcd}\\
-\begin{tikzcd}
-& (P|_xQ^y)||_y(R^y|_zS)\arrow{dl}{5b,\;left}\arrow{dr}{5a,\;right} &\\
-P|_x(Q^y||_y(R^y|_zS))\arrow{d}{5a} & & ((P|_xQ^y)||_yR^y)|_zS\arrow{d}{5b}\\
-P|_x((Q^y||_yR^y)|_zS) & \equiv_{b} & (P|_x(Q^y||_yR^y))|_zS
-\end{tikzcd}\\
-\begin{tikzcd}
-& (P|_xQ^y)||_y(R|_zS^y)\arrow{dl}{5b,\;left}\arrow{dr}{5b,\;right} &\\
-P|_x(Q^y||_y(R|_zS^y))\arrow{d}{5b} & & R|_z(P|_xQ^y)||_yS)\arrow{d}{5b}\\
-P|_x(R|_z(Q^y||_yS^y)) & \equiv_{a_2} & R|_z(P|_x(Q^y||_yS^y))
-\end{tikzcd}\\~\\
 Rule 6 against rule 6 works the same, here is an example with $\epsilon$ and $\nu$:\\
-\begin{tikzcd}
-& \epsilon_x.P ||_y (\nu u) Q \arrow{dl}{6a}\arrow{dr}{6c} &\\
-\epsilon_x.(P ||_y (\nu u) Q)\arrow{d}{6c} & & (\nu u)(\epsilon_x.P ||_y Q)\arrow{d}{6a}\\
+\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
+& \epsilon_x.P ||_y (\nu u) Q \arrow{dl}{\geq_{6a}}\arrow{dr}{\geq_{6c}} &\\
+\epsilon_x.(P ||_y (\nu u) Q)\arrow{d}{\geq_{6c}} & & (\nu u)(\epsilon_x.P ||_y Q)\arrow{d}{\geq_{6a}}\\
 \epsilon_x.(\nu u)(P||_yQ) & \equiv_{f} & (\nu u)\epsilon_x.(P||_yQ)
 \end{tikzcd}\\~\\
 Other cases in the possible 6 against 6 rules are treated in the exact same manner. The last set of cases is a rule 5 against a rule 6. Those are all treated the same way as well, so we only treat two examples (one for $5a$ and one for $5b$):\\
-\begin{tikzcd}
-& (P^y |_x Q) ||_y (\nu u) R \arrow{dl}{5a}\arrow{dr}{6c} &\\
-(P^y ||_y (\nu u) R)|_x Q\arrow{d}{6c} & & (\nu u)((P^y|_xQ) ||_y R)\arrow{d}{5a}\\
+\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
+& (P^y |_x Q) ||_y (\nu u) R \arrow{dl}{\geq_{5a}}\arrow{dr}{\geq_{6c}} &\\
+(P^y ||_y (\nu u) R)|_x Q\arrow{d}{\geq_{6c}} & & (\nu u)((P^y|_xQ) ||_y R)\arrow{d}{\geq_{5a}}\\
 (\nu u)(P^y ||_y R) |_x Q & \equiv_{e} & (\nu u)((P^y ||_y R) |_x Q)
 \end{tikzcd}\\
-\begin{tikzcd}
-& (P |_x Q^y) ||_y (\nu u) R \arrow{dl}{5b}\arrow{dr}{6c} &\\
-P |_x (Q^y ||_y (\nu u) R)\arrow{d}{6c} & & (\nu u)((P |_x Q^y) ||_y R)\arrow{d}{5b}\\
+\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
+& (P |_x Q^y) ||_y (\nu u) R \arrow{dl}{\geq_{5b}}\arrow{dr}{\geq_{6c}} &\\
+P |_x (Q^y ||_y (\nu u) R)\arrow{d}{\geq_{6c}} & & (\nu u)((P |_x Q^y) ||_y R)\arrow{d}{\geq_{5b}}\\
 P |_x (\nu u)(Q^y ||_y R) & \equiv_{e} & (\nu u)(P|_x (Q^y ||_y R))
 \end{tikzcd}\\~\\
-The specific cases added by $\leadsto$ are treated the exact same way, and are confluent with $\cong$.
+The specific cases added by $\leadsto$ and $\gtrsim$ are treated the exact same way, and are confluent with $\cong$.
 \end{myproof}
+
+\textcolor{red}{Below maybe not needed after above rewrite}\\~\\
+We also need to be sure the equivalence does not change the reduction, \ie that two equivalent terms have the same reductions. That is assured by showing the equivalence is a bisimulation relation.\\
+\textcolor{red}{DO WE NEED TO REMIND THE DEFINITION OF A (BI)SIMULATION HERE?}\\
+%TODO bisimulation definition?
+\begin{proposition}
+Relation $\equiv$ is a bisimulation for reduction $\geq^?\to\geq^*$.
+\end{proposition}
