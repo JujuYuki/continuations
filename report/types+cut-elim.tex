@@ -5,14 +5,25 @@
 
 \section{Typing decorated terms with MLL}
 
-\textcolor{red}{Definition du langage des formules (N + grammaire MLL + quantification premier ordre)} %TODO
+We first define the language of formulas that we will use for the typing system:
+\begin{definition}
+The language of formulas is given by the following grammar:
+\begin{align*}
+A,B::=	&\;\; 1 \;\; | \;\; \bot							& \text{neutrals}\\
+	|	&\;\; u											& u\in N\;\;\;\text{atoms}\\
+	|	&\;\; A \logtensor B \;\; | \;\; A \logpar B		& \text{tensor and par}\\
+	|	&\;\; \exists_ut.A \;\; | \;\; \forall_ut.A		& t,u\in N\;\;\; \text{existential and universal quantifiers}
+\end{align*}
+\end{definition}
+
+It is based on the structure of MLL, with atoms formed by the names traded by $\pi$-terms, and first order quantification annotated by those names and quantifying on those names. With that, we give a typing system in the form of deduction rules, of which the first 6 are exactly the rules for MLL if considering only the formulas in the logic part of the rules: 
 
 \begin{definition}
-The typing system is given by the following rules:\\~\\
+The typing system is given by the following rules, where $\Gamma,\Delta$ are partial functions from $V$ the set of variables to the language of formulas, and where $\Gamma$ and $\Delta$ do not share any variable name when they occur as two hypothesis of the same rule (PARA and CUT):\\~\\
 \indent\textbox{
 	Rules for neutral elements:\\~\\
 	\begin{prooftree}\infer0[NOP]{0_x \vdash x:1}\end{prooftree}\hfill
-	\begin{prooftree}\hypo{P \vdash \Gamma}
+	\begin{prooftree}\hypo{P \vdash \Gamma\;\;\;\; x\not\in\Gamma}
 		\infer1[BOT]{\epsilon_x.P \vdash \Gamma,x:\bot}\end{prooftree}\hfill
 	\begin{prooftree}\infer0[AX]{x \tto y \vdash x:E^\bot,y:E}\end{prooftree}\hfill~\\~\\
 	Construction rules:\\~\\
@@ -30,13 +41,12 @@ The typing system is given by the following rules:\\~\\
 	\begin{prooftree}\hypo{P \vdash \Gamma,x:A\;\;\;t\not\in\Gamma}
 		\infer1[OUT]{u_x(t).P \vdash \Gamma,x:\forall_u t.A}\end{prooftree}\hfill~\\~\\
 	Nu rule:\\~\\
-	\begin{prooftree}\hypo{P \vdash \Gamma\;\;\;\; u \not\in \Gamma}
+	\begin{prooftree}\hypo{P \vdash \Gamma\;\;\;\; u\text{ does not appear in any formula of }\Gamma}
 		\infer1[NU]{(\nu u)P \vdash \Gamma}\end{prooftree}
-	
 }
 \end{definition}
 
-One important thing to note here, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$ and $\succ$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates and actually eliminates cuts.
+One important thing to note here, as explained before, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$ and $\succ$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates and actually eliminates cuts.
 
 \textcolor{red}{Prop 1: Preserv type.\\
 Prop 2: termine.\\
