@@ -11,9 +11,9 @@ The annotated terms are defined by the following grammar:
 & P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &x\in fv(P)\cap fv(Q)\;\;\;\text{parallel and synchronization}&\\
 & (\nu u) P &u\in N\;\;\;\text{name binding prefix}&
 \end{flalign*}
-\end{definition}
-
+where construction $x \tto y$ is commutative.\\
 \textcolor{red}{Define $fv(P)$ and $fn(P)$ by induction on terms.} %TODO
+\end{definition}
 
 \remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
 
@@ -65,13 +65,7 @@ Since a synchronization makes the observed variable unavailable to the term, and
 
 \remark the $\leadsto$ relation works the same (but with reductions under action prefixes), and so has the same property and proof.
 
-\begin{proposition}
-\label{succ-to-comm}
-Interaction of $\to$ and $\succ$ are commutative as well.
-\end{proposition}
-\begin{myproof}
-That is because the specificity of the constructions in the $\to$ rule makes it so it does not interact with $\succ$ rules.
-\end{myproof}
+Because of the specificity of the constructions in the $\to$, it does not directly interact with $\succ$ rules.
 
 We remind the definitions of a simulation ans a bisimulation, as those tools are uncommon enough to justify being introduced here:
 
@@ -89,10 +83,14 @@ As such, by \ref{succ-to-comm}, the following property is immediate:\\
 Relation $\succ$ is a simulation for $\to$.
 \end{proposition}
 
+\begin{myproof}
+\textcolor{red}{SOME CASES HERE}
+\end{myproof}
+
 The $\succ$ relation in itself has a bit more complexity, as two instances can interact with each other. A congruence is needed to make this relation confluent.
 
 \begin{definition}
-We define a congruence rule, that does not act on action prefixes:
+We define a congruence rule, that does not act on action prefixes, with the following axioms:
 \begin{flalign*}
 (P|_xQ)|_yR &\equiv (P|_yR)|_xQ &y\not\in fv(Q), x\not\in fv(R)\;\;\;a_1\\
 P|_x(Q|_yR) &\equiv Q|_y(P|_xR) &y\not\in fv(P), x\not\in fv(Q)\;\;\;a_2\\
@@ -100,9 +98,10 @@ P|_x(Q|_yR) &\equiv Q|_y(P|_xR) &y\not\in fv(P), x\not\in fv(Q)\;\;\;a_2\\
 P|_x \alpha_y.Q &\equiv \alpha_y.(P|_xQ) &\text{symmetric in }|, \alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}, y,t\not\in fv(P)\;\;\;c\\
 \alpha_x.\beta_y.P &\equiv \beta_y.\alpha_x.P &\alpha_{\cdot},\beta_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\},x\neq y\;\;\;d\\
 (\nu u) P |_x Q &\equiv (\nu u)(P |_x Q)&\text{symmetric in }|, u\not\in fn(Q)\;\;\;e\\
-(\nu u)\alpha_x.P &\equiv \alpha_x.(\nu u)P &\alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}\;\;\;f\\
-x\tto y &\equiv y\tto x &\text{\textcolor{red}{not needed if $\tto$ is already symmetric...}}\;\;\;g
+(\nu u)\alpha_x.P &\equiv \alpha_x.(\nu u)P &\alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}\;\;\;f
 \end{flalign*}
+This rule is defined as an equivalence (reflexive, symmetric and transitive), and applies inside contexts (except action prefixes).\\
+\textcolor{red}{move that} %TODO
 And we also extend it into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $c,d$:
 \[\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\};\]
 as well as in rule $f$:
