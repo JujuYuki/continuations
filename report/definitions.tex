@@ -1,10 +1,34 @@
-\section{Definitions}
+\section{The two languages}
+
+\subsection{The classic $\pi$-calculus}
+
+Let us first remind the classic $\pi$-calculus and its constructs:
+
+\begin{definition}
+Given a countable set of names $N:=\{t,u,v,\ldots\}$, the grammar defining the terms of the multiplicative $\pi$-calculus is as follows:\\
+\begin{flalign*}
+P,Q ::=	& 0 \;\; ; \;\; P | Q & \text{null action and parallel construction}\\
+		& u(t).P \;\; ; \bar{u}(v).P & \text{sending and receiving names over a channel}\\
+		& (\nu u)P & \text{name binding prefix}
+\end{flalign*}
+We also define a structural congruence on terms as follows:
+\begin{align*}
+P|0 &\equiv P\\
+P|Q &\equiv Q|P\\
+P|(Q|R) &\equiv (P|Q)|R\\
+(\nu u) P &\equiv P\;\;\;\;\text{if }u\text{ is not a free name in }P
+\end{align*}
+and a reduction rule:
+\[u(t).P|\bar{u}(v)Q \to P[v/t]|Q\]
+\end{definition}
+
+\subsection{The annotated $\pi$-calculus and its projection}
 
 We first need to define the language of terms of our annotated $\pi$-calculus.
 \begin{definition}
 Take two countable sets, $N:=\{t,u,v,\ldots\}$ the set of names and $V:=\{x,y,z,\ldots\}$ the set of variables.\\
 The annotated terms are defined by the following grammar:
-\begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &x,y\in V\;\;\;\text{base terms}&\\
+\begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &x,y\in V\;\;\;\text{base terms: equalizer and null action}&\\
 & \epsilon_x.P\;\; ; & x\not\in fv(P)\;\;\;\text{variable introduction scheduling prefix}&\\
 & \lambda_xy.P\;\; ; & x,y\in fv(P)\;\;\;\text{variables binding scheduling prefix}&\\
 & u_x(t).P\;\; ; \;\; \bar{u}_x\langle v\rangle.P\;\; ; &t,u,v\in N,x\in fv(P)\;\;\;\text{action prefixes}&\\
@@ -25,11 +49,13 @@ fv(P ||_x Q) &= (fv(P)\cup fv(Q))\backslash\{x\} & fn(P ||_x Q) &= fn(P)\cup fn(
 \end{align*}
 \end{definition}
 
+\remark in some constructions and some cases, it can be useful to have a notation to describe in which subterm a variable appears. We will choose for that to put the variable in exponent, so that $(P^x |_y Q) |_x R^x$ denotes the fact that $x$ appears in $P$ and $R$, but not in $Q$.
+
 \remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
 
 \remark the lambda is also binding for its second variable ($y$ here), keeping availability for its first variable only. The $\epsilon$, on the opposite, creates its variable, that does not exist in the base term.
 
-\remark we also define substitution of names and variables by induction on the terms the exact same way as usual. Though, it is important to note that, because names and variables are two distinct and independent sets, substituting a variable for a name (or the opposite) is not possible. The distinction between those two sets is important for the reduction to pose no problem of variable capture, and allows for something akin to $\alpha$-conversion from $\lambda$-calculi: one can rename freely all instances of a free variable or name in a term for a fresh one, or all instances of a bound variable or name (including the binding operator) for a fresh one as well \underline{in the scope of the binding operator}, and the term is still considered the same.\\
+\remark we also define substitution of names and variables by induction on the terms the exact same way as usual. Though, it is important to note that, because names and variables are two distinct and independent sets, substituting a variable for a name (or the opposite) is not possible. The distinction between those two sets is important for the reduction to pose no problem of variable capture, and allows for something akin to $\alpha$-conversion from $\lambda$-calculi: one can rename freely all instances of a free variable or name in a term for a fresh one, or all instances of a bound variable or name (including the binding operator) for a fresh one as well \emph{in the scope of the binding operator}, and the term is still considered the same.\\
 
 The synchronization rule will be used to guide the behavior of terms, thus we define a reduction system over this construction specifically, as follows:
 \begin{definition}
@@ -63,7 +89,7 @@ Relation $\to$ is strongly confluent.
 
 \begin{myproof}
 Since a synchronization makes the observed variable unavailable to the term, and because $\to$ does not allow for an arbitrary term on any side but only explicitly fixed constructions, and not allowing for these constructions to be a synchronization, we can remark that two reductions using $\to$ in the same term cannot interfere with each other. Thus, a term capable of two reductions using $\to$ has one of them be either a strict subterm of the other, or distinct parts of a more general term. The reductions then do not interfere with each other, and can be followed in any order.\\
-Only exception to that is the interaction of two axiom base terms synchronized on the same variable, but the commutativity of this construction makes it close immediately:\\
+Only exception to that is the interaction of two equalizer base terms synchronized on the same variable, but the commutativity of this construction makes it close immediately:\\
 \[\begin{tikzcd}
 & x\tto y ||_x x\tto z \arrow[dl] \arrow[dr] &\\
 (x\tto z)[y/x]\arrow[d, phantom, "\shortparallel"] & & (x\tto y)[z/x]\arrow[d, phantom, "\shortparallel"]\\
@@ -86,7 +112,7 @@ We remind the definitions of a simulation ans a bisimulation, as those tools are
 Then, because of the lack of direct interaction between $\to$ and $\succ$, we have:
 
 \begin{proposition}
-Relation $\succ$ is a simulation for $\to$.
+The reflexive closure of relation $\succ$ is a simulation for $\to$.
 \end{proposition}
 
 \begin{myproof}
@@ -167,7 +193,7 @@ We need $\equiv$ to not alter the behavior of $\to$ in order for the system to w
 We have a more general property emanating of that, that gives us something close to a simulation behavior:
 \begin{proposition}
 For all $P\equiv Q$ and $P\to P'$,\\
-there exists $Q \succ^* Q' \to Q'' \equiv P'' \prec^* P'$\\
+there exists $Q \succ^* Q' \to Q'' \equiv P'' \prec^* P'$,\\
 \ie \begin{tikzcd}
 P \arrow[r,phantom,"\equiv"]\arrow[d] & Q\arrow[d,phantom,"\curlyvee^*"]\\
 P' \arrow[d,phantom,"\curlyvee^*"] & Q' \arrow[d]\\
