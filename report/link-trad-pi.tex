@@ -25,8 +25,17 @@ We remark most of the important constructions we use in the decorated calculus a
 
 \begin{definition}
 We define a projection operator $\lfloor\cdot\rfloor$ from the annotated calculus to the above defined $\pi$-calculus as follows:\\
-%TODO
-\textcolor{red}{projection of terms on terms here, the arrows/equivalence part comes after}
+\begin{align*}
+\lfloor 0_x \rfloor &= 0 \\
+\lfloor x \tto y \rfloor &= 0 \\
+\lfloor \lambda_xy.P \rfloor &= \lfloor P \rfloor \\
+\lfloor \epsilon_x.P \rfloor &= \lfloor P \rfloor \\
+\lfloor u_x(t).P \rfloor &= u(t).\lfloor P \rfloor \\
+\lfloor \bar{u}_x\langle v\rangle.P \rfloor &= \bar{u}(v).\lfloor P \rfloor \\
+\lfloor P |_x Q \rfloor &= \lfloor P \rfloor | \lfloor Q \rfloor \\
+\lfloor P ||_x Q \rfloor &= \lfloor P \rfloor | \lfloor Q \rfloor \\
+\lfloor (\nu u)P \rfloor &= (\nu u)\lfloor P \rfloor
+\end{align*}
 \end{definition}
 
 The important part to verify is that the projection behaves well with the reduction system proposed in part 1:
