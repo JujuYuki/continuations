@@ -14,7 +14,9 @@ The annotated terms are defined by the following grammar:
 
 \remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
 
-\remark the lambda is also binding for its second variable ($y$ here), keeping availability for its first variable only. The $\epsilon$, on the opposite, creates its variable, that does not exist in the base term.\\
+\remark the lambda is also binding for its second variable ($y$ here), keeping availability for its first variable only. The $\epsilon$, on the opposite, creates its variable, that does not exist in the base term.
+
+\remark we also define substitution of names and variables by induction on the terms the exact same way as usual. Though, it is important to note that, because names and variables are two distinct and independent sets, substituting a variable for a name (or the opposite) is not possible. The distinction between those two sets is important for the reduction to pose no problem of variable capture, and allows for something akin to $\alpha$-conversion from $\lambda$-calculi: one can rename freely all instances of a free variable or name in a term for a fresh one, or all instances of a bound variable or name (including the binding operator) for a fresh one as well \underline{in the scope of the binding operator}, and the term is still considered the same.\\
 
 The synchronization rule will be used to guide the behavior of terms, thus we define a reduction system over this construction specifically, as follows:
 \begin{definition}
