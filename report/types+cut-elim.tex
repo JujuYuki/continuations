@@ -5,7 +5,7 @@
 
 \section{Typing decorated terms with MLL}
 
-Section intro here, stating MLL seems a good system to type terms of the decorated calculus %TODO
+\textcolor{red}{Section intro here, stating MLL seems a good system to type terms of the decorated calculus} %TODO
 
 \begin{definition}
 The typing system over MLL is given by the following rules:\\~\\
@@ -36,10 +36,10 @@ The typing system over MLL is given by the following rules:\\~\\
 }
 \end{definition}
 
-One important thing to note here, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$, $\geq$, $\gtrsim$ and $\leadsto$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates.
+One important thing to note here, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$, $\succ$, $\gtrsim$ and $\leadsto$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates.
 
 \begin{proposition}
-Cut elimination holds and terminates for $\to$ and $\geq$ under $\equiv$.\\
+Cut elimination holds and terminates for $\to$ and $\succ$ under $\equiv$.\\
 \textcolor{red}{For $\to$, we need one more hypothesis: that no quantified type remains in the type at the root of the deduction tree/all quantified types must be closed by the term or context. Should we speak about contexts and this closure condition before this property?} %TODO
 \end{proposition}
 
@@ -47,7 +47,7 @@ Cut elimination holds and terminates for $\to$ and $\geq$ under $\equiv$.\\
 Proof by induction on the sizes of the subterms of each rule. Especially, the base cases that eliminate cut are $\epsilon$ against 0 and anything against $x \tto y$, and all other cases strictly decrease a well chosen tuple of the sizes of subterms. Make a special note that no reduction step will be blocked by an action prefix, as all action prefixes must have a complementary action to be cut against for the context to be closed on quantified variables. \textcolor{red}{Copy and adapt the proof of the temporary paper} %TODO
 \end{myproof}
 
-\remark With no exponential, it is no surprise that cut elimination terminates. We can also relax the closure hypothesis on quantified types, to the condition of proving the holding for $\gtrsim$ and $\leadsto$ instead, because we need the ability to commute cuts with unmatched action prefixes as well as continue cut elimination under those.\\
+\remark With no exponential, it is no surprise that cut elimination terminates. We can also relax the closure hypothesis on quantified types, to the condition of proving the holding for $\succsim$ and $\leadsto$ instead, because we need the ability to commute cuts with unmatched action prefixes as well as continue cut elimination under those.\\
 
 \textcolor{red}{Do we need a proper proposition for that last remark, as well as its proof maybe, or at least some elements for the added rules?\\~\\
 Also, insert here the followed example from the other paper that is to be shown in part 1, to show here that it is not only reducing well, but also well-typed. (Question for later: Is there a term, simplest possible if exists, that reduces well without typing, but cannot be well-typed?)} %TODO
