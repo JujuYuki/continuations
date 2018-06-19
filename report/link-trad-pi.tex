@@ -4,19 +4,41 @@
 \section{Links with the usual $\pi$-calculus}
 
 \begin{definition}
-Define $\pi$-calculus
+Given a countable set of names $N:=\{t,u,v,\ldots\}$, the grammar defining the terms of the multiplicative $\pi$-calculus is as follows:\\
+\begin{flalign*}
+P,Q ::=	& 0 \;\; ; \;\; P | Q & \text{null action and parallel construction}\\
+		& u(t).P \;\; ; \bar{u}(v).P & \text{sending and receiving names over a channel}\\
+		& (\nu u)P & \text{name binding prefix}
+\end{flalign*}
+We also define a structural congruence on terms as follows:
+\begin{align*}
+P|0 &\equiv P\\
+P|Q &\equiv Q|P\\
+P|(Q|R) &\equiv (P|Q)|R\\
+(\nu u) P &\equiv P\;\;\;\;\text{if }u\text{ is not a free name in }P
+\end{align*}
+and a reduction rule:
+\[u(t).P|\bar{u}(v)Q \to P[v/t]|Q\]
 \end{definition}
+
+We remark most of the important constructions we use in the decorated calculus are here as well, especially being able to specify a name being private, running two processes in parallel as well as send or receive names over a channel. In fact, the synchronization construction from our annotated calculus is a form of parallelization as well, and in a world with no variables to describe the behavior of terms it makes sense to not have a separate construction for that. Also, the $\tto$, $\epsilon$ and $\lambda$ constructions in our annotated system don't do much in the calculus part, aside from allowing to eliminate the synchronization/cut, and their content only affects the typing system. Thus, it makes no sense to have such constructions in a calculus-only system where there is no equivalent to the cut rule from logic systems. We then have covered all constructions from both calculi here, so an interesting thing to do would be to project the annotated calculus that has more constructions in he usual $\pi$-calculus and see it we can get some interesting properties out of that.
 
 \begin{definition}
-Define projection $\lfloor\cdot\rfloor$
+We define a projection operator $\lfloor\cdot\rfloor$ from the annotated calculus to the above defined $\pi$-calculus as follows:\\
+%TODO
+\textcolor{red}{projection of terms on terms here, the arrows/equivalence part comes after}
 \end{definition}
 
+The important part to verify is that the projection behaves well with the reduction system proposed in part 1:
+
 \begin{proposition}
-Something about $\to$ and $\equiv$ related to projection
+If $P \to P'$ in the annotated calculus, then $\lfloor P \rfloor \to \lfloor P' \rfloor$ or $\lfloor P \rfloor \equiv \lfloor P' \rfloor$ in usual $\pi$-calculus.\\
+If $P \geq P'$ or $P \equiv P'$ in the annotated calculus, then $\lfloor P \rfloor \equiv \lfloor P' \rfloor$ in the usual $\pi$-calculus.
 \end{proposition}
 
 \begin{myproof}
-proof here
+\textcolor{red}{Do all constructions here? Or maybe only the non-immediate ones, like those that reduce with $\to$ in annotated world but end up $\equiv$ in usual $\pi$-calculus ?} %TODO
 \end{myproof}
 
-Open about $\leadsto$ here or in the conclusion.
+\textcolor{red}{Open about $\leadsto$ here or in the conclusion.\\
+Also the followed example: should it be put right after the projection definition at first, and then show the reduction/equivalence steps after the proof here for the sake of completion and show that it behaves well in usual $\pi$-calculus by projecting the actions? Should the reduction of the projected term be observed before the proposition as well, as there is a notion of reduction defined, and remark that this particular term ends up reducing to the projection of the reduced annotated term, to justify a bit more wanting to check that behavior in a more general fashion?} %TODO
