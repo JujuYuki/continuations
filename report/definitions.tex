@@ -11,8 +11,18 @@ The annotated terms are defined by the following grammar:
 & P |_x Q\;\; ; \;\; P ||_x Q \;\; ; &x\in fv(P)\cap fv(Q)\;\;\;\text{parallel and synchronization}&\\
 & (\nu u) P &u\in N\;\;\;\text{name binding prefix}&
 \end{flalign*}
-where construction $x \tto y$ is commutative.\\
-\textcolor{red}{Define $fv(P)$ and $fn(P)$ by induction on terms.} %TODO
+where construction $x \tto y$ is commutative, and $fv(P)$ and $fn(P)$ are defined by induction on terms as follows:\\
+\begin{align*}
+fv(x\tto y) &= \{x,y\} & fn(x\tto y) & = \emptyset\\
+fv(0_x) &= \{x\} & fn(0_x) &= \emptyset\\
+fv(\epsilon_x.P) &= fv(P)\cup\{x\} & fn(\epsilon_x.P) &= fn(P)\\
+fv(\lambda_xy.P) &= fv(P)\backslash\{y\} & fn(\lambda_xy.P) &= fn(P)\\
+fv(u_x(t).P) &= fv(P) & fn(u_x(t).P) &= (fn(P)\backslash\{t\})\cup\{u\}\\
+fv(\bar{u}_x\langle v\rangle.P) &= fv(P) & fn(\bar{u}_x\langle v\rangle.P) &= fn(P)\cup\{u,v\}\\
+fv((\nu u) P) &= fv(P) & fn((\nu u) P) &= fn(P)\backslash\{u\}\\
+fv(P |_x Q) &= fv(P)\cup fv(Q) & fn(P |_x Q) &= fn(P)\cup fn(Q)\\
+fv(P ||_x Q) &= (fv(P)\cup fv(Q))\backslash\{x\} & fn(P ||_x Q) &= fn(P)\cup fn(Q)\\
+\end{align*}
 \end{definition}
 
 \remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
@@ -36,21 +46,14 @@ We also define rules for commuting the synchronization with other rules, at firs
 \begin{flalign*}
 (P|_xQ)||_yR &\succ (P||_yR)|_xQ &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;5a\\
 (P|_xQ)||_yR &\succ P|_x(Q||_yR) &\text{symmetric in $||$, }y\not\in fv(P)\;\;\;5b\\
-\epsilon_x.P||_yQ &\succ \epsilon_x.(P||_yQ) &\text{symmetric in $||$}\;\;\;6a\\
+\epsilon_x.P||_yQ &\succ \epsilon_x.(P||_yQ) &\text{symmetric in $||$, }x\not\in fv(Q)\;\;\;6a\\
 \lambda_xy.P||_zQ &\succ \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
 (\nu u)P ||_x Q &\succ (\nu u)(P||_xQ) &\text{symmetric in $||$, }u\not\in fn(Q)\;\;\;6c
 \end{flalign*}
-\textcolor{red}{Move that last part below to its own definition, maybe in the end of the paper} %TODO
-And we extend it into $\succsim$ as follows, allowing for it to act on (and under) action prefixes:
-\begin{flalign*}
-u_x(t).P||_yQ &\succsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
-\bar{u}_x\langle v \rangle.P||_yQ &\succsim \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
-\end{flalign*}
-Relation $\to$ is also extended into $\leadsto$ by allowing it to act under action prefixes (no specific rule added).
 \end{definition}
 
 \remark In rules 5 and 6, some parts have strong requirements, such as a variable not being present in one or more subterms. Failure to meet those requirements can lead to terms that do not reduce past a certain point, when no other rule can apply. See an example below of a term annotated to be able to reduce, and the same term with annotations changed that fails to do so.\\
-\textcolor{red}{INCLUDE EXAMPLE HERE}\\~\\
+\textcolor{red}{INCLUDE EXAMPLE HERE (and everywhere really...)}\\~\\
 %TODO - Examples to this remark: take main example for later parts 2 and 3, once with good constraints, and once without them (change some variables to be the same)\sim
 We would like these arrows to have a confluent behavior. First, we remark that $\to$ is strongly confluent. Then, we will need an equivalence relation to be defined for the confluence of $\succ$.
 
@@ -60,12 +63,15 @@ Relation $\to$ is strongly confluent.
 
 \begin{myproof}
 Since a synchronization makes the observed variable unavailable to the term, and because $\to$ does not allow for an arbitrary term on any side but only explicitly fixed constructions, and not allowing for these constructions to be a synchronization, we can remark that two reductions using $\to$ in the same term cannot interfere with each other. Thus, a term capable of two reductions using $\to$ has one of them be either a strict subterm of the other, or distinct parts of a more general term. The reductions then do not interfere with each other, and can be followed in any order.\\
-\textcolor{red}{The only case where we get two reductions is rule 2 where P is also a $\tto$, treat that and remark that $x\tto y = y\tto x$, \ie $\tto$ is symmetric.} %TODO
+Only exception to that is the interaction of two axiom base terms synchronized on the same variable, but the commutativity of this construction makes it close immediately:\\
+\[\begin{tikzcd}
+& x\tto y ||_x x\tto z \arrow[dl] \arrow[dr] &\\
+(x\tto z)[y/x]\arrow[d, phantom, "\shortparallel"] & & (x\tto y)[z/x]\arrow[d, phantom, "\shortparallel"]\\
+y\tto z & = & z\tto y
+\end{tikzcd}\]
 \end{myproof}
 
-\remark the $\leadsto$ relation works the same (but with reductions under action prefixes), and so has the same property and proof.
-
-Because of the specificity of the constructions in the $\to$, it does not directly interact with $\succ$ rules.
+Because of the specificity of the constructions in the $\to$, it does not directly interact with $\succ$ rules, except for the $x\tto y$ case.
 
 We remind the definitions of a simulation ans a bisimulation, as those tools are uncommon enough to justify being introduced here:
 
@@ -77,17 +83,26 @@ We remind the definitions of a simulation ans a bisimulation, as those tools are
 \end{itemize}
 \end{definition}
 
-As such, by \ref{succ-to-comm}, the following property is immediate:\\
+Then, because of the lack of direct interaction between $\to$ and $\succ$, we have:
 
 \begin{proposition}
 Relation $\succ$ is a simulation for $\to$.
 \end{proposition}
 
 \begin{myproof}
-\textcolor{red}{SOME CASES HERE}
+The cases to treat are those where $x\tto y$ interacts with something. We treat two of them below, and also put the cut variable in exponent of the term where it appears in, in order to apply rule 5 efficiently, where appilcable:\\
+\begin{tikzcd}
+(P^y|_xQ)||_y x\tto y \arrow[r]\arrow[d,phantom,"\curlyvee_{5a}"] & (P^y|_xQ)[x/y] = P[x/y] |_x Q\\
+(P^y ||_y x\tto y) |_x Q \arrow[ur] &
+\end{tikzcd}\hfill
+\begin{tikzcd}
+\lambda_xy.P||_z z\tto x \arrow[r]\arrow[d,phantom,"\curlyvee_{6b}"] & (\lambda_xy.P)[x/z] = P[x/z]\\
+\lambda_xy.(P ||_z z\tto x) \arrow[ur] &
+\end{tikzcd}\\
+All other cases act the same way, or are the same as for $\to$ not interacting with itself because one of the reductions occurs either in a strict subterm of the other, or in a distinct term from the other.
 \end{myproof}
 
-The $\succ$ relation in itself has a bit more complexity, as two instances can interact with each other. A congruence is needed to make this relation confluent.
+The $\succ$ relation in itself has a bit more complexity to it being confluent, as two instances can interact with each other. A congruence is needed to make this relation confluent.
 
 \begin{definition}
 We define a congruence rule, that does not act on action prefixes, with the following axioms:
@@ -101,61 +116,83 @@ P|_x \alpha_y.Q &\equiv \alpha_y.(P|_xQ) &\text{symmetric in }|, \alpha_{\cdot}\
 (\nu u)\alpha_x.P &\equiv \alpha_x.(\nu u)P &\alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}\;\;\;f
 \end{flalign*}
 This rule is defined as an equivalence (reflexive, symmetric and transitive), and applies inside contexts (except action prefixes).\\
-\textcolor{red}{move that} %TODO
-And we also extend it into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $c,d$:
-\[\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\};\]
-as well as in rule $f$:
-\[\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}.\]
 \end{definition}
 
 This equivalence allows for the confluence of $\succ$:
 
 \begin{proposition}
-Relation $\succ$ is confluent up to $\equiv$. \textcolor{red}{make it explicit what it means, \ie terms at the arrival are $\equiv$} %TODO
+Relation $\succ$ is confluent up to $\equiv$,\\
+\ie for all $P_1 \prec P \succ P_2$, there exists $P_1',P_2'$ such that\\
+\begin{tikzcd}
+& P \arrow[dl,phantom,"\dlsucc"]\arrow[dr,phantom,"\drsucc"] &\\
+P_1 \arrow[d,phantom,"\curlyvee"] & & P_2 \arrow[d,phantom,"\curlyvee"]\\
+P_1' & \equiv & P_2'
+\end{tikzcd}
 \end{proposition}
 
 \begin{myproof}
 There are 3 possible cases here, for two groups of rules in the $\succ$ relation.\\
 Rule 5 against rule 5: there are 4 cases, depending on where the variable cut against is situated. The variable is noted as an exponent in the terms where it appears, and only 2 cases are treated (as the other two are their complements, and are treated the same):\\
-\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
-& (P^y|_xQ)||_y(R^y|_zS)\arrow{dl}{\succ_{5a},\;left}\arrow{dr}{\succ_{5a},\;right} &\\
-(P^y||_y(R^y|_zS))|_xQ\arrow{d}{\succ_{5a}} & & ((P^y|_xQ)||_yR^y)|_zS\arrow{d}{\succ_{5a}}\\
+\begin{tikzcd}
+& (P^y|_xQ)||_y(R^y|_zS)\arrow[dl,phantom,"\dlsucc_{5a,\;left}"xshift=2.5ex]\arrow[dr,phantom,"\drsucc_{5a,\;right}"xshift=2.5ex] &\\
+(P^y||_y(R^y|_zS))|_xQ\arrow[d,phantom,"\curlyvee_{5a}"] & & ((P^y|_xQ)||_yR^y)|_zS\arrow[d,phantom,"\curlyvee_{5a}"]\\
 ((P^y||_yR^y)|_zS)|_xQ & \equiv_{a_1} & ((P^y||_yR^y)|_xQ)|_zS
 \end{tikzcd}\\
-\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
-& (P^y|_xQ)||_y(R|_zS^y)\arrow{dl}{\succ_{5a},\;left}\arrow{dr}{\succ_{5b},\;right} &\\
-(P^y||_y(R|_zS^S))|_xQ\arrow{d}{\succ_{5b}} & & R|_z((P^y|_xQ)||_yS^y)\arrow{d}{\succ_{5a}}\\
+\indent\hfill\begin{tikzcd}
+& (P^y|_xQ)||_y(R|_zS^y)\arrow[dl,phantom,"\dlsucc_{5a,\;left}"xshift=2.5ex]\arrow[dr,phantom,"\drsucc_{5b,\;right}"xshift=2.5ex] &\\
+(P^y||_y(R|_zS^S))|_xQ\arrow[d,phantom,"\curlyvee_{5b}"] & & R|_z((P^y|_xQ)||_yS^y)\arrow[d,phantom,"\curlyvee_{5a}"]\\
 (R|_z(P^y||_yS^y))|_xQ & \equiv_{b} & R|_z((P^y||_yS^y)|_xQ)
 \end{tikzcd}\\
 Rule 6 against rule 6 works the same, here is an example with $\epsilon$ and $\nu$:\\
-\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
-& \epsilon_x.P ||_y (\nu u) Q \arrow{dl}{\succ_{6a}}\arrow{dr}{\succ_{6c}} &\\
-\epsilon_x.(P ||_y (\nu u) Q)\arrow{d}{\succ_{6c}} & & (\nu u)(\epsilon_x.P ||_y Q)\arrow{d}{\succ_{6a}}\\
+\[\begin{tikzcd}
+& \epsilon_x.P ||_y (\nu u) Q \arrow[dl,phantom,"\dlsucc_{6a}"xshift=1.1ex]\arrow[dr,phantom,"\drsucc_{6c}"] &\\
+\epsilon_x.(P ||_y (\nu u) Q)\arrow[d,phantom,"\curlyvee_{6c}"] & & (\nu u)(\epsilon_x.P ||_y Q)\arrow[d,phantom,"\curlyvee_{6a}"]\\
 \epsilon_x.(\nu u)(P||_yQ) & \equiv_{f} & (\nu u)\epsilon_x.(P||_yQ)
-\end{tikzcd}\\~\\
-Other cases in the possible 6 against 6 rules are treated in the exact same manner. The last set of cases is a rule 5 against a rule 6. Those are all treated the same way as well, so we only treat two examples (one for $5a$ and one for $5b$):\\
-\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
-& (P^y |_x Q) ||_y (\nu u) R \arrow{dl}{\succ_{5a}}\arrow{dr}{\succ_{6c}} &\\
-(P^y ||_y (\nu u) R)|_x Q\arrow{d}{\succ_{6c}} & & (\nu u)((P^y|_xQ) ||_y R)\arrow{d}{\succ_{5a}}\\
+\end{tikzcd}\]
+Other cases in the possible 6 against 6 rules are treated in the exact same manner. The last set of cases is a rule 5 against a rule 6. Those are all treated the same way as well, so we only treat one example:\\
+\[\begin{tikzcd}
+& (P^y |_x Q) ||_y (\nu u) R \arrow[dl,phantom,"\dlsucc_{5a}",xshift=1.1ex]\arrow[dr,phantom,"\drsucc_{6c}"] &\\
+(P^y ||_y (\nu u) R)|_x Q\arrow[d,phantom,"\curlyvee_{6c}"] & & (\nu u)((P^y|_xQ) ||_y R)\arrow[d,phantom,"\curlyvee_{5a}"]\\
 (\nu u)(P^y ||_y R) |_x Q & \equiv_{e} & (\nu u)((P^y ||_y R) |_x Q)
-\end{tikzcd}\\
-\begin{tikzcd}[column sep=tiny, arrows=dashrightarrow]
-& (P |_x Q^y) ||_y (\nu u) R \arrow{dl}{\succ_{5b}}\arrow{dr}{\succ_{6c}} &\\
-P |_x (Q^y ||_y (\nu u) R)\arrow{d}{\succ_{6c}} & & (\nu u)((P |_x Q^y) ||_y R)\arrow{d}{\succ_{5b}}\\
-P |_x (\nu u)(Q^y ||_y R) & \equiv_{e} & (\nu u)(P|_x (Q^y ||_y R))
-\end{tikzcd}\\~\\
+\end{tikzcd}\]
 That ends the proof of confluence for $\succ$ up to $\equiv$.
 \end{myproof}
 
-\remark the specific cases added by $\gtrsim$ are treated the exact same way, and are confluent with $\cong$.\\
-
-We need to make sure that $\equiv$ does not change the behavior of $\to$, meaning we would want $\equiv$ to be a bisimulation for $\to$. That is not the case though, but we can observe an interesting behavior if $\succ$ is allowed to go in there, as reductions can be closed in several steps if $\succ$ is allowed to be used where applicable on the variable the reduction happened in the other branch, for example:
-
-\begin{tikzcd}[column sep=tiny]
-\lambda_xy.\epsilon_z.P ||_x (Q |_xR) \arrow[r,phantom,"\equiv"] \arrow[d] & \epsilon_z.\lambda_xy.P ||_x (Q |_x R) \arrow[d,dashrightarrow,"\succ"]\\
-(\epsilon_z.P ||_x Q) ||_y R[y/x] \arrow[d,dashrightarrow,"\succ"] & \epsilon_z.(\lambda_xy.P ||_x (Q |_x R)) \arrow[d]\\
+We need $\equiv$ to not alter the behavior of $\to$ in order for the system to work well. We do not have that kind of property here (\ie $\equiv$ is not a simulation for $\to$), but we can observe an interesting phenomenon by allowing to do $\succ$ steps where needed:\\
+\[\begin{tikzcd}
+\lambda_xy.\epsilon_z.P ||_x (Q |_xR) \arrow[r,phantom,"\equiv"] \arrow[d] & \epsilon_z.\lambda_xy.P ||_x (Q |_x R) \arrow[d,phantom,"\curlyvee"]\\
+(\epsilon_z.P ||_x Q) ||_y R[y/x] \arrow[d,phantom,"\curlyvee"] & \epsilon_z.(\lambda_xy.P ||_x (Q |_x R)) \arrow[d]\\
 (\epsilon_z.(P ||_x Q)) ||_y R[y/x] \arrow[r,phantom,"\succ"] & \epsilon_z.((P ||_x Q) ||_y R[y/x])
-\end{tikzcd}\\
+\end{tikzcd}\]
+We have a more general property emanating of that, that gives us something close to a simulation behavior:
+\begin{proposition}
+For all $P\equiv Q$ and $P\to P'$,\\
+there exists $Q \succ^* Q' \to Q'' \equiv P'' \prec^* P'$\\
+\ie \begin{tikzcd}
+P \arrow[r,phantom,"\equiv"]\arrow[d] & Q\arrow[d,phantom,"\curlyvee^*"]\\
+P' \arrow[d,phantom,"\curlyvee^*"] & Q' \arrow[d]\\
+P'' \arrow[r,phantom,"\equiv"] & Q''
+\end{tikzcd}
+\end{proposition}
 
-\textcolor{red}{Do we need an other example here? (to pick in the example pool I did on the blackboard maybe)\\
-Also this last paragraph might need a rewrite, the formulation feels a bit sloppy} %TODO
+\begin{myproof}
+We treat some interesting cases here, to complete from the one above, still where necessary with the cut variable in exponent where it appears:\\
+\begin{tikzcd}
+\epsilon_z.\lambda_xy.P ||_z 0_z \arrow[r,phantom,"\equiv"] \arrow[d] & \lambda_xy.\epsilon_z.P ||_z 0_z \arrow[d,phantom,"\curlyvee"]\\
+\lambda_xy.P & \lambda_xy.(\epsilon_z.P ||_z 0_z) \arrow[l]
+\end{tikzcd}\hfill
+\begin{tikzcd}
+\epsilon_z.((P|_xQ)|_yR) ||_z 0_z \arrow[r,phantom,"\equiv"] \arrow[d] & \epsilon_z.(P|_x(Q|_yR)) ||_z 0_z \arrow[d]\\
+(P|_xQ)|_yR \arrow[r,phantom,"\equiv"] & P|_x(Q|_yR)
+\end{tikzcd}\\~\\~\\~\\
+\begin{tikzcd}
+((P|_xQ^y)|_yR^y) ||_y \lambda_yz.S \arrow[d]\arrow[r,phantom,"\equiv"] & (P|_x(Q^y|_yR^y)) ||_y \lambda_yz.S^y \arrow[d,phantom,"\curlyvee"] \\
+(P|_xQ^y) ||_y (R[z/y] ||_z S) \arrow[dr,phantom,"\drsucc"] & P|_x ((Q^y|_yR^y) ||_y \lambda_yz.S^y) \arrow[d] \\
+& P|_x (Q^y ||_y (R[z/y] ||_z S^y))
+\end{tikzcd}\hfill
+\begin{tikzcd}
+\; \arrow[r,phantom,"\text{where }P\equiv P':"] & \;\\
+u_x(t).P ||_x \bar{u}_x\langle v\rangle.Q \arrow[d]\arrow[r,phantom,"\equiv"] & u_x(t).P' ||_x \bar{u}_x\langle v\rangle.Q \arrow[d]\\
+P[v/t] ||_x Q \arrow[r,phantom,"\equiv"] & P'[v/t] ||_x Q
+\end{tikzcd}
+\end{myproof}

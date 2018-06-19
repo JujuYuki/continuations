@@ -5,16 +5,16 @@
 
 \section{Typing decorated terms with MLL}
 
-\textcolor{red}{Section intro here, stating MLL seems a good system to type terms of the decorated calculus} %TODO
+\textcolor{red}{Definition du langage des formules (N + grammaire MLL + quantification premier ordre)} %TODO
 
 \begin{definition}
-The typing system over MLL is given by the following rules:\\~\\
+The typing system is given by the following rules:\\~\\
 \indent\textbox{
 	Rules for neutral elements:\\~\\
 	\begin{prooftree}\infer0[NOP]{0_x \vdash x:1}\end{prooftree}\hfill
 	\begin{prooftree}\hypo{P \vdash \Gamma}
 		\infer1[BOT]{\epsilon_x.P \vdash \Gamma,x:\bot}\end{prooftree}\hfill
-	\begin{prooftree}\infer0[SUB]{x \to y \vdash x:E^\bot,y:E}\end{prooftree}\hfill~\\~\\
+	\begin{prooftree}\infer0[AX]{x \tto y \vdash x:E^\bot,y:E}\end{prooftree}\hfill~\\~\\
 	Construction rules:\\~\\
 	\begin{prooftree}\hypo{P \vdash \Gamma,x:E}
 		\hypo{Q \vdash \Delta,x:F}
@@ -36,18 +36,33 @@ The typing system over MLL is given by the following rules:\\~\\
 }
 \end{definition}
 
-One important thing to note here, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$, $\succ$, $\gtrsim$ and $\leadsto$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates.
+One important thing to note here, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$ and $\succ$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates and actually eliminates cuts.
 
-\begin{proposition}
-Cut elimination holds and terminates for $\to$ and $\succ$ under $\equiv$.\\
-\textcolor{red}{For $\to$, we need one more hypothesis: that no quantified type remains in the type at the root of the deduction tree/all quantified types must be closed by the term or context. Should we speak about contexts and this closure condition before this property?} %TODO
-\end{proposition}
+\textcolor{red}{Prop 1: Preserv type.\\
+Prop 2: termine.\\
+Observer la non élimination des coupures\\
+Ajouter $\leadsto$ et $\succsim$ et noter que les deux preuves précédentes ne changent pas\\
+Prop 3: $\leadsto$ and $\succsim$ élimine les coupues.}\\~\\ %TODO
 
-\begin{myproof}
-Proof by induction on the sizes of the subterms of each rule. Especially, the base cases that eliminate cut are $\epsilon$ against 0 and anything against $x \tto y$, and all other cases strictly decrease a well chosen tuple of the sizes of subterms. Make a special note that no reduction step will be blocked by an action prefix, as all action prefixes must have a complementary action to be cut against for the context to be closed on quantified variables. \textcolor{red}{Copy and adapt the proof of the temporary paper} %TODO
-\end{myproof}
+\textcolor{red}{TEMPORARY: MOVED THAT FROM DEFINITION IN PART 1} %TODO
+And we extend it into $\succsim$ as follows, allowing for it to act on (and under) action prefixes:
+\begin{flalign*}
+u_x(t).P||_yQ &\succsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
+\bar{u}_x\langle v \rangle.P||_yQ &\succsim \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
+\end{flalign*}
+Relation $\to$ is also extended into $\leadsto$ by allowing it to act under action prefixes (no specific rule added).\\~\\
 
-\remark With no exponential, it is no surprise that cut elimination terminates. We can also relax the closure hypothesis on quantified types, to the condition of proving the holding for $\succsim$ and $\leadsto$ instead, because we need the ability to commute cuts with unmatched action prefixes as well as continue cut elimination under those.\\
+\textcolor{red}{TEMPORARY: MOVED THAT} %TODO
+And we also extend it into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $c,d$:
+\[\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\};\]
+as well as in rule $f$:
+\[\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}.\]
+
+
+
+\remark With no exponential, it is no surprise that cut elimination terminates.\\
+
+\textcolor{red}{Remark the other way around: we need commuting action prefixes here, but this hypothesis could be relaxed by proving cut elimination in quantifier-closed context. The proof would then be quite more technical.}\\ %TODO
 
 \textcolor{red}{Do we need a proper proposition for that last remark, as well as its proof maybe, or at least some elements for the added rules?\\~\\
 Also, insert here the followed example from the other paper that is to be shown in part 1, to show here that it is not only reducing well, but also well-typed. (Question for later: Is there a term, simplest possible if exists, that reduces well without typing, but cannot be well-typed?)} %TODO
