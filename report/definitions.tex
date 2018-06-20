@@ -27,7 +27,8 @@ P|Q &\equiv Q|P\\
 P|(Q|R) &\equiv (P|Q)|R\\
 (\nu u)(\nu v) P &\equiv (\nu v)(\nu u) P\\
 (\nu u)0 &\equiv 0\\
-(\nu u)(P|Q) &\equiv P|(\nu u)Q\;\;\;\;\text{if }u\not\in fn(P)
+(\nu u)(P|Q) &\equiv P|(\nu u)Q\;\;\;\;\text{if }u\not\in fn(P)\\
+\tau.P|Q &\equiv \tau.(P|Q)
 \end{align*}
 and a reduction relation given by the rules:\\~\\
 \indent\hfill\begin{prooftree}\infer0{u(t).P|\bar{u}(v)Q &\to P[v/t]|Q}\end{prooftree}\hfill
@@ -88,6 +89,8 @@ fv(P ||_x Q) &= (fv(P)\cup fv(Q))\backslash\{x\} & fn(P ||_x Q) &= fn(P)\cup fn(
 \remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
 
 \remark we also define substitution of names and variables by induction on the terms the exact same way as usual. Though, it is important to note that, because names and variables are two distinct and independent sets, substituting a variable for a name (or the opposite) is not possible. The distinction between those two sets is important for the reduction to pose no problem of variable capture, and allows for something akin to $\alpha$-conversion from $\lambda$-calculi: one can rename freely all instances of a free variable or name in a term for a fresh one, or all instances of a bound variable or name (including the binding operator) for a fresh one as well \emph{in the scope of the binding operator}, and the term is still considered the same.\\
+
+This calculus has very similar constructions to the classic $\pi$-calculus defined above. Of note though is that the parallel operation, the internal action and the null process have two equivalent each in the decorated calculus. For the parallel operation, the meaning basically is that the single one puts two processes together, but they might not interact with each other, which is why the variable used to observe them together is kept available to the outside world, while the synchronization h
 
 \textcolor{red}{EXAMPLE + PROJECTION HERE + PROJECT $\lambda$ and $\epsilon$ to $\tau$.}
 

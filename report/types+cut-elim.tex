@@ -79,21 +79,37 @@ as well as in rule $f$:
 \[\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}.\]
 \end{definition}
 
+The important result of these extensions is the following:
+
+\begin{proposition}
+Well-typed terms that are irreducible for the system given by $\leadsto$ and $\succsim$ are without cut.
+\end{proposition}
+
+\begin{myproof}
+This result holds to the fact that this new system allows cuts to be commuted up with all other constructions except itself, and it can also be reduced under all those constructions, \emph{including} action prefixes that were stopping the reduction in the original reduction system.
+The proof is then done like above by induction on the sum of the sizes of the immediate subterms of the cut:
+\begin{itemize}
+	\item the base cases are the same as above, since$\leadsto$ has the exact same rules as $\to$ with only an extended scope of action
+	\item if a clash occurs between a cut and any other rule, they now commute with $\succsim$ and the size of the immediate subterms is thus reduced by 1
+	\item if a clash occurs between two cuts, then $P=(P_1||_xP_2)||_yP_3$ and, by induction hypothesis, the subterm $P_1||_xP_2$ reduces, so the whole term reduces according to this reduction.
+\end{itemize}
+\end{myproof}
+
 This extension does not match how programs execute in the $\pi$-calculus model, akin to how general $\beta$-reduction does not match the execution of programs in the $\lambda$-calculus model. For example it gives an equivalence between terms $u_x(t).\bar{v}_y\langle w\rangle.P$ and $\bar{v}_y\langle w\rangle.u_x(t).P$, even though they do not behave the same in the projection. However, like the general $\beta$-reduction, it will allow for cut elimination. Also, the way this extension is done, it is immediate by extending the proofs above, since the cases are all treated the same, that:
 
-\begin{corollary}
+\begin{proposition}
 Relation $\leadsto$ is strongly confluent.
-\end{corollary}
+\end{proposition}
 
-\begin{corollary}
+\begin{proposition}
 The reflexive closure of $\succsim$ is a simulation for $\leadsto$.
-\end{corollary}
+\end{proposition}
 
-\begin{corollary}
+\begin{proposition}
 Relation $\succsim$ is confluent up to $\cong$.
-\end{corollary}
+\end{proposition}
 
-\begin{corollary}
+\begin{proposition}
 For all $P\cong Q$ and $P\leadsto P'$,\\
 there exists $Q',Q'',P''$ such that:
 \[\begin{tikzcd}
@@ -101,26 +117,26 @@ P \arrow[r,phantom,"\cong"]\arrow[d,rightsquigarrow] & Q\arrow[d,phantom,"\dsucc
 P' \arrow[d,phantom,"\dsuccsim^*"] & Q' \arrow[d,rightsquigarrow]\\
 P'' \arrow[r,phantom,"\cong"] & Q''
 \end{tikzcd}\]
-\end{corollary}
+\end{proposition}
 
-\begin{corollary}
+\begin{proposition}
 Relations $\leadsto$ and $\succsim$ preserve typing.
-\end{corollary}
+\end{proposition}
 
-\begin{corollary}
+\begin{proposition}
 The rewriting system induced by $\leadsto$ and $\succsim$ terminates
-\end{corollary}
+\end{proposition}
 
 Finally, we can prove cut elimination for the extended system:
 
-\begin{proposition}
+\begin{corollary}
 The reduction system given by rules $\leadsto$ and $\succsim$ eliminates cuts (up to $\cong$),\\
 \ie for all $P\vdash\Gamma$ provable in the typing system, there exists $P'$ and a proof of $P\vdash\Gamma$ with $P'\cong P$.
-\end{proposition}
+\end{corollary}
 
-\begin{proof}
-It is an immediate corollary of the above propositions and extension, as the reduction terminates, preserves typing and now allows cut to be commuted with and reduced under action prefixes.
-\end{proof}
+\begin{myproof}
+It is an immediate corollary of the above propositions and extension, as the reduction terminates, preserves typing and has irreducible terms be without cut.
+\end{myproof}
 
 \remark With no exponential, it is no surprise that cut elimination terminates.\\
 
