@@ -38,20 +38,31 @@ and a reduction relation given by the rules:\\~\\
 where the substitution is defined in an usual fashion by induction on terms.
 \end{definition}
 
-With this system defined, we would like to look at an example term that would be interesting to follow in the paper.
+The main mechanism here is the sending/receiving system that allows multiple agents to work in parallel and exchange data, this data consisting on names for further communication channels or or even addresses to other processes. This is what modelizes the network system, and this is the core of the non determinism this model allows to study.\\
+
+With this system defined, we would like to look at a few examples:\\
+
+\example a simple process that one could imagine would be something like $\Bigl(u(t).P|Q\Bigr)|\bar{u}(v).R$.\\
+This process needs the use of congruence to proceed, and has one reduction:
+\begin{align*}
+\Bigl(u(t).P|Q\Bigr)|\bar{u}(v).R &\equiv \Bigl(Q|u(t).P\Bigr)|\bar{u}(v).R\\
+&\equiv Q|\Bigl(u(t).P|\bar{u}(v).R\Bigr)\\
+&\to Q|\Bigl(P[v/t]|R\Bigr)
+\end{align*}
+
 \example let's take a term which would want to communicate a private name over a public channel to some other process, in order to use this name as a new channel to communicate with this second process for the rest of execution, especially waiting for a response on this name before continuing execution. Such a term can be of the form $(\nu v)(\bar{u}(v).\tau.0|v(t).P)$. It could then interact with anything of the form $u(t).(\bar{t}(w).\tau.0|Q)$.\\
 Putting these together:
 \begin{align*}
-(\nu v)(\bar{u}(v).\tau.0|v(t').P)|u(t).(\bar{t}(w).\tau.0|Q) &\equiv (\nu v)((\bar{u}(v).\tau.0|v(t).P)|u(t).(\bar{t}(w).\tau.0|Q))\\
-&\equiv (\nu v)((v(t').P|\bar{u}(v).\tau.0)|u(t).(\bar{t}(w).\tau.0|Q))\\
-&\equiv (\nu v)(v(t').P|(\bar{u}(v).\tau.0|u(t).(\bar{t}(w).\tau.0|Q)))\\
-&\to (\nu v)(v(t').P|(\tau.0|(\bar{v}(w).\tau.0|Q[v/t])))\\
-&\to (\nu v)(v(t').P|(0|(\bar{v}(w).\tau.0|Q[v/t])))\\
-&\equiv (\nu v)(v(t').P||(\bar{v}(w).\tau.0|Q[v/t]))\\
-&\equiv (\nu v)((v(t').P|\bar{v}(w).\tau.0)|Q[v/t])\\
-&\to (\nu v)((P[w/t']|\tau.0)|Q[v/t])\\
-&\to (\nu v)((P[w/t']|0)|Q[v/t])\\
-&\equiv (\nu v)(P[w/t']|Q[v/t])
+(\nu v)\Bigl(\bar{u}(v).\tau.0|v(t').P\Bigr)|u(t).\Bigl(\bar{t}(w).\tau.0|Q\Bigr) &\equiv (\nu v)\biggl(\Bigl(\bar{u}(v).\tau.0|v(t).P\Bigr)|u(t).\Bigl(\bar{t}(w).\tau.0|Q\Bigr)\biggr)\\
+&\equiv (\nu v)\biggl(\Bigl(v(t').P|\bar{u}(v).\tau.0\Bigr)|u(t).\Bigl(\bar{t}(w).\tau.0|Q\Bigr)\biggr)\\
+&\equiv (\nu v)\biggl(v(t').P|\Bigl(\bar{u}(v).\tau.0|u(t).\bigl(\bar{t}(w).\tau.0|Q\bigr)\Bigr)\biggr)\\
+&\to (\nu v)\biggl(v(t').P|\Bigl(\tau.0|\bigl(\bar{v}(w).\tau.0|Q[v/t]\bigr)\Bigr)\biggr)\\
+&\to (\nu v)\biggl(v(t').P|\Bigl(0|\bigl(\bar{v}(w).\tau.0|Q[v/t]\bigr)\Bigr)\biggr)\\
+&\equiv (\nu v)\biggl(v(t').P||\Bigl(\bar{v}(w).\tau.0|Q[v/t]\Bigr)\biggr)\\
+&\equiv (\nu v)\biggl(\Bigl(v(t').P|\bar{v}(w).\tau.0\Bigr)|Q[v/t]\biggr)\\
+&\to (\nu v)\biggl(\Bigl(P[w/t']|\tau.0\Bigr)|Q[v/t]\biggr)\\
+&\to (\nu v)\biggl(\Bigl(P[w/t']|0\Bigr)|Q[v/t]\biggr)\\
+&\equiv (\nu v)\Bigl(P[w/t']|Q[v/t]\Bigr)
 \end{align*}
 
 We will follow this example in the paper, as it will be able to show a great variety of propositions applied to a practical example.
@@ -61,7 +72,7 @@ $(u(t).P|\bar{u}(v).Q)|u(t).S \equiv u(t).P|(\bar{u}(v).Q|u(t).S)$ that can redu
 
 \subsection{The annotated $\pi$-calculus and its projection}
 
-We now need to define the language of terms of our annotated $\pi$-calculus.
+We now need to define the language of terms of our annotated $\pi$-calculus. We introduce the annotation with variables in order to identify what part of a term has to interact with what other part.
 \begin{definition}
 Take two countable sets, $N:=\{t,u,v,\ldots\}$ the set of names as in the classic $\pi$-calculus, and $V:=\{x,y,z,\ldots\}$ the set of variables for the decorations.\\
 The annotated terms are defined by the following grammar:
@@ -109,7 +120,7 @@ We define a projection operator $\lfloor\cdot\rfloor$ from the annotated calculu
 \end{align*}
 \end{definition}
 
-\remark The way we address the complicated meaning of the equalizer is by projecting it to $\tau.0$, which is a bit hacky, but is justified later by allowing for the reduction we want to define on the annotated calculus to project exactly on the reduction of the classic $\pi$-calculus, and by the fact this equalizer cannot be transformed to a prefix in the way we want out typing system to work even later. That construction done now allows all else to go well, and since there is no way to clearly observe a difference in behavior between $0$ and $\tau.0$, especially since none of them interact with anything else, it is not too much of a problem to do that now, while it would create discrepancies later to not do it.
+\remark The way we address the complicated meaning of the equalizer is by projecting it to $\tau.0$, which is a bit hacky, but is justified later by allowing for the reduction we want to define on the annotated calculus to project exactly on the reduction of the classic $\pi$-calculus, and because the equalizer will be associated with the axiom rule in the type system, which means it cannot be used as a prefix like $\epsilon$ or $\lambda$. That construction done now allows all else to go well, and since there is no way to clearly observe a difference in behavior between $0$ and $\tau.0$, especially since none of them interact with anything else, it is not too much of a problem to do that now, while it would create discrepancies later to not do it.
 
 \example let's see how our first example goes with this new system. What we want is to follow the projection backwards to create an annotated term. Obviously, there will be choices to be made as to whether we want to use a parallel or a synchronization for the pre-image of the parallel in the projection, as well as choices for the $\tau$. One example of term that could work, and that we will be keeping for this paper, is the following:
 \[(\nu v)(\bar{u}_x\langle v\rangle.(x\tto y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle w\rangle.(x\tto z) ||_z Q)\]
