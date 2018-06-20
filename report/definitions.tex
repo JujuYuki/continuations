@@ -56,9 +56,9 @@ We will follow this example in the paper, as it will be able to show a great var
 
 \subsection{The annotated $\pi$-calculus and its projection}
 
-We first need to define the language of terms of our annotated $\pi$-calculus.
+We now need to define the language of terms of our annotated $\pi$-calculus.
 \begin{definition}
-Take two countable sets, $N:=\{t,u,v,\ldots\}$ the set of names and $V:=\{x,y,z,\ldots\}$ the set of variables.\\
+Take two countable sets, $N:=\{t,u,v,\ldots\}$ the set of names as in the classic $\pi$-calculus, and $V:=\{x,y,z,\ldots\}$ the set of variables for the decorations.\\
 The annotated terms are defined by the following grammar:
 \begin{flalign*}P,Q::= & x\tto y\;\; ; \;\; 0_x\;\; ; &x,y\in V\;\;\;\text{base terms: equalizer and null action}&\\
 & \epsilon_x.P\;\; ; & x\not\in fv(P)\;\;\;\text{variable introduction scheduling prefix}&\\
@@ -81,14 +81,17 @@ fv(P ||_x Q) &= (fv(P)\cup fv(Q))\backslash\{x\} & fn(P ||_x Q) &= fn(P)\cup fn(
 \end{align*}
 \end{definition}
 
+\remark the only construction with a prefix that adds to the variables of a term is the variable introduction ($\epsilon_x$ construction). That is because, as the rules are defined here for the other prefixes, the variable used to decorate the prefix already exists in the subterm, and the variable is used as a follow-up for the behavior of this term. The $\lambda$ is also binding for its second variable ($y$ here), keeping availability for its first variable only. The $\epsilon$, on the opposite, creates its variable, that does not exist in the base term.
+
 \remark in some constructions and some cases, it can be useful to have a notation to describe in which subterm a variable appears. We will choose for that to put the variable in exponent, so that $(P^x |_y Q) |_x R^x$ denotes the fact that $x$ appears in $P$ and $R$, but not in $Q$.
 
 \remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
 
-\remark the lambda is also binding for its second variable ($y$ here), keeping availability for its first variable only. The $\epsilon$, on the opposite, creates its variable, that does not exist in the base term.
-
 \remark we also define substitution of names and variables by induction on the terms the exact same way as usual. Though, it is important to note that, because names and variables are two distinct and independent sets, substituting a variable for a name (or the opposite) is not possible. The distinction between those two sets is important for the reduction to pose no problem of variable capture, and allows for something akin to $\alpha$-conversion from $\lambda$-calculi: one can rename freely all instances of a free variable or name in a term for a fresh one, or all instances of a bound variable or name (including the binding operator) for a fresh one as well \emph{in the scope of the binding operator}, and the term is still considered the same.\\
 
+\textcolor{red}{EXAMPLE + PROJECTION HERE + PROJECT $\lambda$ and $\epsilon$ to $\tau$.}
+
+\textcolor{red}{NEW SECTION 2 HERE}\\ %TODO
 The synchronization rule will be used to guide the behavior of terms, thus we define a reduction system over this construction specifically, as follows:
 \begin{definition}
 \label{reduction}
