@@ -2,25 +2,57 @@
 
 \subsection{The classic $\pi$-calculus}
 
-Let us first remind the classic $\pi$-calculus and its constructs:
+Let us first remind the multiplicative part of the classic $\pi$-calculus and its constructs, as done in~\cite{sangiorgi-2001-pi-calculus}:
 
 \begin{definition}
 Given a countable set of names $N:=\{t,u,v,\ldots\}$, the grammar defining the terms of the multiplicative $\pi$-calculus is as follows:\\
 \begin{flalign*}
 P,Q ::=	& 0 \;\; ; \;\; P | Q & \text{null action and parallel construction}\\
-		& u(t).P \;\; ; \bar{u}(v).P & \text{sending and receiving names over a channel}\\
-		& (\nu u)P & \text{name binding prefix}
+		& u(t).P \;\; ; \;\; \bar{u}(v).P & \text{sending and receiving names over a channel}\\
+		& \tau.P\;\; ; \;\; (\nu u)P & \text{internal action and name binding}
 \end{flalign*}
+We define the set of free names of a term $P$ by induction on terms as follows:
+\begin{align*}
+fn(0) &= \emptyset \\
+fn(P|Q) &= fn(P)\cup fn(Q)\\
+fn(u(t).P) &= (fn(P)\backslash\{t\})\cup\{u\}\\
+fn(\bar{u}(v).P) &= fn(P)\cup\{u,v\}\\
+fn(\tau.P) &= fn(P)\\
+fn((\nu u)P) &= fn(P)\backslash\{u\}
+\end{align*}
 We also define a structural congruence on terms as follows:
 \begin{align*}
 P|0 &\equiv P\\
 P|Q &\equiv Q|P\\
 P|(Q|R) &\equiv (P|Q)|R\\
-(\nu u) P &\equiv P\;\;\;\;\text{if }u\text{ is not a free name in }P
+(\nu u)(\nu v) P &\equiv (\nu v)(\nu u) P\\
+(\nu u)0 &\equiv 0\\
+(\nu u)(P|Q) &\equiv P|(\nu u)Q\;\;\;\;\text{if }u\not\in fn(P)
 \end{align*}
-and a reduction rule:
-\[u(t).P|\bar{u}(v)Q \to P[v/t]|Q\]
+and a reduction relation given by the rules:\\~\\
+\indent\hfill\begin{prooftree}\infer0{u(t).P|\bar{u}(v)Q &\to P[v/t]|Q}\end{prooftree}\hfill
+\begin{prooftree}\infer0{\tau.P &\to P}\end{prooftree}\hfill~\\~\\
+\begin{prooftree}\hypo{P\to P'}\infer1{P|Q\to P'|Q}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\to P'}\infer1{(\nu u)P\to(\nu u)P'}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\equiv Q\to Q'\equiv P'}\infer1{P\to P'}\end{prooftree}\\~\\
+where the substitution is defined in an usual fashion by induction on terms.
 \end{definition}
+
+With this system defined, we would like to look at an example term that would be interesting to follow in the paper.
+\example let's take a term which would want to communicate a private name over a public channel to some other process, in order to use this name as a new channel to communicate with this second process for the rest of execution, especially waiting for a response on this name before continuing execution. Such a term can be of the form $(\nu v)(\bar{u}(v)|v(t).P)$, where we forget the trailing 0 after the sending part. It could then interact with anything of the form $u(t).(\bar{t}(w)|Q)$, where we again forget the trailing zero after the receiving part.\\
+Putting these together:
+\begin{align*}
+(\nu v)(\bar{u}(v)|v(t).P)|u(t).(\bar{t}(w)|Q) &\equiv (\nu v)((\bar{u}(v)|v(t).P)|u(t).(\bar{t}(w)|Q))\\
+&\equiv (\nu v)((v(t).P|\bar{u}(v))|u(t).(\bar{t}(w)|Q))\\
+&\equiv (\nu v)(v(t).P|(\bar{u}(v)|u(t).(\bar{t}(w)|Q)))\\
+&\to (\nu v)(v(t).P|(\bar{v}(w)|Q[v/t]))\\
+&\equiv (\nu v)((v(t).P|\bar{v}(w))|Q[v/t])\\
+&\to (\nu v)(P[w/v]|Q[v/t])
+\end{align*}
+
+We will follow this example in the paper, as it will be able to show a great variety of propositions applied to a practical example.
+
+\remark we see that the reduction $\to$ here is not confluent. A good example for that would be the term $(u(t).P|\bar{u}(v).Q)|u(t).S \equiv u(t).P|(\bar{u}(v).Q|u(t).S)$ that can reduce to either $(P[v/t]|Q)|u(t).S$ or $u(t).P|(Q|S[v/t])$, and those reduction paths do not have a common reduction in general, especially if $P,Q$ and $S$ are independent. That gives us a system that is highly non-deterministic when studied up to structural congruence. That could lead to terms with multiple reduction paths, but some of them could end up blocked at some point while others could end the reduction to the base term 0. This specific behavior with multiple reduction paths possibly being blocked is what we will try to avoid with the decorated calculus, by forcing a reduction path with annotations.
 
 \subsection{The annotated $\pi$-calculus and its projection}
 
