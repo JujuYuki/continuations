@@ -7,7 +7,7 @@ Let us first remind the multiplicative part of the classic $\pi$-calculus and it
 \begin{definition}
 Given a countable set of names $N:=\{t,u,v,\ldots\}$, the grammar defining the terms of the multiplicative $\pi$-calculus is as follows:\\
 \begin{flalign*}
-P,Q ::=	& 0 \;\; ; \;\; P | Q & \text{null action and parallel construction}\\
+P,Q ::=\;\;	& 0 \;\; ; \;\; P | Q & \text{null action and parallel construction}\\
 		& u(t).P \;\; ; \;\; \bar{u}(v).P & \text{sending and receiving names over a channel}\\
 		& \tau.P\;\; ; \;\; (\nu u)P & \text{internal action and name binding}
 \end{flalign*}
@@ -27,8 +27,7 @@ P|Q &\equiv Q|P\\
 P|(Q|R) &\equiv (P|Q)|R\\
 (\nu u)(\nu v) P &\equiv (\nu v)(\nu u) P\\
 (\nu u)0 &\equiv 0\\
-(\nu u)(P|Q) &\equiv P|(\nu u)Q\;\;\;\;\text{if }u\not\in fn(P)\\
-\tau.P|Q &\equiv \tau.(P|Q)
+(\nu u)(P|Q) &\equiv P|(\nu u)Q\;\;\;\;\text{if }u\not\in fn(P)
 \end{align*}
 and a reduction relation given by the rules:\\~\\
 \indent\hfill\begin{prooftree}\infer0{u(t).P|\bar{u}(v)Q &\to P[v/t]|Q}\end{prooftree}\hfill
@@ -40,20 +39,25 @@ where the substitution is defined in an usual fashion by induction on terms.
 \end{definition}
 
 With this system defined, we would like to look at an example term that would be interesting to follow in the paper.
-\example let's take a term which would want to communicate a private name over a public channel to some other process, in order to use this name as a new channel to communicate with this second process for the rest of execution, especially waiting for a response on this name before continuing execution. Such a term can be of the form $(\nu v)(\bar{u}(v)|v(t).P)$, where we forget the trailing 0 after the sending part. It could then interact with anything of the form $u(t).(\bar{t}(w)|Q)$, where we again forget the trailing zero after the receiving part.\\
+\example let's take a term which would want to communicate a private name over a public channel to some other process, in order to use this name as a new channel to communicate with this second process for the rest of execution, especially waiting for a response on this name before continuing execution. Such a term can be of the form $(\nu v)(\bar{u}(v).\tau.0|v(t).P)$. It could then interact with anything of the form $u(t).(\bar{t}(w).\tau.0|Q)$.\\
 Putting these together:
 \begin{align*}
-(\nu v)(\bar{u}(v)|v(t).P)|u(t).(\bar{t}(w)|Q) &\equiv (\nu v)((\bar{u}(v)|v(t).P)|u(t).(\bar{t}(w)|Q))\\
-&\equiv (\nu v)((v(t).P|\bar{u}(v))|u(t).(\bar{t}(w)|Q))\\
-&\equiv (\nu v)(v(t).P|(\bar{u}(v)|u(t).(\bar{t}(w)|Q)))\\
-&\to (\nu v)(v(t).P|(\bar{v}(w)|Q[v/t]))\\
-&\equiv (\nu v)((v(t).P|\bar{v}(w))|Q[v/t])\\
-&\to (\nu v)(P[w/v]|Q[v/t])
+(\nu v)(\bar{u}(v).\tau.0|v(t').P)|u(t).(\bar{t}(w).\tau.0|Q) &\equiv (\nu v)((\bar{u}(v).\tau.0|v(t).P)|u(t).(\bar{t}(w).\tau.0|Q))\\
+&\equiv (\nu v)((v(t').P|\bar{u}(v).\tau.0)|u(t).(\bar{t}(w).\tau.0|Q))\\
+&\equiv (\nu v)(v(t').P|(\bar{u}(v).\tau.0|u(t).(\bar{t}(w).\tau.0|Q)))\\
+&\to (\nu v)(v(t').P|(\tau.0|(\bar{v}(w).\tau.0|Q[v/t])))\\
+&\to (\nu v)(v(t').P|(0|(\bar{v}(w).\tau.0|Q[v/t])))\\
+&\equiv (\nu v)(v(t').P||(\bar{v}(w).\tau.0|Q[v/t]))\\
+&\equiv (\nu v)((v(t').P|\bar{v}(w).\tau.0)|Q[v/t])\\
+&\to (\nu v)((P[w/t']|\tau.0)|Q[v/t])\\
+&\to (\nu v)((P[w/t']|0)|Q[v/t])\\
+&\equiv (\nu v)(P[w/t']|Q[v/t])
 \end{align*}
 
 We will follow this example in the paper, as it will be able to show a great variety of propositions applied to a practical example.
 
-\remark we see that the reduction $\to$ here is not confluent. A good example for that would be the term $(u(t).P|\bar{u}(v).Q)|u(t).S \equiv u(t).P|(\bar{u}(v).Q|u(t).S)$ that can reduce to either $(P[v/t]|Q)|u(t).S$ or $u(t).P|(Q|S[v/t])$, and those reduction paths do not have a common reduction in general, especially if $P,Q$ and $S$ are independent. That gives us a system that is highly non-deterministic when studied up to structural congruence. That could lead to terms with multiple reduction paths, but some of them could end up blocked at some point while others could end the reduction to the base term 0. This specific behavior with multiple reduction paths possibly being blocked is what we will try to avoid with the decorated calculus, by forcing a reduction path with annotations.
+\remark we see that the reduction $\to$ here is not confluent. A good example for that would be the term\\
+$(u(t).P|\bar{u}(v).Q)|u(t).S \equiv u(t).P|(\bar{u}(v).Q|u(t).S)$ that can reduce to either $(P[v/t]|Q)|u(t).S$ or $u(t).P|(Q|S[v/t])$, and those reduction paths do not have a common reduction in general, especially if $P,Q$ and $S$ are independent. That gives us a system that is highly non-deterministic when studied up to structural congruence. That could lead to terms with multiple reduction paths, but some of them could end up blocked at some point while others could end the reduction to the base term 0. This specific behavior with multiple reduction paths possibly being blocked is what we will try to avoid with the decorated calculus, by forcing a reduction path with annotations.
 
 \subsection{The annotated $\pi$-calculus and its projection}
 
@@ -86,177 +90,27 @@ fv(P ||_x Q) &= (fv(P)\cup fv(Q))\backslash\{x\} & fn(P ||_x Q) &= fn(P)\cup fn(
 
 \remark in some constructions and some cases, it can be useful to have a notation to describe in which subterm a variable appears. We will choose for that to put the variable in exponent, so that $(P^x |_y Q) |_x R^x$ denotes the fact that $x$ appears in $P$ and $R$, but not in $Q$.
 
-\remark the parallel and synchronization constructions behave differently on their variable. The parallel rule gives a term that puts together the two instances of the variable observed, and keeps it available for further use, while the synchronization rule uses both instances of the variable observed and thus has it unavailable for further use in the created term. The synchronization is a binding operator.
-
 \remark we also define substitution of names and variables by induction on the terms the exact same way as usual. Though, it is important to note that, because names and variables are two distinct and independent sets, substituting a variable for a name (or the opposite) is not possible. The distinction between those two sets is important for the reduction to pose no problem of variable capture, and allows for something akin to $\alpha$-conversion from $\lambda$-calculi: one can rename freely all instances of a free variable or name in a term for a fresh one, or all instances of a bound variable or name (including the binding operator) for a fresh one as well \emph{in the scope of the binding operator}, and the term is still considered the same.\\
 
-This calculus has very similar constructions to the classic $\pi$-calculus defined above. Of note though is that the parallel operation, the internal action and the null process have two equivalent each in the decorated calculus. For the parallel operation, the meaning basically is that the single one puts two processes together, but they might not interact with each other, which is why the variable used to observe them together is kept available to the outside world, while the synchronization h
-
-\textcolor{red}{EXAMPLE + PROJECTION HERE + PROJECT $\lambda$ and $\epsilon$ to $\tau$.}
-
-\textcolor{red}{NEW SECTION 2 HERE}\\ %TODO
-The synchronization rule will be used to guide the behavior of terms, thus we define a reduction system over this construction specifically, as follows:
-\begin{definition}
-\label{reduction}
-We define a reduction rule for synchronization (that does not hold under action prefixes) as follows:
-\begin{flalign*}
-\epsilon_x.P||_x 0_x &\to P &\text{symmetric in }||\;\;\;1\\
-P||_x x\tto y &\to P[y/x] &\text{symmetric in }||\;\;\;2\\
-(P|_xQ)||_x \lambda_xy.R &\to P||_x (Q[y/x] ||_y R) &3a\\
-\lambda_xy.R ||_x (P|_xQ) &\to (R||_xP)||_y Q[y/x] &3b\\
-\bar{u}_x\langle v \rangle.P||_x u_x(t).Q &\to P ||_x Q[v/t] &\text{symmetric in }||\;\;\;4
-\end{flalign*}
-We also define rules for commuting the synchronization with other rules, at first not holding under action prefixes:
-\begin{flalign*}
-(P|_xQ)||_yR &\succ (P||_yR)|_xQ &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;5a\\
-(P|_xQ)||_yR &\succ P|_x(Q||_yR) &\text{symmetric in $||$, }y\not\in fv(P)\;\;\;5b\\
-\epsilon_x.P||_yQ &\succ \epsilon_x.(P||_yQ) &\text{symmetric in $||$, }x\not\in fv(Q)\;\;\;6a\\
-\lambda_xy.P||_zQ &\succ \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
-(\nu u)P ||_x Q &\succ (\nu u)(P||_xQ) &\text{symmetric in $||$, }u\not\in fn(Q)\;\;\;6c
-\end{flalign*}
-\end{definition}
-
-\remark In rules 5 and 6, some parts have strong requirements, such as a variable not being present in one or more subterms. Failure to meet those requirements can lead to terms that do not reduce past a certain point, when no other rule can apply. See an example below of a term annotated to be able to reduce, and the same term with annotations changed that fails to do so.\\
-\textcolor{red}{INCLUDE EXAMPLE HERE (and everywhere really...)}\\~\\
-%TODO - Examples to this remark: take main example for later parts 2 and 3, once with good constraints, and once without them (change some variables to be the same)\sim
-We would like these arrows to have a confluent behavior. First, we remark that $\to$ is strongly confluent. Then, we will need an equivalence relation to be defined for the confluence of $\succ$.
-
-\begin{proposition}
-Relation $\to$ is strongly confluent.
-\end{proposition}
-
-\begin{myproof}
-Since a synchronization makes the observed variable unavailable to the term, and because $\to$ does not allow for an arbitrary term on any side but only explicitly fixed constructions, and not allowing for these constructions to be a synchronization, we can remark that two reductions using $\to$ in the same term cannot interfere with each other. Thus, a term capable of two reductions using $\to$ has one of them be either a strict subterm of the other, or distinct parts of a more general term. The reductions then do not interfere with each other, and can be followed in any order.\\
-Only exception to that is the interaction of two equalizer base terms synchronized on the same variable, but the commutativity of this construction makes it close immediately:\\
-\[\begin{tikzcd}
-& x\tto y ||_x x\tto z \arrow[dl] \arrow[dr] &\\
-(x\tto z)[y/x]\arrow[d, phantom, "\shortparallel"] & & (x\tto y)[z/x]\arrow[d, phantom, "\shortparallel"]\\
-y\tto z & = & z\tto y
-\end{tikzcd}\]
-\end{myproof}
-
-Because of the specificity of the constructions in the $\to$, it does not directly interact with $\succ$ rules, except for the $x\tto y$ case.
-
-We remind the definitions of a simulation ans a bisimulation, as those tools are uncommon enough to justify being introduced here:
+This calculus has very similar constructions to the classic $\pi$-calculus defined above. Of note though is that the parallel operation, the internal action and the null process have two equivalent each in the decorated calculus. For the parallel operation, the meaning is that it puts two processes together, but they might not interact with each other, which is why the variable used to observe them together is kept available to the outside world, while the synchronization puts the processes in interaction with each other on this variable, which is why it is hidden from the exterior, acting as a binding operation. The $\epsilon$ is an internal action that creates a variable to observe on, while the $\lambda$ is an internal action that puts two variables together to observe as one. The $0$ is still an inactive process, which we do not need to observe on more than one variable, and the equalizer is a bit more complex, as it does nothing observable but create two observation variables. This specificity will be addressed in the projection:
 
 \begin{definition}
-\begin{itemize}
-	\item A simulation $\RR$ is a binary relation on terms such that, for all terms $P,Q$,\\
-		if $P \RR Q$ then forall $P \to P'$ there exists a term $Q'$ such that $Q \to Q'$ and $P' \RR Q'$.
-	\item A bisimulation $\RR$ is a binary relation on terms such that $\RR$ and $\RR^{-1}$ are simulations.
-\end{itemize}
+We define a projection operator $\lfloor\cdot\rfloor$ from the annotated calculus to the classic $\pi$-calculus as follows:\\
+\begin{align*}
+\lfloor 0_x \rfloor &= 0 \\
+\lfloor x \tto y \rfloor &= \tau.0 \\
+\lfloor \lambda_xy.P \rfloor &= \tau.\lfloor P \rfloor \\
+\lfloor \epsilon_x.P \rfloor &= \tau.\lfloor P \rfloor \\
+\lfloor u_x(t).P \rfloor &= u(t).\lfloor P \rfloor \\
+\lfloor \bar{u}_x\langle v\rangle.P \rfloor &= \bar{u}(v).\lfloor P \rfloor \\
+\lfloor P |_x Q \rfloor &= \lfloor P \rfloor | \lfloor Q \rfloor \\
+\lfloor P ||_x Q \rfloor &= \lfloor P \rfloor | \lfloor Q \rfloor \\
+\lfloor (\nu u)P \rfloor &= (\nu u)\lfloor P \rfloor
+\end{align*}
 \end{definition}
 
-Then, because of the lack of direct interaction between $\to$ and $\succ$, we have:
+\remark The way we address the complicated meaning of the equalizer is by projecting it to $\tau.0$, which is a bit hacky, but is justified later by allowing for the reduction we want to define on the annotated calculus to project exactly on the reduction of the classic $\pi$-calculus, and by the fact this equalizer cannot be transformed to a prefix in the way we want out typing system to work even later. That construction done now allows all else to go well, and since there is no way to clearly observe a difference in behavior between $0$ and $\tau.0$, especially since none of them interact with anything else, it is not too much of a problem to do that now, while it would create discrepancies later to not do it.
 
-\begin{proposition}
-The reflexive closure of relation $\succ$ is a simulation for $\to$.
-\end{proposition}
-
-\begin{myproof}
-The cases to treat are those where $x\tto y$ interacts with something. We treat two of them below, and also put the cut variable in exponent of the term where it appears in, in order to apply rule 5 efficiently, where appilcable:\\
-\begin{tikzcd}
-(P^y|_xQ)||_y x\tto y \arrow[r]\arrow[d,phantom,"\curlyvee_{5a}"] & (P^y|_xQ)[x/y] = P[x/y] |_x Q\\
-(P^y ||_y x\tto y) |_x Q \arrow[ur] &
-\end{tikzcd}\hfill
-\begin{tikzcd}
-\lambda_xy.P||_z z\tto x \arrow[r]\arrow[d,phantom,"\curlyvee_{6b}"] & (\lambda_xy.P)[x/z] = P[x/z]\\
-\lambda_xy.(P ||_z z\tto x) \arrow[ur] &
-\end{tikzcd}\\
-All other cases act the same way, or are the same as for $\to$ not interacting with itself because one of the reductions occurs either in a strict subterm of the other, or in a distinct term from the other.
-\end{myproof}
-
-The $\succ$ relation in itself has a bit more complexity to it being confluent, as two instances can interact with each other. A congruence is needed to make this relation confluent.
-
-\begin{definition}
-We define a congruence rule, that does not act on action prefixes, with the following axioms:
-\begin{flalign*}
-(P|_xQ)|_yR &\equiv (P|_yR)|_xQ &y\not\in fv(Q), x\not\in fv(R)\;\;\;a_1\\
-P|_x(Q|_yR) &\equiv Q|_y(P|_xR) &y\not\in fv(P), x\not\in fv(Q)\;\;\;a_2\\
-(P|_xQ)|_yR &\equiv P|_x(Q|_yR) &y\not\in fv(P), x\not\in fv(R)\;\;\;b\\
-P|_x \alpha_y.Q &\equiv \alpha_y.(P|_xQ) &\text{symmetric in }|, \alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}, y,t\not\in fv(P)\;\;\;c\\
-\alpha_x.\beta_y.P &\equiv \beta_y.\alpha_x.P &\alpha_{\cdot},\beta_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\},x\neq y\;\;\;d\\
-(\nu u) P |_x Q &\equiv (\nu u)(P |_x Q)&\text{symmetric in }|, u\not\in fn(Q)\;\;\;e\\
-(\nu u)\alpha_x.P &\equiv \alpha_x.(\nu u)P &\alpha_{\cdot}\in\{\epsilon_{\cdot},\lambda_{\cdot} z\}\;\;\;f
-\end{flalign*}
-This rule is defined as an equivalence (reflexive, symmetric and transitive), and applies inside contexts (except action prefixes).\\
-\end{definition}
-
-This equivalence allows for the confluence of $\succ$:
-
-\begin{proposition}
-Relation $\succ$ is confluent up to $\equiv$,\\
-\ie for all $P_1 \prec P \succ P_2$, there exists $P_1',P_2'$ such that\\
-\begin{tikzcd}
-& P \arrow[dl,phantom,"\dlsucc"]\arrow[dr,phantom,"\drsucc"] &\\
-P_1 \arrow[d,phantom,"\curlyvee"] & & P_2 \arrow[d,phantom,"\curlyvee"]\\
-P_1' & \equiv & P_2'
-\end{tikzcd}
-\end{proposition}
-
-\begin{myproof}
-There are 3 possible cases here, for two groups of rules in the $\succ$ relation.\\
-Rule 5 against rule 5: there are 4 cases, depending on where the variable cut against is situated. The variable is noted as an exponent in the terms where it appears, and only 2 cases are treated (as the other two are their complements, and are treated the same):\\
-\begin{tikzcd}
-& (P^y|_xQ)||_y(R^y|_zS)\arrow[dl,phantom,"\dlsucc_{5a,\;left}"xshift=2.5ex]\arrow[dr,phantom,"\drsucc_{5a,\;right}"xshift=2.5ex] &\\
-(P^y||_y(R^y|_zS))|_xQ\arrow[d,phantom,"\curlyvee_{5a}"] & & ((P^y|_xQ)||_yR^y)|_zS\arrow[d,phantom,"\curlyvee_{5a}"]\\
-((P^y||_yR^y)|_zS)|_xQ & \equiv_{a_1} & ((P^y||_yR^y)|_xQ)|_zS
-\end{tikzcd}\\
-\indent\hfill\begin{tikzcd}
-& (P^y|_xQ)||_y(R|_zS^y)\arrow[dl,phantom,"\dlsucc_{5a,\;left}"xshift=2.5ex]\arrow[dr,phantom,"\drsucc_{5b,\;right}"xshift=2.5ex] &\\
-(P^y||_y(R|_zS^S))|_xQ\arrow[d,phantom,"\curlyvee_{5b}"] & & R|_z((P^y|_xQ)||_yS^y)\arrow[d,phantom,"\curlyvee_{5a}"]\\
-(R|_z(P^y||_yS^y))|_xQ & \equiv_{b} & R|_z((P^y||_yS^y)|_xQ)
-\end{tikzcd}\\
-Rule 6 against rule 6 works the same, here is an example with $\epsilon$ and $\nu$:\\
-\[\begin{tikzcd}
-& \epsilon_x.P ||_y (\nu u) Q \arrow[dl,phantom,"\dlsucc_{6a}"xshift=1.1ex]\arrow[dr,phantom,"\drsucc_{6c}"] &\\
-\epsilon_x.(P ||_y (\nu u) Q)\arrow[d,phantom,"\curlyvee_{6c}"] & & (\nu u)(\epsilon_x.P ||_y Q)\arrow[d,phantom,"\curlyvee_{6a}"]\\
-\epsilon_x.(\nu u)(P||_yQ) & \equiv_{f} & (\nu u)\epsilon_x.(P||_yQ)
-\end{tikzcd}\]
-Other cases in the possible 6 against 6 rules are treated in the exact same manner. The last set of cases is a rule 5 against a rule 6. Those are all treated the same way as well, so we only treat one example:\\
-\[\begin{tikzcd}
-& (P^y |_x Q) ||_y (\nu u) R \arrow[dl,phantom,"\dlsucc_{5a}",xshift=1.1ex]\arrow[dr,phantom,"\drsucc_{6c}"] &\\
-(P^y ||_y (\nu u) R)|_x Q\arrow[d,phantom,"\curlyvee_{6c}"] & & (\nu u)((P^y|_xQ) ||_y R)\arrow[d,phantom,"\curlyvee_{5a}"]\\
-(\nu u)(P^y ||_y R) |_x Q & \equiv_{e} & (\nu u)((P^y ||_y R) |_x Q)
-\end{tikzcd}\]
-That ends the proof of confluence for $\succ$ up to $\equiv$.
-\end{myproof}
-
-We need $\equiv$ to not alter the behavior of $\to$ in order for the system to work well. We do not have that kind of property here (\ie $\equiv$ is not a simulation for $\to$), but we can observe an interesting phenomenon by allowing to do $\succ$ steps where needed:\\
-\[\begin{tikzcd}
-\lambda_xy.\epsilon_z.P ||_x (Q |_xR) \arrow[r,phantom,"\equiv"] \arrow[d] & \epsilon_z.\lambda_xy.P ||_x (Q |_x R) \arrow[d,phantom,"\curlyvee"]\\
-(\epsilon_z.P ||_x Q) ||_y R[y/x] \arrow[d,phantom,"\curlyvee"] & \epsilon_z.(\lambda_xy.P ||_x (Q |_x R)) \arrow[d]\\
-(\epsilon_z.(P ||_x Q)) ||_y R[y/x] \arrow[r,phantom,"\succ"] & \epsilon_z.((P ||_x Q) ||_y R[y/x])
-\end{tikzcd}\]
-We have a more general property emanating of that, that gives us something close to a simulation behavior:
-\begin{proposition}
-For all $P\equiv Q$ and $P\to P'$,\\
-there exists $Q \succ^* Q' \to Q'' \equiv P'' \prec^* P'$,\\
-\ie \begin{tikzcd}
-P \arrow[r,phantom,"\equiv"]\arrow[d] & Q\arrow[d,phantom,"\curlyvee^*"]\\
-P' \arrow[d,phantom,"\curlyvee^*"] & Q' \arrow[d]\\
-P'' \arrow[r,phantom,"\equiv"] & Q''
-\end{tikzcd}
-\end{proposition}
-
-\begin{myproof}
-We treat some interesting cases here, to complete from the one above, still where necessary with the cut variable in exponent where it appears:\\
-\begin{tikzcd}
-\epsilon_z.\lambda_xy.P ||_z 0_z \arrow[r,phantom,"\equiv"] \arrow[d] & \lambda_xy.\epsilon_z.P ||_z 0_z \arrow[d,phantom,"\curlyvee"]\\
-\lambda_xy.P & \lambda_xy.(\epsilon_z.P ||_z 0_z) \arrow[l]
-\end{tikzcd}\hfill
-\begin{tikzcd}
-\epsilon_z.((P|_xQ)|_yR) ||_z 0_z \arrow[r,phantom,"\equiv"] \arrow[d] & \epsilon_z.(P|_x(Q|_yR)) ||_z 0_z \arrow[d]\\
-(P|_xQ)|_yR \arrow[r,phantom,"\equiv"] & P|_x(Q|_yR)
-\end{tikzcd}\\~\\~\\~\\
-\begin{tikzcd}
-((P|_xQ^y)|_yR^y) ||_y \lambda_yz.S \arrow[d]\arrow[r,phantom,"\equiv"] & (P|_x(Q^y|_yR^y)) ||_y \lambda_yz.S^y \arrow[d,phantom,"\curlyvee"] \\
-(P|_xQ^y) ||_y (R[z/y] ||_z S) \arrow[dr,phantom,"\drsucc"] & P|_x ((Q^y|_yR^y) ||_y \lambda_yz.S^y) \arrow[d] \\
-& P|_x (Q^y ||_y (R[z/y] ||_z S^y))
-\end{tikzcd}\hfill
-\begin{tikzcd}
-\; \arrow[r,phantom,"\text{where }P\equiv P':"] & \;\\
-u_x(t).P ||_x \bar{u}_x\langle v\rangle.Q \arrow[d]\arrow[r,phantom,"\equiv"] & u_x(t).P' ||_x \bar{u}_x\langle v\rangle.Q \arrow[d]\\
-P[v/t] ||_x Q \arrow[r,phantom,"\equiv"] & P'[v/t] ||_x Q
-\end{tikzcd}
-\end{myproof}
+\example let's see how our first example goes with this new system. What we want is to follow the projection backwards to create an annotated term. Obviously, there will be choices to be made as to whether we want to use a parallel or a synchronization for the pre-image of the parallel in the projection, as well as choices for the $\tau$. One example of term that could work, and that we will be keeping for this paper, is the following:
+\[(\nu v)(\bar{u}_x\langle v\rangle.(x\tto y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle w\rangle.(x\tto z) ||_z Q)\]
+Why we chose this form of the term is both for having a nice term for later when we introduce the reduction rules, as well as because the two name interactions and the two internal actions we saw reduce in the first example were separate, hinting at something to do with the term itself and not its potential interactions with the exterior.

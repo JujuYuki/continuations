@@ -1,9 +1,6 @@
-%% typing system
-%%%% Remove the arrows and move the annotation on the quantifier to gain
-%%%% a little space
-%% proof that  cut elim maintains typing
-
 \section{Typing decorated terms with MLL}
+
+\subsection{The typing system}
 
 We first define the language of formulas that we will use for the typing system:
 \begin{definition}
@@ -46,37 +43,194 @@ The typing system is given by the following rules, where $\Gamma,\Delta$ are par
 }
 \end{definition}
 
-One important thing to note here, as explained before, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$ and $\succ$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates and actually eliminates cuts.
+One important thing to note here, as explained before, is that for PARA and CUT rules, $\Gamma$ and $\Delta$ are disjoint. The other important thing is that the synchronization construction becomes a CUT operation in the typing system. This rule has elimination transformations, given by the relations $\to$ and $\succ$ defined in \ref{reduction}. Properties we would like to emerge from such a construction would be that the arrows preserve typing, and that their application for cut elimination terminates and actually eliminates cuts.\\
+Before that, let's look back at our example from part 1, which we can now type:
+
+\example The first part of the term is of the form:
+\[\begin{prooftree}
+				\hypo{x\to y \vdash x:\downarrow_v\forall t'.A, y:\uparrow_v\exists t'.A^\bot}
+			\infer1{\bar{u}_x\langle v\rangle.(x\to y) \vdash x:\uparrow_u\exists t.\downarrow_t\forall t'.A, y:\uparrow_v\exists t'.A^\bot}
+					\hypo{(\pi_1)}
+				\infer1{P \vdash \Gamma, y:A\;\;\; t' \not\in \Gamma}
+			\infer1{v_y(t').P \vdash \Gamma, y:\downarrow_v\forall t'.A}
+		\infer2[cut]{\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
+	\infer1{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\exists t.\downarrow_t\forall t'.A}
+\end{prooftree}\]
+~\\~\\
+and the second part is of the form:
+\[\begin{prooftree}
+				\hypo{x\to z \vdash x:A[w/t']^\bot, z:A[w/t']}
+			\infer1{\bar{t}_x\langle a\rangle.(x\to z) \vdash x:\uparrow_t\exists t'.A^\bot, z:A[w/t']}
+				\hypo{(\pi_2)}
+			\infer1{Q \vdash \Delta, z:A[w/t']^\bot}
+		\infer2[cut]{\bar{t}_x\langle w\rangle.(x\to z) ||_z Q \vdash \Delta, x:\uparrow_t\exists t'.A^\bot\;\;\; t\not\in \Delta}
+	\infer1{u_x(t).(\bar{t}_x\langle w\rangle.(x\to z) ||_z Q) \vdash \Delta, x:\downarrow_u\forall t.\uparrow_t\exists t'.A^\bot}
+\end{prooftree}\]
+~\\~\\
+Then we put them together:
+\[\begin{prooftree}
+		\hypo{(\nu v)(\bar{u}_x\langle v\rangle.(x\!\to\! y) ||_y v_y(t').P) \vdash \Gamma, x:\uparrow_u\!\exists t.\!\downarrow_t\!\forall t'.A}
+		\hypo{u_x(t).(\bar{t}_x\langle w\rangle.(x\!\to\! z) ||_z Q) \vdash \Delta, x:\downarrow_u\!\forall t.\!\uparrow_t\!\exists t'.A^\bot}
+	\infer2[cut]{(\nu v)(\bar{u}_x\langle v\rangle.(x\to y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle w\rangle.(x\to z) ||_z Q) \vdash \Gamma, \Delta}
+\end{prooftree}\]
+
+\subsection{Type preservation}
 
 \begin{proposition}
-Relations $\to$ and $\succ$ preserve typing, \ie for all $P\vdash\Gamma$ provable in the typing system and there exists $P'$ such that either $P\to P'$ or $P\succ P'$ can be derived in the reduction system, $P'\vdash\Gamma$ is provable.
+Relations $\to$, $\succ$ and $\equiv$ preserve typing, \ie for all $P\vdash\Gamma$ provable in the typing system and there exists $P'$ such that either $P\to P'$, $P\succ P'$ or $P\equiv P'$ can be derived in the reduction system, $P'\vdash\Gamma$ is provable.
 \end{proposition}
 
 \begin{myproof}
-\textcolor{red}{Show the reduction steps.} %TODO
+Let us treat a few cases, the most interesting ones, as the others work the same:\\~\\
+
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
+	\infer1{\bar{u}_x\langle v\rangle.P \vdash \Gamma,x:\exists_u t.A^\bot}
+		\hypo{Q \vdash \Delta,x:A\;\;\;t\not\in\Delta}
+	\infer1{u_x(t).P \vdash \Delta,x:\forall_u t.A}
+\infer2[cut]{\bar{u}_x\langle v \rangle.P||_x u_x(t).Q \vdash \Gamma,\Delta}
+\end{prooftree}
+$\to$
+\begin{prooftree}
+	\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
+	\hypo{Q[v/t] \vdash \Delta,x:A[v/t]\;\;\;t\not\in\Delta}
+\infer2[cut]{P ||_x Q[v/t] \vdash \Gamma,\Delta}
+\end{prooftree}\\
+~\\
+
+\begin{prooftree}
+		\hypo{R \vdash \Gamma,x:A^\bot,y:B^\bot}
+	\infer1{\lambda_xy.R \vdash \Gamma,x:A^\bot\logpar B^\bot}
+		\hypo{P \vdash \Delta,x:A}
+		\hypo{Q \vdash \Theta,x:B}
+	\infer2{P|_xQ \vdash \Delta,\Theta,x:A\logtensor B}
+\infer2[cut]{\lambda_xy.R ||_x (P|_xQ) \vdash \Gamma,\Delta,\Theta}
+\end{prooftree}
+$\to$
+\begin{prooftree}
+		\hypo{R \vdash \Gamma,x:A^\bot,y:B^\bot}
+		\hypo{P \vdash \Delta,x:A}
+	\infer2[cut]{R ||_x P \vdash \Gamma,\Delta,y:B^\bot}
+	\hypo{Q[y/x] \vdash \Theta,y:B}
+\infer2[cut]{(R||_xP)||_y Q[y/x] \vdash \Gamma,\Delta,\Theta}
+\end{prooftree}\\
+~\\
+
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A,y:C}
+		\hypo{Q \vdash \Delta,x:B}
+	\infer2{P|_xQ \vdash \Gamma,\Delta,x:A\logtensor B,y:C}
+	\hypo{R \vdash \Theta,y:C^\bot}
+\infer2[cut]{(P|_xQ)||_yR \vdash \Gamma,\Delta,\Theta,x:A\logtensor B}
+\end{prooftree}
+$\succ$
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A,y:C}
+		\hypo{R \vdash \Theta,y:C^\bot}
+	\infer2{P||_yQ \vdash \Gamma,\Theta,x:A}
+	\hypo{Q \vdash \Delta,x:B}
+\infer2{(P||_yR)|_xQ \vdash \Gamma,\Delta,\Theta,x:A\logtensor B}
+\end{prooftree}\\
+~\\
+
+
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A\;\;\; u\not\in\Gamma\cup\{A\}}
+	\infer1{(\nu u)P \vdash \Gamma}
+	\hypo{Q \vdash \Delta,x:B\;\;\; u\not\in\Delta\cup\{B\}}
+\infer2{(\nu u) P |_x Q \vdash \Gamma,\Delta,x:A\logtensor B}
+\end{prooftree}
+$\equiv$
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A\;\;\; u\not\in\Gamma\cup\{A\}}
+		\hypo{Q \vdash \Delta,x:B\;\;\; u\not\in\Delta\cup\{B\}}
+	\infer2{P|_xQ \vdash \Gamma,\Delta\;\;\; u\not\in\Gamma\cup\Delta\cup\{A,B\}}
+\infer1{(\nu u)(P |_x Q) \vdash \Gamma,\Delta,x:A\logtensor B}
+\end{prooftree}
 \end{myproof}
 
+This property gives us something very important, as this means our reduction system is correct with the typing. That means well-typed terms do reduce to well-typed terms, and as such execution steps do not give ill-behaving terms.
+
 \begin{proposition}
-The rewriting system induced by $\to$ and $\succ$ terminates, \ie there is no infinite, strictly decreasing sequence of reductions for this rule.
+The rewriting system induced by $\to$ and $\succ$ terminates, \ie there is no infinite, strictly decreasing sequence of reductions for this rule.\\
 \end{proposition}
 
 \begin{myproof}
-\textcolor{red}{Take all cases in the proof above, and show the strictly decreasing tuple of sizes of terms under the cut. Since $\N$ has no infinite decreasing sequence, by well formed induction, the reduction terminates.} %TODO
+Let us again treat the same few cases, the most interesting ones, as the others work the same.\\
+The decreasing measure is the sum of the sizes of the terms right under the cut:\\~\\
+
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
+	\infer1{\bar{u}_x\langle v\rangle.P \vdash \Gamma,x:\exists_u t.A^\bot}
+		\hypo{Q \vdash \Delta,x:A\;\;\;t\not\in\Delta}
+	\infer1{u_x(t).P \vdash \Delta,x:\forall_u t.A}
+\infer2[cut]{\bar{u}_x\langle v \rangle.P||_x u_x(t).Q \vdash \Gamma,\Delta}
+\end{prooftree}
+$\to$
+\begin{prooftree}
+	\hypo{P \vdash \Gamma,x:A[v/t]^\bot}
+	\hypo{Q[v/t] \vdash \Delta,x:A[v/t]\;\;\;t\not\in\Delta}
+\infer2[cut]{P ||_x Q[v/t] \vdash \Gamma,\Delta}
+\end{prooftree}\\
+Where both sides had their sizes reduced by 1, so the sum was reduces by 2.\\
+~\\
+
+\begin{prooftree}
+		\hypo{R \vdash \Gamma,x:A^\bot,y:B^\bot}
+	\infer1{\lambda_xy.R \vdash \Gamma,x:A^\bot\logpar B^\bot}
+		\hypo{P \vdash \Delta,x:A}
+		\hypo{Q \vdash \Theta,x:B}
+	\infer2{P|_xQ \vdash \Delta,\Theta,x:A\logtensor B}
+\infer2[cut]{\lambda_xy.R ||_x (P|_xQ) \vdash \Gamma,\Delta,\Theta}
+\end{prooftree}
+$\to$
+\begin{prooftree}
+		\hypo{R \vdash \Gamma,x:A^\bot,y:B^\bot}
+		\hypo{P \vdash \Delta,x:A}
+	\infer2[cut]{R ||_x P \vdash \Gamma,\Delta,y:B^\bot}
+	\hypo{Q[y/x] \vdash \Theta,y:B}
+\infer2[cut]{(R||_xP)||_y Q[y/x] \vdash \Gamma,\Delta,\Theta}
+\end{prooftree}\\
+Where there is no more $\lambda$ on $R$. Especially, the inner cut has size $|R|+|P|<|R|+1+|P|+|Q|$ and the outer one has size $|R|+|P|+|Q|<|R|+1+|P|+|Q|$.\\
+~\\
+
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A,y:C}
+		\hypo{Q \vdash \Delta,x:B}
+	\infer2{P|_xQ \vdash \Gamma,\Delta,x:A\logtensor B,y:C}
+	\hypo{R \vdash \Theta,y:C^\bot}
+\infer2[cut]{(P|_xQ)||_yR \vdash \Gamma,\Delta,\Theta,x:A\logtensor B}
+\end{prooftree}
+$\succ$
+\begin{prooftree}
+		\hypo{P \vdash \Gamma,x:A,y:C}
+		\hypo{R \vdash \Theta,y:C^\bot}
+	\infer2{P||_yQ \vdash \Gamma,\Theta,x:A}
+	\hypo{Q \vdash \Delta,x:B}
+\infer2{(P||_yR)|_xQ \vdash \Gamma,\Delta,\Theta,x:A\logtensor B}
+\end{prooftree}\\
+Where the cut is now above one of the subterms, especially its measure is now $|P|+|R|<|P|+|Q|+|R|$
 \end{myproof}
 
-\remark This system preserves typing and terminates, but does not completely eliminate cut. For example, terms like $u_x(t).\epsilon_y.P ||_y 0_y$ cannot reduce, yet the cut on $y$ is not eliminated. Likewise to the general $\beta$-reduction that can reduce under $\lambda$ in the $\lambda$-calculus, we need to extend relations $\to$ and $\succ$ to be able to reduce under action prefixes, and commute them with cut, as well as extend $\equiv$ to allow commuting action prefixes with other prefixes and parallel as well, when the variables of the operators being commuted do not clash:
+\remark This system preserves typing and terminates, but does not completely eliminate cut. For example, terms like $u_x(t).\epsilon_y.P ||_y 0_y$ or the one from the example in part 1 cannot reduce, yet there are cuts not eliminated. Likewise to the general $\beta$-reduction that can reduce under $\lambda$ in the $\lambda$-calculus, we need to extend relations $\to$ and $\succ$ to be able to reduce under action prefixes, and commute them with cut, as well as extend $\equiv$ to allow commuting action prefixes with other prefixes and parallel as well, when the variables of the operators being commuted do not clash.
+
+\subsection{Extending the reduction relations, and cut elimination}
 
 \begin{definition}
-Relation $\to$ is extended into $\leadsto$ by allowing it to act under action prefixes (no specific rule added).\\~\\
-We also extend $\succ$ into $\succsim$ as follows, allowing for it to act on (and under) action prefixes:
+Relation $\to$ is extended into $\leadsto$ by allowing it to act under prefixes (no specific rule added).\\~\\
+We also extend $\succ$ into $\succsim$ as follows, allowing for it to act on (and under) prefixes:
 \begin{flalign*}
-u_x(t).P||_yQ &\succsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6d\\
-\bar{u}_x\langle v \rangle.P||_yQ &\succsim \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6e
+\epsilon_x.P||_yQ &\succsim \epsilon_x.(P||_yQ) &\text{symmetric in $||$, }x\not\in fv(Q)\;\;\;6a\\
+\lambda_xy.P||_zQ &\succsim \lambda_xy.(P||_zQ) &\text{symmetric in $||$, }y\not\in fv(Q)\;\;\;6b\\
+u_x(t).P||_yQ &\succsim u_x(t).(P||_yQ) &\text{symmetric in }||\;\;\;6c\\
+\bar{u}_x\langle v \rangle.P||_yQ &\succsim \bar{u}_x\langle v \rangle.(P||_yQ) &\text{symmetric in }||\;\;\;6d
 \end{flalign*}
-We finally extend $\equiv$ into $\cong$ by allowing $\alpha,\beta$ to be action prefixes in rules $c,d$:
-\[\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\};\]
-as well as in rule $f$:
-\[\alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\}.\]
+We finally extend $\equiv$ into $\cong$ by adding the following rules:
+\begin{flalign*}
+P|_x \alpha_y.Q &\cong \alpha_y.(P|_xQ) &\text{symmetric in }|, \alpha\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\}, y,t\not\in fv(P)\\
+\alpha_x.\beta_y.P &\cong \beta_y.\alpha_x.P &\\alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\},x\neq y\\
+(\nu u)\alpha_x.P &\cong \alpha_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,v_\cdot(t),\bar{v}_\cdot\langle w\rangle, u\neq v, u\neq t,u\neq w\
+\end{flalign*}
 \end{definition}
 
 The important result of these extensions is the following:
@@ -86,11 +240,11 @@ Well-typed terms that are irreducible for the system given by $\leadsto$ and $\s
 \end{proposition}
 
 \begin{myproof}
-This result holds to the fact that this new system allows cuts to be commuted up with all other constructions except itself, and it can also be reduced under all those constructions, \emph{including} action prefixes that were stopping the reduction in the original reduction system.
+This result holds due to the fact that this new system allows cuts to be commuted up with all other constructions except itself, and it can also be reduced under all those constructions, that were stopping the reduction in the original reduction system.
 The proof is then done like above by induction on the sum of the sizes of the immediate subterms of the cut:
 \begin{itemize}
 	\item the base cases are the same as above, since$\leadsto$ has the exact same rules as $\to$ with only an extended scope of action
-	\item if a clash occurs between a cut and any other rule, they now commute with $\succsim$ and the size of the immediate subterms is thus reduced by 1
+	\item if a clash occurs between a cut and any other rule, they now commute with $\succsim$ and the sum of the size of the immediate subterms is thus reduced by 1
 	\item if a clash occurs between two cuts, then $P=(P_1||_xP_2)||_yP_3$ and, by induction hypothesis, the subterm $P_1||_xP_2$ reduces, so the whole term reduces according to this reduction.
 \end{itemize}
 \end{myproof}
@@ -138,8 +292,22 @@ The reduction system given by rules $\leadsto$ and $\succsim$ eliminates cuts (u
 It is an immediate corollary of the above propositions and extension, as the reduction terminates, preserves typing and has irreducible terms be without cut.
 \end{myproof}
 
-\remark With no exponential, it is no surprise that cut elimination terminates.\\
+\remark with no exponential, it is no surprise that cut elimination terminates.\\
 
-\remark One could also go the way of trying to prove the cut elimination in quantifier-closed context, that is closing the term by cutting successively for all variables of a quantified type against a term with the same variable of an opposite type, so as to end up with a contextualized term which typing does not contain any variable with a quantified type. That lifts the hypothesis of extending the reduction to something that does not match the execution of terms, but the proof also becomes more technical and tedious, and will not be attempted here.
+\remark one could also go the way of trying to prove the cut elimination in quantifier-closed context, that is closing the term by cutting successively for all variables of a quantified type against a term with the same variable of an opposite type, so as to end up with a contextualized term which typing does not contain any variable with a quantified type. That lifts the hypothesis of extending the reduction to something that does not match the execution of terms, but the proof also becomes more technical and tedious, and will not be attempted here. There might still be a problem with the other prefixes though, as well as a need to allow for two cuts to commute with each other, that could be added in the congruence $\equiv$.
 
-\textcolor{red}{Also, insert here the followed example from the other paper that is to be shown in part 1, to show here that it is not only reducing well, but also well-typed. (Question for later: Is there a term, simplest possible if exists, that reduces well without typing, but cannot be well-typed?)} %TODO
+\remark this extension does not fit well in the projection. That is normal, as it is not faithful to the way processes execute, and so it does not respect the way execution in the classic model is defined. Especially, two terms that are congruent for $\cong$ might not be for the projection, for example $u_x(v).P ||_y Q \cong u_x(v).(P||_yQ)$ but $u(v).P|Q\not\equiv u(v).(P|Q)$.
+
+\example let us take back the example from part 1, as we now have the tools to eliminate the cuts in it:
+\begin{align*}
+(\nu v)(\bar{u}_x\langle v\rangle.(x\tto y) ||_y v_y(t').P) ||_x u_x(t).(\bar{t}_x\langle w\rangle.(x\tto z) ||_z Q)
+	&\succ (\nu v)(\bar{u}_x\langle v\rangle.(x\tto y) ||_y v_y(t').P ||_x u_x(t).(\bar{t}_x\langle w\rangle.(x\tto z) ||_z Q))\\
+	&\succsim^2 (\nu v)(\bar{u}_x\langle v\rangle.((x\tto y) ||_y v_y(t').P) ||_x u_x(t).\bar{t}_x\langle w\rangle.((x\tto z) ||_z Q))\\
+	&\leadsto^2 (\nu v)(\bar{u}_x\langle v\rangle.v_x(t').P[x/y] ||_x u_x(t).\bar{t}_x\langle w\rangle.Q[x/z])\\
+	&\to (\nu v)(v_x(t').P[x/y] ||_x \bar{v}_x\langle w\rangle.Q[x/z])\\
+	&\to (\nu v)(P[x/y][w/t'] ||_x Q[x/z])\\
+\end{align*}
+and the elimination continues on $P$ and $Q$.\\
+Since we showed that type was preserved by those operations, the type from above still fits the reduced term:
+\[(\nu v)(P[x/y][w/t'] ||_x Q[x/z]) \vdash \Gamma, \Delta\]
+with $P[x/y][w/t'] \vdash \Gamma, x:A[w/t']$ and $Q[x/z] \vdash \Delta, x:A[w/t']^\bot$.

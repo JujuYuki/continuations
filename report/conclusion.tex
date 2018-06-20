@@ -1,11 +1,14 @@
 \section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
 
-A nice conclusion and working trails for later here. %TODO
-\begin{itemize}
-	\item what we did so far: working small part of the calculus, good properties and behavior, reasonable projection
-	\item ideas for the behavior of $\equiv$ as a "bisimulation" in the annotated calculus
-	\item behavior of $\leadsto$ and $\gtrsim$ with the projection: in the general case you do not want to have an action prefix be able to commute like that, but there is at least an "order" on the capabilities of terms u.P|Q and u.(P|Q)
-	\item next step: work on exponential rules, and additive rules too
-	\item talk about failed attempts here maybe, and/or about misleading intuitions that were explored in the past 2.5 months ?
-	\item more things maybe, if something interesting comes up
-\end{itemize}
+During this internship, we worked first on understanding how $\pi$-calculus worked, and looked at simple typing systems for them. Then we looked specifically at the example shown in~\cite{beffara-2015-unifying} and tried to take that as a base to construct something smaller (no exponential) but that would have a good proof of cut elimination. This is what lead to this paper, after many steps of trial and error. This is still not perfect though, as there are many limitations to the cut elimination, especially the need to either be able to commute all prefixes with the cut, or the need to be able to commute internal action prefixes with the cut and the cut with itself. There are also many ways to extend this work still, first by adapting the methods to be able to work with the exponential constructs (exponential modalities in MELL and replication in the $\pi$-calculus), and after that trying to extend the system to the additive parts of LL and the $\pi$-calculus as well.\\
+
+There is also a limitation in that $\equiv$ is not a bisimulation for $\to$, so this needs to be worked on to either find a good relation and a good congruence to have that, or to write just the right theorem for the confluence of diagrams involving a reduction against a congruence (because $\succ^*$ clearly is too much, but finding the minimal amount of $\succ$ needed for it to work needs research).\\
+
+The last limitation of importance, that is tied to the first one in the first paragraph, is the behavior of $\leadsto$ and $\succsim$ in regards to the projection, as they do not project to usual known reductions and congruences anymore, but one might be able to define a relation on terms to say that a term has more possibilities of action than an other in order to go around this difficulty. This solution might not be ideal though, research is needed on that as well.\\
+
+Still, the result is promising, with many ways to improve it and trails to follow for the future, and the properties that emerged from this construct are interesting and welcome for a typing and reduction system on processes.\\~\\
+
+\subsection*{Thanks}
+
+I would like to thank my tutor for this internship, Emmanuel Beffara, first, because he was the one who came up with the subject and he was of great help all along, the discussions we had made the work efficient and fast enough to have that much in only 3 months. I want to thank my teachers as well, especially the logic team here, for my first internship here two years ago was what had me interested in mathematical logic in the first place. At last, thank you to all people who had to bear with me during this internship (and in general), notably my friends here, your support was of great help, and to my best friend whose support is so important even though we live so far away.
