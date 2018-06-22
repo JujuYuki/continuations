@@ -41,6 +41,10 @@
 \newcommand{\logplus}{\ensuremath\oplus}
 \newcommand{\logtensor}{\ensuremath\otimes}
 \newcommand{\tto}{\leftrightarrow}
+\newcommand{\dlsucc}{\rotatebox[origin=c]{45}{$\prec$}}
+\newcommand{\drsucc}{\rotatebox[origin=c]{-45}{$\succ$}}
+
+\newtheorem{prop}{Proposition}
 
 \author{Julien Gabet\\
 sous la direction d'Emmanuel Beffara}
@@ -63,37 +67,36 @@ sous la direction d'Emmanuel Beffara}
 \tableofcontents
 \end{frame}
 
-\section{1. Les deux systèmes de calcul}
-\subsection{Le $\pi$-calcul}
+\section{Introduction}
 
-\begin{frame}{$\pi$-termes}
-\begin{definition}
-Soit $\NN:=\{t,u,v,\ldots\}$ un ensemble dénombrable de noms. Les termes du $\pi$-calcul sont donnés par la grammaire suivante:
-\[P,Q::=0\;\;;\;\;P|Q\;\;;\;\;u(t).P\;\;;\;\;\bar{u}(v).P\;\;;\;\;\tau.P\;\;;\;\;(\nu u)P\]
-et l'ensemble des noms libres d'un terme $fn(P)$ par induction sur les termes comme suit:
-\begin{align*}
-fn(0)&=\emptyset & fn(P|Q)&=fn(P)\cup fn(Q) \\
-fn(u(t).P)&=(fn(P)\backslash\{t\})\cup\{u\} & fn(\bar{u}(v).P)&=fn(P)\cup\{u,v\} \\
-fn(\tau.P)&=fn(P) & fn((\nu u)P)&=fn(P)\backslash\{u\}
-\end{align*}
-\end{definition}
+\begin{frame}
+\begin{itemize}
+\item Processus mobiles : objets en interaction sur un réseau, actions non déterministes.
+\item Modèle habituel : $\pi$-calcul.
+\item Vérifier le comportement d'un objet du modèle : typage.
+\item Notre approche: annoter les termes pour guider l'exécution.
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Congruence structurelle et réduction}
-\begin{definition}
-On définit la congruence structurelle comme une congruence sur les termes avec les axiomes suivants:
+\section{1. Définitions}
+\subsection{Le $\pi$-calcul}
+
+\begin{frame}{Le $\pi$-calcul}
+\begin{itemize}
+\item $P,Q::=0\;\;;\;\;P|Q\;\;;\;\;u(t).P\;\;;\;\;\bar{u}(v).P\;\;;\;\;\tau.P\;\;;\;\;(\nu u)P$
+\pause\item Congruence structurelle:
 \begin{align*}
 P|0&\equiv P & P|Q&\equiv Q|P\\
 P|(Q|R)&\equiv (P|Q)|R & (\nu u)(\nu v)P&\equiv(\nu v)(\nu u)P\\
 (\nu u)0&\equiv 0 & (\nu u)(P|Q)&\equiv P|(\nu u)Q\;\;\text{ if }u\not\in fn(P)
 \end{align*}
-et on se donne les règles de réduction suivantes:\\
+\pause\item Règles de réduction:\\
 \indent\hfill\begin{prooftree}\infer0{u(t).P|\bar{u}(v).Q\to P[v/t]|Q}\end{prooftree}\hfill
 \begin{prooftree}\infer0{\tau.P\to P}\end{prooftree}\hfill~\\~\\
 \begin{prooftree}\hypo{P\to P'}\infer1{P|Q\to P'|Q}\end{prooftree}\hfill
 \begin{prooftree}\hypo{P\to P'}\infer1{(\nu u)P\to(\nu u)P'}\end{prooftree}\hfill
 \begin{prooftree}\hypo{P\equiv Q\to Q'\equiv P'}\infer1{P\to P'}\end{prooftree}
-\end{definition}
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Exemple}
@@ -109,16 +112,15 @@ Un terme simple pour voir le système de réduction:
 \begin{frame}{Exemple}
 Un exemple non confluent:
 \[\begin{tikzcd}[ampersand replacement=\&, column sep=tiny]
-(u(t).P|\bar{u}(v).Q)|u(t).S \arrow[r,phantom,"\equiv"]\arrow[d] \& u(t).P|(\bar{u}(v).Q|u(t).S) \arrow[d] \\
-(P[v/t]|Q)|u(t).S \& u(t).P|(Q|S[v/t])
+\Bigl(u(t).P|\bar{u}(v).Q\Bigr)\Bigl|u(t).S \arrow[r,phantom,"\equiv"]\arrow[d] \& u(t).P\Bigl|\Bigl(\bar{u}(v).Q|u(t).S\Bigr) \arrow[d] \\
+\Bigl(P[v/t]|Q\Bigr)\Bigl|u(t).S \& u(t).P\Bigl|\Bigl(Q|S[v/t]\Bigr)
 \end{tikzcd}\]
 \end{frame}
 
 \subsection{Une version annotée du $\pi$-calcul}
 
 \begin{frame}{Les termes annotés}
-\begin{definition}
-Soient $\NN:=\{t,u,v,\ldots\}$ et $\VV:=\{x,y,z,\ldots\}$ deux ensembles de noms et de variables, dénombrables et disjoints. Les termes annotés sont donnés par la grammaire suivante:
+Les termes annotés sont définis comme suit:
 \begin{align*}
 P,Q::= & x\tto y\;\;;\;\;0_x\;\;; & \text{termes de base}\\
 & P|_xQ\;\;;\;\;P||_xQ\;\;; & \text{parallèle et synchronisation}\\
@@ -128,11 +130,9 @@ P,Q::= & x\tto y\;\;;\;\;0_x\;\;; & \text{termes de base}\\
 \end{align*}
 où $x\in fv(P)\cap fv(Q)$ pour les règles | et ||,\\
 $x\not\in fv(P)$ pour la règle $\epsilon$, et $x,y\in fv(P)$ pour les autres règles.
-\end{definition}
 \end{frame}
 
 \begin{frame}{Les termes annotés}
-\begin{definition}
 Et où l'ensemble des variables libres d'un terme $fv(P)$ est défini par induction sur les termes:
 \begin{align*}
 fv(x\tto y) &= \{x,y\} & fv(0_x) &= \{x\}\\
@@ -141,78 +141,92 @@ fv(u_x(t).P) &= fv(P) & fv(\bar{u}_x(v).P) &= fv(P) \\
 fv(\epsilon_x.P) &= fv(P)\cup\{x\} & fv(\lambda_xy.P) &= fv(P)\backslash\{y\}\\
 fv((\nu u)P) &= fv(P)
 \end{align*}
-L'ensemble des noms libres est défini comme pour le $\pi$-calcul classique en considérant $x\tto y$ comme 0 et $\lambda,\epsilon$ comme $\tau$
-\end{definition}
 \end{frame}
 
-\begin{frame}{Projection des termes annotés sur $\pi$}
-\begin{definition}
-On définit la projection comme suit:
+\section{2. Exécution du calcul annoté}
+
+\begin{frame}{La réduction}
+\begin{itemize}
+\item Règles de réduction:
 \begin{align*}
-\lfloor 0_x \rfloor &= 0 & \lfloor x\tto y \rfloor &= \tau.0\\
-\lfloor P|_xQ \rfloor &= \lfloor P \rfloor|\lfloor Q\rfloor & \lfloor P||_xQ \rfloor &= \lfloor P \rfloor|\lfloor Q\rfloor \\
-\lfloor u_x(t).P \rfloor &= u(t).\lfloor P\rfloor & \lfloor \bar{u}_x(v).P \rfloor &= \bar{u}(v).\lfloor P\rfloor\\
-\lfloor \epsilon_x.P \rfloor &= \tau.\lfloor P\rfloor & \lfloor \lambda_xy.P \rfloor &= \tau.\lfloor P\rfloor\\
-\lfloor(\nu u)P\rfloor &= (\nu u)\lfloor P\rfloor
+\epsilon_x.P ||_x 0_x &\to P & (P|_xQ)||_x\lambda_xy.R &\to P||_x(Q[y/x]||_yR)\\
+P||_x x\tto y &\to P[y/x] & \lambda_xy.R||_x(P|_xQ) &\to (R||_xP)||_yQ[y/x]\\
+& & \bar{u}_x(v).P||_xu_x(t).Q &\to P||_x Q[v/t]
 \end{align*}
-\end{definition}
-\end{frame}
-
-%ajouter exemple ici p-ê %TODO
-
-\section{2.Exécution du calcul annoté}
-\subsection{Réduction}
-
-\begin{frame}{La réduction}
-Ici la flèche $\to$ et la remontée $\succ$ %TODO
+\pause\item Règles de remontée du ||:\\
+Si le contexte l'exige, on note $P^y$ si le terme $P$ contient $y$.\\
+$(P^y|_xQ)||_yR \succ (P||_yR)|_xQ$\hfill$(P|_xQ^y)||_yR \succ P|_x(Q||_yR)$\\
+$(\nu u)P||_xQ \succ (\nu u)(P||_xQ)$\hfill si $u\not\in fn(Q)$
+\end{itemize}
 \end{frame}
 
 \begin{frame}{La réduction}
-Ici les règles de congruence $\equiv$ %TODO
+Il faut une congruence pour faire confluer $\succ$:
+\begin{align*}
+(P^y|_xQ)|_yR &\equiv (P^x|_yR)|_xQ & (\nu u)(\nu v)P &\equiv (\nu v)(\nu u)P\\
+P|_x(Q|_yR^x) &\equiv Q|_y(P|_xR^y) & (\nu u)0_x &\equiv 0_x\\
+(P|_xQ^y)|_yR &\equiv P|_x(Q^x|_yR) & (\nu u)P|_xQ &\equiv (\nu u)(P|_xQ) & u\not\in Q
+\end{align*}
+\begin{prop}
+\begin{itemize}
+\item $\to$ est fortement confluent
+\item $\succ$ est confluent à $\equiv$ près.
+\end{itemize}
+\end{prop}
 \end{frame}
 
 \begin{frame}{Confluence de $\to$ et $\succ$}
-Prop: confluence de $\to$ %TODO
+Pour $\to$, seule la règle $x \tto y$ interagit avec elle-même:
+\[\begin{tikzcd}[ampersand replacement=\&, column sep=tiny]
+\& x\tto y ||_x x\tto z \arrow[dl] \arrow[dr] \&\\
+(x\tto z)[y/x]\arrow[d, phantom, "\shortparallel"] \& \& (x\tto y)[z/x]\arrow[d, phantom, "\shortparallel"]\\
+y\tto z \& = \& z\tto y
+\end{tikzcd}\]
 \end{frame}
 
 \begin{frame}{Confluence de $\to$ et $\succ$}
-Prop: confluence de $\succ$ à $\equiv$ près %TODO
+Pour $\succ$, on regarde un cas (les autres sont similaires):
+\begin{tikzcd}[ampersand replacement=\&, column sep=tiny]
+\& (P^y|_xQ)||_y(R^y|_zS)\arrow[dl,phantom,"\dlsucc_{left}"xshift=2.5ex]\arrow[dr,phantom,"\drsucc_{right}"xshift=2.5ex] \&\\
+\Bigl(P^y||_y(R^y|_zS)\Bigr)\Bigl|_xQ\arrow[d,phantom,"\curlyvee"] \& \& \Bigl((P^y|_xQ)||_yR^y\Bigr)\Bigl|_zS\arrow[d,phantom,"\curlyvee"]\\
+\Bigl((P^y||_yR^y)|_zS\Bigr)\Bigl|_xQ \& \equiv \& \Bigl((P^y||_yR^y)|_xQ\Bigr)\Bigl|_zS
+\end{tikzcd}
 \end{frame}
 
 \begin{frame}{Confluence de $\to$ et $\succ$}
 Fermeture spécifique de $\equiv$ pour $\to$, avec $\succ$: donner un exemple %TODO
 \end{frame}
 
-%Quid de la projection? Partie spécifique? ou au tableau pendant les slides précédents? %TODO
-
 \section{3. Typage du calcul décoré avec MLL}
+\subsection{Le système de types}
 
 \begin{frame}
-Le système de types: langage %TODO
+Le système de types: langage\\ %TODO
+et règles %TODO
 \end{frame}
 
 \begin{frame}
-Le système de types: règles %TODO
+Préservation du type: proposition et un exemple (en 2 slides ?) %TODO
 \end{frame}
 
 \begin{frame}
-Préservation du type: proposition %TODO
+Terminaison de $\to$ et $\succ$ (+ un exemple ?) %TODO
 \end{frame}
 
-\begin{frame}
-Préservation du type: un exemple? %TODO
-\end{frame}
-
-\begin{frame}
-Terminaison de $\to$ et $\succ$ + un exemple peut-être %TODO
-\end{frame}
+\subsection{L'élimination des coupures}
 
 \begin{frame}
 Extension du système de réduction %TODO
 \end{frame}
 
 \begin{frame}
-Élimination de la coupure %TODO
+Élimination des coupures %TODO
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+conclure ici: projection (on ne la présente pas vraiment ici, juste évoquée à l'oral éventuellement), limitations des choix faits.
 \end{frame}
 
 \end{document}
