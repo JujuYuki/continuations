@@ -1,0 +1,7 @@
+\babel@toc {french}{}
+\beamer@sectionintoc {1}{1. Les deux syst\IeC {\`e}mes de calcul}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Le $\pi $-calcul}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Une version annot\IeC {\'e}e du $\pi $-calcul}{10}{0}{1}
+\beamer@sectionintoc {2}{2.Ex\IeC {\'e}cution du calcul annot\IeC {\'e}}{13}{0}{2}
+\beamer@subsectionintoc {2}{1}{R\IeC {\'e}duction}{13}{0}{2}
+\beamer@sectionintoc {3}{3. Typage du calcul d\IeC {\'e}cor\IeC {\'e} avec MLL}{18}{0}{3}

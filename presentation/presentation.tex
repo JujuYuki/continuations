@@ -1,0 +1,218 @@
+\documentclass[11pt]{beamer}
+\usetheme{Dresden}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{stmaryrd}
+\usepackage{soul}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage{wrapfig}
+\usepackage{pifont}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{ifmtarg}
+\usepackage{fourier-orns}
+\usepackage{pst-node}
+\usepackage{pst-tree}
+\usepackage{pstricks-add}
+\usepackage{xspace}
+\usepackage{tikz-cd}
+\usepackage{pgf,tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots,wrapfig}
+\usepackage{ebproof}
+
+\newcommand{\ie}{\textit{ie.}\ }
+\newcommand{\NN}{\ensuremath{\mathcal{N}}\xspace}
+\newcommand{\VV}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\logpar}{\ensuremath\rotatebox[origin=c]{180}{\&}}
+\newcommand{\logwith}{\ensuremath\&}
+\newcommand{\logplus}{\ensuremath\oplus}
+\newcommand{\logtensor}{\ensuremath\otimes}
+\newcommand{\tto}{\leftrightarrow}
+
+\author{Julien Gabet\\
+sous la direction d'Emmanuel Beffara}
+\title{Typage d'une version décorée du $\pi$-calcul}
+%\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+%\logo{} 
+\institute{Institut de Mathématiques de Marseille} 
+\date{Mars-Juin 2018\\~\\
+\includegraphics[scale=0.1]{institutMathMarseille.jpg}} 
+%\subject{} 
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+\section{1. Les deux systèmes de calcul}
+\subsection{Le $\pi$-calcul}
+
+\begin{frame}{$\pi$-termes}
+\begin{definition}
+Soit $\NN:=\{t,u,v,\ldots\}$ un ensemble dénombrable de noms. Les termes du $\pi$-calcul sont donnés par la grammaire suivante:
+\[P,Q::=0\;\;;\;\;P|Q\;\;;\;\;u(t).P\;\;;\;\;\bar{u}(v).P\;\;;\;\;\tau.P\;\;;\;\;(\nu u)P\]
+et l'ensemble des noms libres d'un terme $fn(P)$ par induction sur les termes comme suit:
+\begin{align*}
+fn(0)&=\emptyset & fn(P|Q)&=fn(P)\cup fn(Q) \\
+fn(u(t).P)&=(fn(P)\backslash\{t\})\cup\{u\} & fn(\bar{u}(v).P)&=fn(P)\cup\{u,v\} \\
+fn(\tau.P)&=fn(P) & fn((\nu u)P)&=fn(P)\backslash\{u\}
+\end{align*}
+\end{definition}
+\end{frame}
+
+\begin{frame}{Congruence structurelle et réduction}
+\begin{definition}
+On définit la congruence structurelle comme une congruence sur les termes avec les axiomes suivants:
+\begin{align*}
+P|0&\equiv P & P|Q&\equiv Q|P\\
+P|(Q|R)&\equiv (P|Q)|R & (\nu u)(\nu v)P&\equiv(\nu v)(\nu u)P\\
+(\nu u)0&\equiv 0 & (\nu u)(P|Q)&\equiv P|(\nu u)Q\;\;\text{ if }u\not\in fn(P)
+\end{align*}
+et on se donne les règles de réduction suivantes:\\
+\indent\hfill\begin{prooftree}\infer0{u(t).P|\bar{u}(v).Q\to P[v/t]|Q}\end{prooftree}\hfill
+\begin{prooftree}\infer0{\tau.P\to P}\end{prooftree}\hfill~\\~\\
+\begin{prooftree}\hypo{P\to P'}\infer1{P|Q\to P'|Q}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\to P'}\infer1{(\nu u)P\to(\nu u)P'}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\equiv Q\to Q'\equiv P'}\infer1{P\to P'}\end{prooftree}
+\end{definition}
+\end{frame}
+
+\begin{frame}{Exemple}
+Un terme simple pour voir le système de réduction:
+\begin{align*}
+\Bigl(u(t).P|Q\Bigr)\Bigl|\bar{u}(v).R
+\uncover<2-4>{\equiv& \Bigl(Q|u(t).P\Bigr)\Bigl|\bar{u}(v).R\\}
+\uncover<3-4>{\equiv& Q\Bigl|\Bigl(u(t).P|\bar{u}(v).R\Bigr)\\}
+\uncover<4>{\to& Q\Bigl|\Bigl(P[v/t]|R\Bigr)}
+\end{align*}
+\end{frame}
+
+\begin{frame}{Exemple}
+Un exemple non confluent:
+\[\begin{tikzcd}[ampersand replacement=\&, column sep=tiny]
+(u(t).P|\bar{u}(v).Q)|u(t).S \arrow[r,phantom,"\equiv"]\arrow[d] \& u(t).P|(\bar{u}(v).Q|u(t).S) \arrow[d] \\
+(P[v/t]|Q)|u(t).S \& u(t).P|(Q|S[v/t])
+\end{tikzcd}\]
+\end{frame}
+
+\subsection{Une version annotée du $\pi$-calcul}
+
+\begin{frame}{Les termes annotés}
+\begin{definition}
+Soient $\NN:=\{t,u,v,\ldots\}$ et $\VV:=\{x,y,z,\ldots\}$ deux ensembles de noms et de variables, dénombrables et disjoints. Les termes annotés sont donnés par la grammaire suivante:
+\begin{align*}
+P,Q::= & x\tto y\;\;;\;\;0_x\;\;; & \text{termes de base}\\
+& P|_xQ\;\;;\;\;P||_xQ\;\;; & \text{parallèle et synchronisation}\\
+& u_x(t).P\;\;;\;\;\bar{u}_x(v).P\;\;; & \text{préfixes d'action}\\
+& \epsilon_x.P\;\;;\;\;\lambda_xy.P\;\;; & \text{préfixes de planification}\\
+& (\nu u)P & \text{privatisation de nom}
+\end{align*}
+où $x\in fv(P)\cap fv(Q)$ pour les règles | et ||,\\
+$x\not\in fv(P)$ pour la règle $\epsilon$, et $x,y\in fv(P)$ pour les autres règles.
+\end{definition}
+\end{frame}
+
+\begin{frame}{Les termes annotés}
+\begin{definition}
+Et où l'ensemble des variables libres d'un terme $fv(P)$ est défini par induction sur les termes:
+\begin{align*}
+fv(x\tto y) &= \{x,y\} & fv(0_x) &= \{x\}\\
+fv(P|_xQ) &= fv(P)\cup fv(Q) & fv(P||_xQ) &= (fv(P)\cup fv(Q))\backslash\{x\}\\
+fv(u_x(t).P) &= fv(P) & fv(\bar{u}_x(v).P) &= fv(P) \\
+fv(\epsilon_x.P) &= fv(P)\cup\{x\} & fv(\lambda_xy.P) &= fv(P)\backslash\{y\}\\
+fv((\nu u)P) &= fv(P)
+\end{align*}
+L'ensemble des noms libres est défini comme pour le $\pi$-calcul classique en considérant $x\tto y$ comme 0 et $\lambda,\epsilon$ comme $\tau$
+\end{definition}
+\end{frame}
+
+\begin{frame}{Projection des termes annotés sur $\pi$}
+\begin{definition}
+On définit la projection comme suit:
+\begin{align*}
+\lfloor 0_x \rfloor &= 0 & \lfloor x\tto y \rfloor &= \tau.0\\
+\lfloor P|_xQ \rfloor &= \lfloor P \rfloor|\lfloor Q\rfloor & \lfloor P||_xQ \rfloor &= \lfloor P \rfloor|\lfloor Q\rfloor \\
+\lfloor u_x(t).P \rfloor &= u(t).\lfloor P\rfloor & \lfloor \bar{u}_x(v).P \rfloor &= \bar{u}(v).\lfloor P\rfloor\\
+\lfloor \epsilon_x.P \rfloor &= \tau.\lfloor P\rfloor & \lfloor \lambda_xy.P \rfloor &= \tau.\lfloor P\rfloor\\
+\lfloor(\nu u)P\rfloor &= (\nu u)\lfloor P\rfloor
+\end{align*}
+\end{definition}
+\end{frame}
+
+%ajouter exemple ici p-ê %TODO
+
+\section{2.Exécution du calcul annoté}
+\subsection{Réduction}
+
+\begin{frame}{La réduction}
+Ici la flèche $\to$ et la remontée $\succ$ %TODO
+\end{frame}
+
+\begin{frame}{La réduction}
+Ici les règles de congruence $\equiv$ %TODO
+\end{frame}
+
+\begin{frame}{Confluence de $\to$ et $\succ$}
+Prop: confluence de $\to$ %TODO
+\end{frame}
+
+\begin{frame}{Confluence de $\to$ et $\succ$}
+Prop: confluence de $\succ$ à $\equiv$ près %TODO
+\end{frame}
+
+\begin{frame}{Confluence de $\to$ et $\succ$}
+Fermeture spécifique de $\equiv$ pour $\to$, avec $\succ$: donner un exemple %TODO
+\end{frame}
+
+%Quid de la projection? Partie spécifique? ou au tableau pendant les slides précédents? %TODO
+
+\section{3. Typage du calcul décoré avec MLL}
+
+\begin{frame}
+Le système de types: langage %TODO
+\end{frame}
+
+\begin{frame}
+Le système de types: règles %TODO
+\end{frame}
+
+\begin{frame}
+Préservation du type: proposition %TODO
+\end{frame}
+
+\begin{frame}
+Préservation du type: un exemple? %TODO
+\end{frame}
+
+\begin{frame}
+Terminaison de $\to$ et $\succ$ + un exemple peut-être %TODO
+\end{frame}
+
+\begin{frame}
+Extension du système de réduction %TODO
+\end{frame}
+
+\begin{frame}
+Élimination de la coupure %TODO
+\end{frame}
+
+\end{document}
