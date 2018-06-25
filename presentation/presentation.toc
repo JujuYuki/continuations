@@ -3,8 +3,8 @@
 \beamer@sectionintoc {2}{1. D\IeC {\'e}finitions}{4}{0}{2}
 \beamer@subsectionintoc {2}{1}{Le $\pi $-calcul}{4}{0}{2}
 \beamer@subsectionintoc {2}{2}{Une version annot\IeC {\'e}e du $\pi $-calcul}{12}{0}{2}
-\beamer@sectionintoc {3}{2. Ex\IeC {\'e}cution du calcul annot\IeC {\'e}}{14}{0}{3}
-\beamer@sectionintoc {4}{3. Typage du calcul d\IeC {\'e}cor\IeC {\'e} avec MLL}{20}{0}{4}
-\beamer@subsectionintoc {4}{1}{Le syst\IeC {\`e}me de types}{20}{0}{4}
-\beamer@subsectionintoc {4}{2}{L'\IeC {\'e}limination des coupures}{23}{0}{4}
-\beamer@sectionintoc {5}{Conclusion}{25}{0}{5}
+\beamer@sectionintoc {3}{2. Ex\IeC {\'e}cution du calcul annot\IeC {\'e}}{13}{0}{3}
+\beamer@sectionintoc {4}{3. Typage du calcul d\IeC {\'e}cor\IeC {\'e} avec MLL}{18}{0}{4}
+\beamer@subsectionintoc {4}{1}{Le syst\IeC {\`e}me de types}{18}{0}{4}
+\beamer@subsectionintoc {4}{2}{L'\IeC {\'e}limination de la coupure}{21}{0}{4}
+\beamer@sectionintoc {5}{Conclusion}{24}{0}{5}

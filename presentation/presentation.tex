@@ -73,7 +73,7 @@ sous la direction d'Emmanuel Beffara}
 \begin{itemize}
 \item Processus mobiles : objets en interaction sur un réseau, actions non déterministes.
 \item Modèle habituel : $\pi$-calcul.
-\item Vérifier le comportement d'un objet du modèle : typage.
+\item Garantir le comportement d'un objet du modèle : typage.
 \item Notre approche: annoter les termes pour guider l'exécution.
 \end{itemize}
 \end{frame}
@@ -83,37 +83,42 @@ sous la direction d'Emmanuel Beffara}
 
 \begin{frame}{Le $\pi$-calcul}
 \begin{itemize}
-\item $P,Q::=0\;\;;\;\;P|Q\;\;;\;\;u(t).P\;\;;\;\;\bar{u}(v).P\;\;;\;\;\tau.P\;\;;\;\;(\nu u)P$
-\pause\item Congruence structurelle:
+\item Syntaxe:
 \begin{align*}
-P|0&\equiv P & P|Q&\equiv Q|P\\
-P|(Q|R)&\equiv (P|Q)|R & (\nu u)(\nu v)P&\equiv(\nu v)(\nu u)P\\
-(\nu u)0&\equiv 0 & (\nu u)(P|Q)&\equiv P|(\nu u)Q\;\;\text{ if }u\not\in fn(P)
+P,Q::=\;\; & 0 & \text{processus inactif}\\
+& P\bigl|Q & \text{mise en parallèle}\\
+& u(t).P\;\;;\;\;\bar{u}(v).P & \text{réception/envoi de nom}\\
+& (\nu u)P & \text{privatisation de nom}
 \end{align*}
-\pause\item Règles de réduction:\\
-\indent\hfill\begin{prooftree}\infer0{u(t).P|\bar{u}(v).Q\to P[v/t]|Q}\end{prooftree}\hfill
-\begin{prooftree}\infer0{\tau.P\to P}\end{prooftree}\hfill~\\~\\
-\begin{prooftree}\hypo{P\to P'}\infer1{P|Q\to P'|Q}\end{prooftree}\hfill
-\begin{prooftree}\hypo{P\to P'}\infer1{(\nu u)P\to(\nu u)P'}\end{prooftree}\hfill
-\begin{prooftree}\hypo{P\equiv Q\to Q'\equiv P'}\infer1{P\to P'}\end{prooftree}
+\pause\item | est commutatif, associatif et admet 0 pour élément neutre.
+\pause\item Règle de réduction:
+\[u(t).P\bigl|\bar{u}(v).Q\to P[v/t]|Q\]
+Cette réduction se fait en contexte
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Exemple}
 Un terme simple pour voir le système de réduction:
 \begin{align*}
-\Bigl(u(t).P|Q\Bigr)\Bigl|\bar{u}(v).R
-\uncover<2-4>{\equiv& \Bigl(Q|u(t).P\Bigr)\Bigl|\bar{u}(v).R\\}
-\uncover<3-4>{\equiv& Q\Bigl|\Bigl(u(t).P|\bar{u}(v).R\Bigr)\\}
-\uncover<4>{\to& Q\Bigl|\Bigl(P[v/t]|R\Bigr)}
+\Bigl(u(t).P\bigl|Q\Bigr)\Bigl|\bar{u}(v).R
+\uncover<2-3>{\equiv& Q\Bigl|\Bigl(u(t).P\bigl|\bar{u}(v).R\Bigr)\\}
+\uncover<3>{\to& Q\Bigl|\Bigl(P[v/t]\bigl|R\Bigr)}
 \end{align*}
 \end{frame}
 
 \begin{frame}{Exemple}
 Un exemple non confluent:
 \[\begin{tikzcd}[ampersand replacement=\&, column sep=tiny]
-\Bigl(u(t).P|\bar{u}(v).Q\Bigr)\Bigl|u(t).S \arrow[r,phantom,"\equiv"]\arrow[d] \& u(t).P\Bigl|\Bigl(\bar{u}(v).Q|u(t).S\Bigr) \arrow[d] \\
-\Bigl(P[v/t]|Q\Bigr)\Bigl|u(t).S \& u(t).P\Bigl|\Bigl(Q|S[v/t]\Bigr)
+\Bigl(u(t).P\bigl|\bar{u}(v).Q\Bigr)\Bigl|u(t).S \arrow[r,phantom,"\equiv"]\arrow[d] \& u(t).P\Bigl|\Bigl(\bar{u}(v).Q\bigl|u(t).S\Bigr) \arrow[d] \\
+\Bigl(P[v/t]\bigl|Q\Bigr)\Bigl|u(t).S \& u(t).P\Bigl|\Bigl(Q\bigl|S[v/t]\Bigr)
+\end{tikzcd}\]
+\end{frame}
+
+\begin{frame}{Exemple}
+Annotons l'exemple non confluent:
+\[\begin{tikzcd}[ampersand replacement=\&, column sep=tiny]
+\Bigl(u_x(t).P\bigl|\bigl|_x\bar{u}_x(v).Q\Bigr)\Bigl|\Bigl|_yu_y(t).S \arrow[r,phantom,"\not\equiv"]\arrow[d] \& u_x(t).P\Bigl|\Bigl|_x\Bigl(\bar{u}_y(v).Q\bigl|\bigl|_yu_y(t).S\Bigr) \arrow[d] \\
+\Bigl(P[v/t]\bigl|\bigl|_xQ\Bigr)\Bigl|\Bigl|_yu_y(t).S \& u_x(t).P\Bigl|\Bigl|_x\Bigl(Q\bigl|\bigl|_yS[v/t]\Bigr)
 \end{tikzcd}\]
 \end{frame}
 
@@ -123,24 +128,13 @@ Un exemple non confluent:
 Les termes annotés sont définis comme suit:
 \begin{align*}
 P,Q::= & x\tto y\;\;;\;\;0_x\;\;; & \text{termes de base}\\
-& P|_xQ\;\;;\;\;P||_xQ\;\;; & \text{parallèle et synchronisation}\\
+& P\bigl|_xQ\;\;;\;\;P\bigl|\bigl|_xQ\;\;; & \text{parallèle et synchronisation}\\
 & u_x(t).P\;\;;\;\;\bar{u}_x(v).P\;\;; & \text{préfixes d'action}\\
 & \epsilon_x.P\;\;;\;\;\lambda_xy.P\;\;; & \text{préfixes de planification}\\
 & (\nu u)P & \text{privatisation de nom}
 \end{align*}
 où $x\in fv(P)\cap fv(Q)$ pour les règles | et ||,\\
 $x\not\in fv(P)$ pour la règle $\epsilon$, et $x,y\in fv(P)$ pour les autres règles.
-\end{frame}
-
-\begin{frame}{Les termes annotés}
-Et où l'ensemble des variables libres d'un terme $fv(P)$ est défini par induction sur les termes:
-\begin{align*}
-fv(x\tto y) &= \{x,y\} & fv(0_x) &= \{x\}\\
-fv(P|_xQ) &= fv(P)\cup fv(Q) & fv(P||_xQ) &= (fv(P)\cup fv(Q))\backslash\{x\}\\
-fv(u_x(t).P) &= fv(P) & fv(\bar{u}_x(v).P) &= fv(P) \\
-fv(\epsilon_x.P) &= fv(P)\cup\{x\} & fv(\lambda_xy.P) &= fv(P)\backslash\{y\}\\
-fv((\nu u)P) &= fv(P)
-\end{align*}
 \end{frame}
 
 \section{2. Exécution du calcul annoté}
@@ -150,23 +144,21 @@ fv((\nu u)P) &= fv(P)
 \item Règles de réduction:
 \begin{align*}
 \epsilon_x.P ||_x 0_x &\to P & (P|_xQ)||_x\lambda_xy.R &\to P||_x(Q[y/x]||_yR)\\
-P||_x x\tto y &\to P[y/x] & \lambda_xy.R||_x(P|_xQ) &\to (R||_xP)||_yQ[y/x]\\
-& & \bar{u}_x(v).P||_xu_x(t).Q &\to P||_x Q[v/t]
+P||_x x\tto y &\to P[y/x] & \bar{u}_x(v).P||_xu_x(t).Q &\to P||_x Q[v/t]
 \end{align*}
 \pause\item Règles de remontée du ||:\\
 Si le contexte l'exige, on note $P^y$ si le terme $P$ contient $y$.\\
-$(P^y|_xQ)||_yR \succ (P||_yR)|_xQ$\hfill$(P|_xQ^y)||_yR \succ P|_x(Q||_yR)$\\
-$(\nu u)P||_xQ \succ (\nu u)(P||_xQ)$\hfill si $u\not\in fn(Q)$
+$(P^y|_xQ)||_yR \succ (P||_yR)|_xQ$\hfill$(P|_xQ^y)||_yR \succ P|_x(Q||_yR)$
 \end{itemize}
 \end{frame}
 
 \begin{frame}{La réduction}
 Il faut une congruence pour faire confluer $\succ$:
 \begin{align*}
-(P^y|_xQ)|_yR &\equiv (P^x|_yR)|_xQ & (\nu u)(\nu v)P &\equiv (\nu v)(\nu u)P\\
-P|_x(Q|_yR^x) &\equiv Q|_y(P|_xR^y) & (\nu u)0_x &\equiv 0_x\\
-(P|_xQ^y)|_yR &\equiv P|_x(Q^x|_yR) & (\nu u)P|_xQ &\equiv (\nu u)(P|_xQ) & u\not\in Q
+(P^y|_xQ)|_yR &\equiv (P^x|_yR)|_xQ & P|_x(Q|_yR^x) &\equiv Q|_y(P|_xR^y)\\
+(P|_xQ^y)|_yR &\equiv P|_x(Q^x|_yR)
 \end{align*}
+Ces règles font commuter les relations selon des variables distinctes.
 \begin{prop}
 \begin{itemize}
 \item $\to$ est fortement confluent
@@ -193,40 +185,62 @@ Pour $\succ$, on regarde un cas (les autres sont similaires):
 \end{tikzcd}
 \end{frame}
 
-\begin{frame}{Confluence de $\to$ et $\succ$}
-Fermeture spécifique de $\equiv$ pour $\to$, avec $\succ$: donner un exemple %TODO
-\end{frame}
-
 \section{3. Typage du calcul décoré avec MLL}
 \subsection{Le système de types}
 
-\begin{frame}
-Le système de types: langage\\ %TODO
-et règles %TODO
+\begin{frame}{Les règles de typage}
+\small{
+\indent\hfill\begin{prooftree}\infer0[nop]{0_x\vdash x:1}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\vdash\Gamma}\hypo{x\not\in\Gamma}\infer2[bot]{\epsilon_x.P\vdash\Gamma,x:\bot}\end{prooftree}\hfill~\\~\\~\\
+\indent\hfill\begin{prooftree}\infer0[ax]{x\tto y\vdash x:E^\bot,y:E}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\vdash\Gamma,x:E,y:F}\infer1[lam]{\lambda_xy.P\vdash\Gamma,x:E\logpar F}\end{prooftree}\hfill~\\~\\~\\
+\begin{prooftree}\hypo{P\vdash\Gamma,x:E}\hypo{Q\vdash\Delta,x:F}\infer2[para]{P|_xQ\vdash\Gamma,\Delta,x:E\logtensor F}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\vdash\Gamma,x:E}\hypo{Q\vdash\Delta,x:E^\bot}\infer2[cut]{P||_xQ\vdash\Gamma,\Delta}\end{prooftree}\\~\\~\\
+\indent\hfill\begin{prooftree}\hypo{P\vdash\Gamma,x:A[v/t]^\bot}\infer1[in]{\bar{u}_x(v).P\vdash\Gamma,x:\exists_ut.A^\bot}\end{prooftree}\hfill
+\begin{prooftree}\hypo{P\vdash\Gamma,x:A}\hypo{t\not\in\Gamma}\infer2[out]{u_x(t).P\vdash\Gamma,x:\forall_ut.A}\end{prooftree}\hfill~}
 \end{frame}
 
-\begin{frame}
-Préservation du type: proposition et un exemple (en 2 slides ?) %TODO
+\begin{frame}{Propriétés des relations typées}
+\begin{prop}Les relations $\to$, $\succ$ et $\equiv$ préservent le type,\\
+\ie si $P\vdash\Gamma$ et $P\alpha P'$, alors $P'\vdash\Gamma$.\hfill(pour $\alpha$ l'une de ces relations)\end{prop}
+$\bullet$ La preuve est standard, on regarde chaque cas de réécriture avec les règles de typage correspondantes.
+\pause\begin{prop}Les relations $\to$ et $\succ$ terminent, \ie n'admettent pas de chaîne de réécriture infinie.\end{prop}
+$\bullet$ La preuve est également assez standard, pour un bon choix de mesure de terminaison. Une mesure qui fonctionne est la somme des tailles des sous-termes immédiats de la coupure/synchronization.
 \end{frame}
 
-\begin{frame}
-Terminaison de $\to$ et $\succ$ (+ un exemple ?) %TODO
-\end{frame}
+\subsection{L'élimination de la coupure}
 
-\subsection{L'élimination des coupures}
-
-\begin{frame}
-Extension du système de réduction %TODO
-\end{frame}
-
-\begin{frame}
-Élimination des coupures %TODO
+\begin{frame}{Élimination de la coupure}
+On ajoute des règles pour passer et agir sous les préfixes:
+\begin{align*}
+\epsilon_x.P||_yQ &\succsim \epsilon_x.(P||_yQ) & u_x(t).P||_yQ &\succsim u_x(t).(P||_yQ)\\
+\lambda_xy.P||_zQ &\succsim \lambda_xy.(P||_zQ) & \bar{u}_x(v).P||_yQ &\succsim \bar{u}_x(v).(P||_yQ)
+\end{align*}
+\begin{align*}
+P|_x \alpha_y.Q &\cong \alpha_y.(P|_xQ) & \alpha\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\}, y,t\not\in fv(P)\\
+\alpha_x.\beta_y.P &\cong \beta_y.\alpha_x.P & \alpha_\cdot,\beta_\cdot \in \{\epsilon_\cdot,\lambda_\cdot z,u_\cdot(t),\bar{u}_\cdot\langle v\rangle\},x\neq y
+\end{align*}
+Et $\to$ est étendue en $\leadsto$ qui agit sous les préfixes.\\
+\pause$\bullet$ Ces nouvelles règles préservent le type, $\leadsto$ et $\succsim$ terminent et confluent comme avant.\\
+\pause$\bullet$ Ces règles éliminent la coupure.
 \end{frame}
 
 \section{Conclusion}
 
 \begin{frame}{Conclusion}
-conclure ici: projection (on ne la présente pas vraiment ici, juste évoquée à l'oral éventuellement), limitations des choix faits.
+Les aspects techniques non abordés:
+\begin{itemize}
+\item effacement des annotations,
+\item actions internes (non observable depuis l'extérieur),
+\item la confluence de $\to$ après quotient par $\equiv$,
+\item les limitations techniques de cette approche.
+\end{itemize}
+Les aspects à rechercher encore:
+\begin{itemize}
+\item partie additive de $\pi$ et de LL,
+\item réplication de $\pi$ et modalités de LL,
+\item annoter un terme à partir d'une réduction connue ?
+\end{itemize}
 \end{frame}
 
 \end{document}
