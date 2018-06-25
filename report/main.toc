@@ -1,0 +1,31 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}The two languages}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}The classic $\pi $-calculus}{3}{subsection.1.1}
+\contentsline {paragraph}{Example:}{3}{section*.3}
+\contentsline {paragraph}{Example:}{3}{section*.4}
+\contentsline {paragraph}{Remark:}{4}{section*.5}
+\contentsline {subsection}{\numberline {1.2}The annotated $\pi $-calculus and its projection}{4}{subsection.1.2}
+\contentsline {paragraph}{Remark:}{5}{section*.6}
+\contentsline {paragraph}{Remark:}{5}{section*.7}
+\contentsline {paragraph}{Remark:}{5}{section*.8}
+\contentsline {paragraph}{Remark:}{6}{section*.9}
+\contentsline {paragraph}{Example:}{6}{section*.10}
+\contentsline {section}{\numberline {2}The execution of the decorated calculus}{7}{section.2}
+\contentsline {subsection}{\numberline {2.1}The reduction relation}{7}{subsection.2.1}
+\contentsline {paragraph}{Remark:}{7}{section*.11}
+\contentsline {paragraph}{Example:}{7}{section*.12}
+\contentsline {paragraph}{Remark:}{7}{section*.13}
+\contentsline {subsection}{\numberline {2.2}Confluence property for $\to $ and $\succ $}{7}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Projection on classic execution}{9}{subsection.2.3}
+\contentsline {paragraph}{Example:}{10}{section*.14}
+\contentsline {section}{\numberline {3}Typing decorated terms with MLL}{11}{section.3}
+\contentsline {subsection}{\numberline {3.1}The typing system}{11}{subsection.3.1}
+\contentsline {paragraph}{Example:}{11}{section*.15}
+\contentsline {subsection}{\numberline {3.2}Type preservation}{12}{subsection.3.2}
+\contentsline {paragraph}{Remark:}{13}{section*.16}
+\contentsline {subsection}{\numberline {3.3}Extending the reduction relations, and cut elimination}{13}{subsection.3.3}
+\contentsline {paragraph}{Remark:}{14}{section*.17}
+\contentsline {paragraph}{Remark:}{14}{section*.18}
+\contentsline {paragraph}{Remark:}{14}{section*.19}
+\contentsline {paragraph}{Example:}{14}{section*.20}
+\contentsline {section}{Conclusion}{16}{section*.21}
